@@ -1,6 +1,6 @@
-﻿using WebBattler.DAL.Entities;
+﻿using WebBattler.DAL.Models;
+using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
-using WebBattler.DAL.Models;
 
 namespace WebBattler.DAL.Repositories;
 

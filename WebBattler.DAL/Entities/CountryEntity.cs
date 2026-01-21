@@ -6,4 +6,5 @@ public class CountryEntity
     public string Name { get; set; }
     
     public List<ProvinceEntity> Provinces { get; set; }
+    public List<ArmyEntity> Armies { get; set; }
 }

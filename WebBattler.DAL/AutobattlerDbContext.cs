@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WebBattler.DAL.Entities;
+﻿using WebBattler.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebBattler.DAL;
 
 public class AutobattlerDbContext : DbContext
 {
+    public DbSet<ArmyEntity> Armies { get; set; }
     public DbSet<UnitEntity> Units { get; set; }
     public DbSet<CountryEntity> Countries { get; set; }
     public DbSet<ProvinceEntity> Provinces { get; set; }
@@ -38,5 +39,16 @@ public class AutobattlerDbContext : DbContext
             .WithOne(c => c.Province)
             .HasForeignKey(c =>  c.ProvinceId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ArmyEntity>()
+            .HasMany(a => a.SubArmies)
+            .WithOne(a => a.Parent)
+            .HasForeignKey(a => a.ParentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ArmyEntity>()
+            .HasOne(a => a.Country)
+            .WithMany(c => c.Armies)
+            .HasForeignKey(a => a.CountryId);
     }
 }

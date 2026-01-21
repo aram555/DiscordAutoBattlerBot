@@ -1,7 +1,7 @@
 ﻿using WebBattler.DAL.DTO;
+using WebBattler.DAL.Models;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
-using WebBattler.DAL.Models;
 using WebBattler.Services.Interfaces;
 
 namespace WebBattler.Services.Services;

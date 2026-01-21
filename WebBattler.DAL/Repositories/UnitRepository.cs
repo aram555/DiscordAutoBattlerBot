@@ -1,7 +1,6 @@
-﻿using WebBattler.DAL.DTO;
+﻿using WebBattler.DAL.Models;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
-using WebBattler.DAL.Models;
 
 namespace WebBattler.DAL.Repositories;
 
@@ -11,7 +10,7 @@ public class UnitRepository : IUnitRepository
 
     public UnitRepository(AutobattlerDbContext context)
     {
-        _context = context;   
+        _context = context;
     }
 
     public void Create(UnitEntity unitEntity)
