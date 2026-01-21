@@ -35,17 +35,13 @@ public class UnitRepository : IUnitRepository
 
     public List<UnitModel> ShowAll()
     {
-        List<UnitModel> result = new();
-
-        foreach(var unit in _context.Units)
-        {
-            result.Add(new UnitModel { 
-                Name = unit.Name, 
-                Health = unit.Health, 
-                Weapon = unit.Weapon 
-            });
-        }
-
-        return result;
+        return _context.Units
+            .Select(unit => new UnitModel
+            {
+                Name = unit.Name,
+                Health = unit.Health,
+                Weapon = unit.Weapon
+            })
+            .ToList();
     }
 }

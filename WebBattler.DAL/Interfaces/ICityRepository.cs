@@ -1,11 +1,12 @@
 ﻿using WebBattler.DAL.Entities;
+using WebBattler.DAL.Models;
 
 namespace WebBattler.DAL.Interfaces;
 
 public interface ICityRepository
 {
-    public void Create(CityEntity country);
-    public void Update(CityEntity country);
-    public void Delete(CityEntity country);
-    public List<CityEntity> GetAll();
+    public void Create(CityEntity city);
+    public void Update(CityEntity city);
+    public void Delete(CityEntity city);
+    public List<CityModel> GetAll();
 }

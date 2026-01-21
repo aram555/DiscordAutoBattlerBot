@@ -1,5 +1,6 @@
 ﻿using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
+using WebBattler.DAL.Models;
 
 namespace WebBattler.DAL.Repositories;
 
@@ -22,9 +23,24 @@ public class CountryRepository : ICountryRepository
         _context.Countries.Remove(country);
     }
 
-    public List<CountryEntity> GetAll()
+    public List<CountryModel> GetAll()
     {
-        return _context.Countries.ToList();
+        return _context.Countries.Select(c => new CountryModel
+        {
+            Name = c.Name,
+            Provinces = c.Provinces.Select(p => new ProvinceModel
+            {
+                Name = p.Name,
+                Cities = p.Cities.Select(city => new CityModel
+                {
+                    Name = city.Name,
+                    Population = city.Population,
+                    Level = city.Level
+                }).ToList()
+
+            }).ToList()
+
+        }).ToList();
     }
 
     public void Update(CountryEntity country)

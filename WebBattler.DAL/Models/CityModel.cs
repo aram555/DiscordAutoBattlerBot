@@ -1,6 +1,6 @@
 ﻿namespace WebBattler.DAL.Models;
 
-public class CitiesModel
+public class CityModel
 {
     public string Name { get; set; }
     public int Population { get; set; }
