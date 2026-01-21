@@ -10,6 +10,7 @@ public class AutobattlerDbContext : DbContext
     public DbSet<CountryEntity> Countries { get; set; }
     public DbSet<ProvinceEntity> Provinces { get; set; }
     public DbSet<CityEntity> Cities { get; set; }
+    public DbSet<BuildingEntity> Buildings { get; set; }
 
     public AutobattlerDbContext(DbContextOptions<AutobattlerDbContext> options) : base(options)
     {
@@ -38,6 +39,12 @@ public class AutobattlerDbContext : DbContext
             .HasMany(p => p.Cities)
             .WithOne(c => c.Province)
             .HasForeignKey(c =>  c.ProvinceId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<CityEntity>()
+            .HasMany(c => c.Buildings)
+            .WithOne(b => b.City)
+            .HasForeignKey(b => b.CityId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ArmyEntity>()

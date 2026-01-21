@@ -29,7 +29,14 @@ public class CityRepository : ICityRepository
         {
             Name = city.Name,
             Population = city.Population,
-            Level = city.Level
+            Level = city.Level,
+            Buildings = city.Buildings.Select(building => new BuildingModel
+            {
+                Name = building.Name,
+                Description = building.Description,
+                Cost = building.Cost,
+                Level = building.Level
+            }).ToList()
         }).ToList();
     }
 

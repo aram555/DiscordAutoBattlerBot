@@ -21,7 +21,14 @@ public class CityService : ICityService
         {
             Name = city.Name,
             Population = city.Population,
-            Level = city.Level
+            Level = city.Level,
+            Buildings = city.Buildings?.Select(b => new BuildingEntity
+            {
+                Name = b.Name,
+                Description = b.Description,
+                Cost = b.Cost,
+                Level = b.Level
+            }).ToList() ?? new List<BuildingEntity>()
         };
 
         _cityRepository.Create(cityEntity);

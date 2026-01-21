@@ -9,4 +9,6 @@ public class CityEntity
 
     public ProvinceEntity Province { get; set; }
     public int ProvinceId { get; set; }
+
+    public List<BuildingEntity> Buildings { get; set; }
 }

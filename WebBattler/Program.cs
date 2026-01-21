@@ -1,4 +1,6 @@
 using WebBattler.DAL;
+using WebBattler.DAL.Interfaces;
+using WebBattler.DAL.Repositories;
 
 namespace WebBattler;
 
@@ -11,6 +13,12 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
         builder.Services.AddDbContext<AutobattlerDbContext>();
+        builder.Services.AddTransient<IArmyRepository, ArmyRepository>();
+        builder.Services.AddTransient<IUnitRepository, UnitRepository>();
+        builder.Services.AddTransient<IBuildingRepository, BuildingRepository>();
+        builder.Services.AddTransient<ICityRepository, CityRepository>();
+        builder.Services.AddTransient<IProvinceRepository, ProvinceRepository>();
+        builder.Services.AddTransient<ICountryRepository, CountryRepository>();
 
         var app = builder.Build();
 
