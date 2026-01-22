@@ -9,9 +9,11 @@ namespace WebBattler.Services.Services;
 public class UnitService : IUnitService
 {
     private readonly IUnitRepository _unitRepository;
-    public UnitService(IUnitRepository unitRepository)
+    private readonly IArmyRepository _armyRepository;
+    public UnitService(IUnitRepository unitRepository, IArmyRepository armyRepository)
     {
         _unitRepository = unitRepository;
+        _armyRepository = armyRepository;
     }
 
     public void Create(UnitDTO unitDBO)
@@ -21,6 +23,7 @@ public class UnitService : IUnitService
             Name = unitDBO.Name,
             Health = 100f,
             Weapon = unitDBO.Weapon,
+            ArmyId = _armyRepository.GetIdByName(unitDBO.ArmyName)
         };
 
         _unitRepository.Create(entity);

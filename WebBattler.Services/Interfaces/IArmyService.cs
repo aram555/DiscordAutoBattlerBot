@@ -9,4 +9,5 @@ public interface IArmyService
     public void Update(ArmyDTO army);
     public void Delete(ArmyDTO army);
     public List<ArmyModel> GetAll();
+    public ArmyModel GetByName(string name);
 }

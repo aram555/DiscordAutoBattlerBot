@@ -23,7 +23,12 @@ public class ProvinceService : IProvinceService
             Cities = province.Cities.Select(cityDto => new CityEntity
             {
                 Name = cityDto.Name,
-                Population = cityDto.Population
+                Population = cityDto.Population,
+                Buildings = cityDto.Buildings.Select(buildingDto => new BuildingEntity
+                {
+                    Name = buildingDto.Name,
+                    Level = buildingDto.Level
+                }).ToList()
             }).ToList()
         };
 

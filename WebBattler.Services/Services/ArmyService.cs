@@ -20,10 +20,11 @@ public class ArmyService : IArmyService
         ArmyEntity entity = new ArmyEntity
         {
             Name = army.Name,
+            ParentId = _repository.GetIdByName(army.ParentName),
             Units = army.Units.Select(u => new UnitEntity
             {
                 Name = u.Name,
-                Health = 100,
+                Health = 100f,
                 Weapon = u.Weapon,
             }).ToList()
         };
@@ -33,19 +34,20 @@ public class ArmyService : IArmyService
     {
         _repository.Delete(new ArmyEntity
         {
-            Name = army.Name,
-            Units = army.Units.Select(u => new UnitEntity
-            {
-                Name = u.Name,
-                Health = 100,
-                Weapon = u.Weapon,
-            }).ToList()
+            Name = army.Name
         });
     }
 
     public List<ArmyModel> GetAll()
     {
         return _repository.GetAll();
+    }
+
+    public ArmyModel GetByName(string name)
+    {
+        var ArmyList = _repository.GetAll();
+
+        return ArmyList.FirstOrDefault(a => a.Name == name);
     }
 
     public void Update(ArmyDTO army)

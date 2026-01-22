@@ -39,7 +39,7 @@ public class UnitRepository : IUnitRepository
             {
                 Name = unit.Name,
                 Health = unit.Health,
-                Weapon = unit.Weapon
+                Weapon = unit.Weapon,
             })
             .ToList();
     }

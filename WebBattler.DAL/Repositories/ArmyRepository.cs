@@ -38,6 +38,12 @@ public class ArmyRepository : IArmyRepository
             }).ToList();
     }
 
+    public int GetIdByName(string name)
+    {
+        var army = _context.Armies.FirstOrDefault(a => a.Name == name);
+        return army != null ? army.Id : -1;
+    }
+
     public void Update(ArmyEntity army)
     {
         throw new NotImplementedException();

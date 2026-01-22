@@ -8,6 +8,6 @@ public class BuildingEntity
     public int Level { get; set; }
     public int Cost { get; set; }
 
-    public CityEntity Province { get; set; }
+    public CityEntity City { get; set; }
     public int CityId { get; set; }
 }

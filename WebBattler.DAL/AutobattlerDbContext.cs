@@ -54,6 +54,12 @@ public class AutobattlerDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ArmyEntity>()
+            .HasMany(a => a.Units)
+            .WithOne(u => u.Army)
+            .HasForeignKey(u => u.ArmyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ArmyEntity>()
             .HasOne(a => a.Country)
             .WithMany(c => c.Armies)
             .HasForeignKey(a => a.CountryId);
