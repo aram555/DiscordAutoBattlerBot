@@ -3,6 +3,7 @@
 public class CountryEntity
 {
     public int Id { get; set; }
+    public ulong OwnerId { get; set; }
     public string Name { get; set; }
     public int OwnerId { get; set; }
 

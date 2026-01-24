@@ -3,6 +3,7 @@
 public class ArmyEntity
 {
     public int Id { get; set; }
+    public ulong OwnerId { get; set; }
     public string Name { get; set; }
 
     public List<UnitEntity> Units { get; set; }

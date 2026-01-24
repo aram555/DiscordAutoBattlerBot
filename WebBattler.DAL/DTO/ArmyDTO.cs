@@ -2,6 +2,7 @@
 
 public class ArmyDTO
 {
+    public ulong OwnerId { get; set; }
     public string Name { get; set; }
     public List<UnitDTO> Units { get; set; }
     public string? ParentName { get; set; }

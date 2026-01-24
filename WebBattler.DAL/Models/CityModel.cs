@@ -2,6 +2,7 @@
 
 public class CityModel
 {
+    public ulong OwnerId { get; set; }
     public string Name { get; set; }
     public int Population { get; set; }
     public int Level { get; set; }

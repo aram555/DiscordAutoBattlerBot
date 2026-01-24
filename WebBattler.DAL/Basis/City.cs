@@ -1,0 +1,40 @@
+﻿namespace WebBattler.DAL.Basis;
+
+public class City
+{
+    public ulong OwnerId { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public int Level { get; set; }
+    public int Population { get; set; }
+    public bool IsCapital { get; set; }
+
+    public Province Province { get; set; }
+
+    public List<Building> Buildings { get; set; }
+
+    public City(ulong id, string name, string desc, int level, int population, bool isCapital, Province province)
+    {
+        OwnerId = id;
+        Name = name;
+        Description = desc;
+        Level = level;
+        Population = population;
+        IsCapital = isCapital;
+        Province = province;
+
+        Buildings = new List<Building>();
+    }
+
+    public City(ulong ownerId, string name, string description, int level, int population, bool isCapital, Province province, List<Building> buildings)
+    {
+        OwnerId = ownerId;
+        Name = name;
+        Description = description;
+        Level = level;
+        Population = population;
+        IsCapital = isCapital;
+        Province = province;
+        Buildings = buildings;
+    }
+}
