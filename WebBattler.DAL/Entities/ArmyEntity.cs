@@ -13,4 +13,10 @@ public class ArmyEntity
 
     public CountryEntity Country { get; set; }
     public int CountryId { get; set; }
+
+    public ProvinceEntity Province { get; set; }
+    public int ProvinceId { get; set; }
+
+    public CityEntity City { get; set; }
+    public int? CityId { get; set; }
 }

@@ -38,6 +38,11 @@ public class ProvinceRepository : IProvinceRepository
         }).ToList();
     }
 
+    public int GetIdByName(string name)
+    {
+        return _dbContext.Provinces.FirstOrDefault(p => p.Name == name).Id;
+    }
+
     public void Update(ProvinceEntity city)
     {
         throw new NotImplementedException();

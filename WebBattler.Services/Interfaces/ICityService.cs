@@ -9,4 +9,5 @@ public interface ICityService
     public void Update(CityDTO city);
     public void Delete(CityDTO city);
     public List<CityModel> GetAll();
+    public int GetIdByName(string name);
 }

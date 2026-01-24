@@ -8,11 +8,11 @@ namespace WebBattler.Services.Services;
 
 public class ProvinceService : IProvinceService
 {
-    private readonly IProvinceRepository _provinceRepository;
+    private readonly IProvinceRepository _repository;
 
     public ProvinceService(IProvinceRepository provinceRepository)
     {
-        _provinceRepository = provinceRepository;
+        _repository = provinceRepository;
     }
 
     public void Create(ProvinceDTO province)
@@ -32,12 +32,12 @@ public class ProvinceService : IProvinceService
             }).ToList()
         };
 
-        _provinceRepository.Create(provinceEntity);
+        _repository.Create(provinceEntity);
     }
 
     public void Delete(ProvinceDTO province)
     {
-        _provinceRepository.Delete(new ProvinceEntity
+        _repository.Delete(new ProvinceEntity
         {
             Name = province.Name
         });
@@ -45,7 +45,12 @@ public class ProvinceService : IProvinceService
 
     public List<ProvinceModel> GetAll()
     {
-        return _provinceRepository.GetAll();
+        return _repository.GetAll();
+    }
+
+    public int GetIdByName(string name)
+    {
+        return _repository.GetIdByName(name);
     }
 
     public void Update(ProvinceDTO province)

@@ -8,4 +8,6 @@ public class CountryEntity
 
     public List<ProvinceEntity> Provinces { get; set; }
     public List<ArmyEntity> Armies { get; set; }
+    public List<UnitSampleEntity> UnitSamples { get; set; }
+    public List<BuildingSampleEntity> BuildingSamples { get; set; }
 }

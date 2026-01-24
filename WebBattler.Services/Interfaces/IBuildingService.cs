@@ -10,4 +10,5 @@ public interface IBuildingService
     public void Update(BuildingDTO building);
     public void Delete(BuildingDTO building);
     public List<BuildingModel> GetAll();
+    public int GetIdByName(string name);
 }

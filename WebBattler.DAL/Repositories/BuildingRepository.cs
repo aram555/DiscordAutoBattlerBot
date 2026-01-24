@@ -34,6 +34,11 @@ public class BuildingRepository : IBuildingRepository
         }).ToList();
     }
 
+    public int GetIdByName(string name)
+    {
+        return _dbContext.Provinces.FirstOrDefault(b => b.Name == name).Id;
+    }
+
     public void Update(BuildingEntity building)
     {
         throw new NotImplementedException();

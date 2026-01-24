@@ -38,4 +38,31 @@ public class UnitService : IUnitService
     {
         return _unitRepository.ShowAll();
     }
+
+    public int GetIdByName(string name)
+    {
+        return _unitRepository.GetIdByName(name);
+    }
+
+    public void Update(UnitDTO unit)
+    {
+        var entity = _unitRepository.ShowAll().FirstOrDefault(u => u.Name == unit.Name);
+
+        if(unit.Name != null)
+        {
+            entity.Name = unit.Name;
+        }
+
+        if(unit.ArmyName != null)
+        {
+            entity.Army = _armyRepository.GetAll().FirstOrDefault(a => a.Name == unit.ArmyName);
+        }
+
+        if(unit.Weapon != null)
+        {
+            entity.Weapon = unit.Weapon;
+        }
+
+        _unitRepository.Update(entity);
+    }
 }

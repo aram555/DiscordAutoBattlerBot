@@ -8,11 +8,11 @@ namespace WebBattler.Services.Services;
 
 public class CountryService : ICountryService
 {
-    private readonly ICountryRepository _countryRepository;
+    private readonly ICountryRepository _repository;
 
     public CountryService(ICountryRepository countryRepository)
     {
-        _countryRepository = countryRepository;
+        _repository = countryRepository;
     }
 
     public void Create(CountryDTO country)
@@ -32,12 +32,12 @@ public class CountryService : ICountryService
             }).ToList()
         };
 
-        _countryRepository.Create(countryEntity);
+        _repository.Create(countryEntity);
     }
 
     public void Delete(CountryDTO country)
     {
-        _countryRepository.Delete(new CountryEntity
+        _repository.Delete(new CountryEntity
         {
             Name = country.Name
         });
@@ -45,7 +45,12 @@ public class CountryService : ICountryService
 
     public List<CountryModel> GetAll()
     {
-        return _countryRepository.GetAll();
+        return _repository.GetAll();
+    }
+
+    public int GetIdByName(string name)
+    {
+        return _repository.GetIdByName(name);
     }
 
     public void Update(CountryDTO country)

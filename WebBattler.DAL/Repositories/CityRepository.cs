@@ -1,6 +1,7 @@
-﻿using WebBattler.DAL.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
+using WebBattler.DAL.Models;
 
 namespace WebBattler.DAL.Repositories;
 
@@ -38,6 +39,11 @@ public class CityRepository : ICityRepository
                 Level = building.Level
             }).ToList()
         }).ToList();
+    }
+
+    public int GetIdByName(string name)
+    {
+        return _context.Cities.FirstOrDefault(c => c.Name == name).Id;
     }
 
     public void Update(CityEntity city)

@@ -1,6 +1,7 @@
-﻿using WebBattler.DAL.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
+using WebBattler.DAL.Models;
 
 namespace WebBattler.DAL.Repositories;
 
@@ -41,6 +42,11 @@ public class CountryRepository : ICountryRepository
             }).ToList()
 
         }).ToList();
+    }
+
+    public int GetIdByName(string name)
+    {
+        return _context.Countries.FirstOrDefault(c => c.Name == name).Id;
     }
 
     public void Update(CountryEntity country)

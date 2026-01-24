@@ -9,4 +9,5 @@ public interface ICountryRepository
     public void Update(CountryEntity country);
     public void Delete(CountryEntity country);
     public List<CountryModel> GetAll();
+    public int GetIdByName(string name);
 }

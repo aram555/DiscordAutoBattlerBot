@@ -43,4 +43,9 @@ public class UnitRepository : IUnitRepository
             })
             .ToList();
     }
+
+    public void Update(UnitEntity unit)
+    {
+        _context.SaveChanges();
+    }
 }

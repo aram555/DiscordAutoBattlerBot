@@ -7,4 +7,6 @@ public class ArmyDTO
     public string? ParentName { get; set; }
     public List<ArmyDTO> SubArmies { get; set; }
     public string CountryName { get; set; }
+    public string ProvinceName { get; set; }
+    public string? CityName { get; set; }
 }

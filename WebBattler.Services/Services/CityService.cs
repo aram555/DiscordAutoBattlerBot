@@ -8,11 +8,11 @@ namespace WebBattler.Services.Services;
 
 public class CityService : ICityService
 {
-    private readonly ICityRepository _cityRepository;
+    private readonly ICityRepository _repository;
 
     public CityService(ICityRepository cityRepository)
     {
-        _cityRepository = cityRepository;
+        _repository = cityRepository;
     }
 
     public void Create(CityDTO city)
@@ -31,12 +31,12 @@ public class CityService : ICityService
             }).ToList() ?? new List<BuildingEntity>()
         };
 
-        _cityRepository.Create(cityEntity);
+        _repository.Create(cityEntity);
     }
 
     public void Delete(CityDTO city)
     {
-        _cityRepository.Delete(new CityEntity
+        _repository.Delete(new CityEntity
         {
             Name = city.Name,
             Population = city.Population,
@@ -46,7 +46,12 @@ public class CityService : ICityService
 
     public List<CityModel> GetAll()
     {
-        return _cityRepository.GetAll();
+        return _repository.GetAll();
+    }
+
+    public int GetIdByName(string name)
+    {
+        return _repository.GetIdByName(name);
     }
 
     public void Update(CityDTO city)

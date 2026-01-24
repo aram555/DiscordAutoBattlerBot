@@ -9,4 +9,5 @@ public interface IProvinceService
     public void Update(ProvinceDTO province);
     public void Delete(ProvinceDTO province);
     public List<ProvinceModel> GetAll();
+    public int GetIdByName(string name);
 }

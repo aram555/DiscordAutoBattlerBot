@@ -7,16 +7,16 @@ namespace WebBattler.Services.Services;
 
 public class BuildingService : IBuildingService
 {
-    private readonly IBuildingRepository _buildingRepository;
+    private readonly IBuildingRepository _repository;
 
     public BuildingService(IBuildingRepository buildingRepository)
     {
-        _buildingRepository = buildingRepository;
+        _repository = buildingRepository;
     }
 
     public void Create(BuildingDTO building)
     {
-        _buildingRepository.Create(new DAL.Entities.BuildingEntity
+        _repository.Create(new DAL.Entities.BuildingEntity
         {
             Name = building.Name,
             Description = building.Description,
@@ -27,7 +27,7 @@ public class BuildingService : IBuildingService
 
     public void Delete(BuildingDTO building)
     {
-        _buildingRepository.Delete(new DAL.Entities.BuildingEntity
+        _repository.Delete(new DAL.Entities.BuildingEntity
         {
             Name = building.Name,
             Description = building.Description,
@@ -38,7 +38,12 @@ public class BuildingService : IBuildingService
 
     public List<BuildingModel> GetAll()
     {
-        return _buildingRepository.GetAll();
+        return _repository.GetAll();
+    }
+
+    public int GetIdByName(string name)
+    {
+        return _repository.GetIdByName(name);
     }
 
     public void Update(BuildingDTO building)

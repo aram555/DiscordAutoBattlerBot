@@ -7,10 +7,12 @@ public class AutobattlerDbContext : DbContext
 {
     public DbSet<ArmyEntity> Armies { get; set; }
     public DbSet<UnitEntity> Units { get; set; }
+    public DbSet<UnitSampleEntity> UnitSamples { get; set; }
     public DbSet<CountryEntity> Countries { get; set; }
     public DbSet<ProvinceEntity> Provinces { get; set; }
     public DbSet<CityEntity> Cities { get; set; }
     public DbSet<BuildingEntity> Buildings { get; set; }
+    public DbSet<BuildingSampleEntity> BuildingSamples { get; set; }
 
     public AutobattlerDbContext(DbContextOptions<AutobattlerDbContext> options) : base(options)
     {
@@ -35,6 +37,18 @@ public class AutobattlerDbContext : DbContext
             .HasForeignKey(p => p.CountryId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<CountryEntity>()
+            .HasMany(c => c.UnitSamples)
+            .WithOne(u => u.Country)
+            .HasForeignKey(u => u.CountryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<CountryEntity>()
+            .HasMany(c => c.BuildingSamples)
+            .WithOne(u => u.Country)
+            .HasForeignKey(u => u.CountryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<ProvinceEntity>()
             .HasMany(p => p.Cities)
             .WithOne(c => c.Province)
@@ -52,6 +66,16 @@ public class AutobattlerDbContext : DbContext
             .WithOne(a => a.Parent)
             .HasForeignKey(a => a.ParentId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ArmyEntity>()
+            .HasOne(a => a.Province)
+            .WithMany()
+            .HasForeignKey(a => a.ProvinceId);
+
+        modelBuilder.Entity<ArmyEntity>()
+            .HasOne(a => a.City)
+            .WithMany()
+            .HasForeignKey(a => a.CityId);
 
         modelBuilder.Entity<ArmyEntity>()
             .HasMany(a => a.Units)

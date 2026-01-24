@@ -9,4 +9,5 @@ public interface IUnitRepository
     public void Create(UnitEntity unitEntity);
     public List<UnitModel> ShowAll();
     public void Delete(string name);
+    public int GetIdByName(string name);
 }

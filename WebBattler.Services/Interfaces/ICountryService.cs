@@ -9,4 +9,5 @@ public interface ICountryService
     public void Update(CountryDTO country);
     public void Delete(CountryDTO country);
     public List<CountryModel> GetAll();
+    public int GetIdByName(string name);
 }
