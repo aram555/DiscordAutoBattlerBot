@@ -1,16 +1,18 @@
-﻿using Discord.Interactions;
-using WebBattler.DAL.DTO;
+﻿using WebBattler.DAL.DTO;
+using Discord.Interactions;
 using WebBattler.Services.Services;
+using WebBattler.Services.Interfaces;
+using WebBattler.Services.Army.MoveingService;
 
 namespace WebBattler.Services.Modules;
 
 public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
 {
-    private readonly ArmyService _service;
+    private readonly IArmyService _service;
 
-    public ArmyModule(ArmyService service)
+    public ArmyModule(IArmyService service)
     {
-        _service = service; 
+        _service = service;
     }
 
     [SlashCommand("create_army", "Создание армии")]
@@ -25,11 +27,17 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
             ParentName = parentArmyName,
             CountryName = countryName,
             ProvinceName = provinceName,
-            CityName = cityName
+            CityName = cityName,
         };
 
         _service.Create(army);
 
-        await RespondAsync("On Development...");
+        await RespondAsync($"Создана армия {name}");
+    }
+
+    [SlashCommand("move_to_province", "Движение к провинции")]
+    public async Task MoveToProvinceAsync(string provinceName, string armyName)
+    {
+        await RespondAsync("In development...");
     }
 }

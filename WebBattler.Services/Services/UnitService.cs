@@ -63,6 +63,6 @@ public class UnitService : IUnitService
             entity.Weapon = unit.Weapon;
         }
 
-        _unitRepository.Update(entity);
+        //Here will be update method...SOON
     }
 }

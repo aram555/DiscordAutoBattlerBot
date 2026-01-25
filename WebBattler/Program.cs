@@ -28,7 +28,14 @@ public class Program
         builder.Services.AddTransient<IBuildingSampleRepository, BuildingSampleRepository>();
         builder.Services.AddTransient<IUnitSampleRepository, UnitSampleRepository>();
 
+        builder.Services.AddScoped<IArmyService, ArmyService>();
+        builder.Services.AddScoped<IBuildingSampleService, BuildingSampleService>();
+        builder.Services.AddScoped<IBuildingService, BuildingService>();
+        builder.Services.AddScoped<ICityService, CityService>();
+        builder.Services.AddScoped<ICountryService, CountryService>();
+        builder.Services.AddScoped<IProvinceService, ProvinceService>();
         builder.Services.AddScoped<IUnitSampleService, UnitSampleService>();
+        builder.Services.AddScoped<IUnitService, UnitService>();
 
         //Addint discord bot service
         builder.Services.AddSingleton(sp =>

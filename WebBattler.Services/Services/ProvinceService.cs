@@ -9,10 +9,12 @@ namespace WebBattler.Services.Services;
 public class ProvinceService : IProvinceService
 {
     private readonly IProvinceRepository _repository;
+    private readonly ICountryRepository _countryRepository;
 
-    public ProvinceService(IProvinceRepository provinceRepository)
+    public ProvinceService(IProvinceRepository provinceRepository, ICountryRepository countryRepository)
     {
         _repository = provinceRepository;
+        _countryRepository = countryRepository;
     }
 
     public void Create(ProvinceDTO province)
@@ -20,6 +22,7 @@ public class ProvinceService : IProvinceService
         ProvinceEntity provinceEntity = new ProvinceEntity
         {
             Name = province.Name,
+            CountryId = _countryRepository.GetIdByName(province.CountryName),
             Cities = province.Cities.Select(cityDto => new CityEntity
             {
                 Name = cityDto.Name,

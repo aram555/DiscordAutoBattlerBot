@@ -25,6 +25,8 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
             Countryname = countryName
         };
 
+        _service.Create(dto);
+
         await RespondAsync("Команда в разработке.");
     }
 

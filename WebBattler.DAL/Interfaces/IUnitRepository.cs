@@ -10,4 +10,6 @@ public interface IUnitRepository
     public List<UnitModel> ShowAll();
     public void Delete(string name);
     public int GetIdByName(string name);
+    public void Update(UnitEntity unitEntity);
+    //public UnitEntity GetById(int id); следующий пункт добавление, причём НЕМЕДЛЕННО!
 }

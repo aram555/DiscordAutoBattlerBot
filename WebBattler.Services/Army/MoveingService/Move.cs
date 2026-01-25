@@ -26,8 +26,6 @@ public class Move
         int id = _service.GetIdByName(provinceName);
         army.ProvinceId = id;
 
-
-
         return new MoveResult(true, "Succes", id);
     }
 }

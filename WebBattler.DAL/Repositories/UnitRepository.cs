@@ -44,6 +44,11 @@ public class UnitRepository : IUnitRepository
             .ToList();
     }
 
+    public int GetIdByName(string name)
+    {
+        return _context.Units.FirstOrDefault(u => u.Name == name).Id;
+    }
+
     public void Update(UnitEntity unit)
     {
         _context.SaveChanges();
