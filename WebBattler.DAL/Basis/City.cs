@@ -13,9 +13,9 @@ public class City
 
     public List<Building> Buildings { get; set; }
 
-    public City(ulong id, string name, string desc, int level, int population, bool isCapital, Province province)
+    public City(ulong ownerId, string name, string desc, int level, int population, bool isCapital, Province province)
     {
-        OwnerId = id;
+        OwnerId = ownerId;
         Name = name;
         Description = desc;
         Level = level;

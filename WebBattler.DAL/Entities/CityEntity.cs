@@ -5,8 +5,10 @@ public class CityEntity
     public int Id { get; set; }
     public ulong OwnerId { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
     public int Population {  get; set; }
     public int Level { get; set; }
+    public bool IsCapital { get; set; }
 
     public ProvinceEntity Province { get; set; }
     public int ProvinceId { get; set; }

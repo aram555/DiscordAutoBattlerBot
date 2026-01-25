@@ -9,18 +9,26 @@ namespace WebBattler.Services.Services;
 public class ArmyService : IArmyService
 {
     private readonly IArmyRepository _repository;
+    private readonly ICountryRepository _countryRepository;
+    private readonly IProvinceRepository _provinceRepository;
 
-    public ArmyService(IArmyRepository repository)
+    public ArmyService(IArmyRepository repository, ICountryRepository countryRepository, IProvinceRepository provinceRepository)
     {
         _repository = repository;
+        _countryRepository = countryRepository;
+        _provinceRepository = provinceRepository;
     }
 
     public void Create(ArmyDTO army)
     {
         ArmyEntity entity = new ArmyEntity
         {
+            OwnerId = army.OwnerId,
             Name = army.Name,
             ParentId = _repository.GetIdByName(army.ParentName),
+            CountryId = _countryRepository.GetIdByName(army.CountryName),
+            ProvinceId = _provinceRepository.GetIdByName(army.ProvinceName),
+            CityId = _provinceRepository.GetIdByName(army?.CityName),
             Units = army.Units.Select(u => new UnitEntity
             {
                 Name = u.Name,
@@ -28,6 +36,8 @@ public class ArmyService : IArmyService
                 Weapon = u.Weapon,
             }).ToList()
         };
+
+        _repository.Create(entity);
     }
 
     public void Delete(ArmyDTO army)
