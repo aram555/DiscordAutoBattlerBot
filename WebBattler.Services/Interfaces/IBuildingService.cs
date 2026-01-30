@@ -9,6 +9,7 @@ public interface IBuildingService
     public void Create(BuildingDTO building);
     public void Update(BuildingDTO building);
     public void Delete(BuildingDTO building);
-    public List<BuildingModel> GetAll();
     public int GetIdByName(string name);
+    public BuildingModel GetById(int id);
+    public List<BuildingModel> GetAll(ulong ownerId);
 }

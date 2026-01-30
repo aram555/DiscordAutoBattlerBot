@@ -24,24 +24,14 @@ public class CountryRepository : ICountryRepository
         _context.Countries.Remove(country);
     }
 
-    public List<CountryModel> GetAll()
+    public void Update(CountryEntity country)
     {
-        return _context.Countries.Select(c => new CountryModel
-        {
-            Name = c.Name,
-            Provinces = c.Provinces.Select(p => new ProvinceModel
-            {
-                Name = p.Name,
-                Cities = p.Cities.Select(city => new CityModel
-                {
-                    Name = city.Name,
-                    Population = city.Population,
-                    Level = city.Level
-                }).ToList()
+        throw new NotImplementedException();
+    }
 
-            }).ToList()
-
-        }).ToList();
+    public CountryEntity GetById(int id)
+    {
+        return _context.Countries.FirstOrDefault(b => b.Id == id);
     }
 
     public int GetIdByName(string name)
@@ -49,8 +39,13 @@ public class CountryRepository : ICountryRepository
         return _context.Countries.FirstOrDefault(c => c.Name == name).Id;
     }
 
-    public void Update(CountryEntity country)
+    public List<CountryEntity> GetAll(ulong ownerId)
     {
-        throw new NotImplementedException();
+        return _context.Countries
+            .Where(a => a.OwnerId == ownerId)
+            .Include(c => c.Provinces)
+            .ThenInclude(p => p.Cities)
+            .ThenInclude(c => c.Buildings)
+            .ToList();
     }
 }

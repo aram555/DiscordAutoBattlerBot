@@ -1,4 +1,5 @@
-﻿using WebBattler.DAL.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
 using WebBattler.DAL.Models;
 
@@ -30,25 +31,25 @@ public class BuildingSampleRepository : IBuildingSampleRepository
         }
     }
 
-    public List<BuildingSampleModel> GetAll()
+    public void Update(BuildingSampleEntity buildingSample)
     {
-        return _context.BuildingSamples.Select(buildingSample => new BuildingSampleModel
-        {
-            Name = buildingSample.Name,
-            Description = buildingSample.Description,
-            Cost = buildingSample.Cost,
-            Level = buildingSample.Level,
-            Country = new CountryModel() { Name = buildingSample.Country.Name }
-        }).ToList();
+        throw new NotImplementedException();
+    }
+
+    public BuildingSampleEntity GetById(int id)
+    {
+        return _context.BuildingSamples.FirstOrDefault(b => b.Id == id);
     }
 
     public int GetIdByName(string name)
     {
-        return _context.BuildingSamples.FirstOrDefault(b => b.Name == name).Id;
+        return _context.BuildingSamples.FirstOrDefault(a => a.Name == name).Id;
     }
 
-    public void Update(BuildingSampleEntity buildingSample)
+    public List<BuildingSampleEntity> GetAll(ulong ownerId)
     {
-        throw new NotImplementedException();
+        return _context.BuildingSamples
+            .Where(a => a.OwnerId == ownerId)
+            .ToList();
     }
 }

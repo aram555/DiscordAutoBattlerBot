@@ -1,6 +1,7 @@
-﻿using WebBattler.DAL.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
+using WebBattler.DAL.Models;
 
 namespace WebBattler.DAL.Repositories;
 
@@ -32,16 +33,9 @@ public class UnitRepository : IUnitRepository
         }
     }
 
-    public List<UnitModel> ShowAll()
+    public void Update(UnitEntity unit)
     {
-        return _context.Units
-            .Select(unit => new UnitModel
-            {
-                Name = unit.Name,
-                Health = unit.Health,
-                Weapon = unit.Weapon,
-            })
-            .ToList();
+        _context.SaveChanges();
     }
 
     public int GetIdByName(string name)
@@ -49,8 +43,15 @@ public class UnitRepository : IUnitRepository
         return _context.Units.FirstOrDefault(u => u.Name == name).Id;
     }
 
-    public void Update(UnitEntity unit)
+    public UnitEntity GetById(int id)
     {
-        _context.SaveChanges();
+        return _context.Units.FirstOrDefault(b => b.Id == id);
+    }
+
+    public List<UnitEntity> GetAll(ulong ownerId)
+    {
+        return _context.Units
+            .Where(a => a.OwnerId == ownerId)
+            .ToList();
     }
 }

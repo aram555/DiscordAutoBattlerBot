@@ -1,6 +1,7 @@
 ﻿using WebBattler.DAL.Models;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebBattler.DAL.Repositories;
 
@@ -23,19 +24,9 @@ public class ProvinceRepository : IProvinceRepository
         _dbContext.Provinces.Remove(city);
     }
 
-    public List<ProvinceModel> GetAll()
+    public void Update(ProvinceEntity city)
     {
-        return _dbContext.Provinces.Select(p => new ProvinceModel
-        {
-            Name = p.Name,
-            Cities = p.Cities.Select(city => new CityModel
-            {
-                Name = city.Name,
-                Population = city.Population,
-                Level = city.Level
-            }).ToList()
-
-        }).ToList();
+        throw new NotImplementedException();
     }
 
     public int GetIdByName(string name)
@@ -43,8 +34,17 @@ public class ProvinceRepository : IProvinceRepository
         return _dbContext.Provinces.FirstOrDefault(p => p.Name == name).Id;
     }
 
-    public void Update(ProvinceEntity city)
+    public ProvinceEntity GetById(int id)
     {
-        throw new NotImplementedException();
+        return _dbContext.Provinces.FirstOrDefault(b => b.Id == id);
+    }
+
+    public List<ProvinceEntity> GetAll(ulong ownerId)
+    {
+        return _dbContext.Provinces
+            .Where(a => a.OwnerId == ownerId)
+            .Include(p => p.Cities)
+            .ThenInclude(c => c.Buildings)
+            .ToList();
     }
 }

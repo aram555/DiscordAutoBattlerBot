@@ -34,9 +34,9 @@ public class UnitService : IUnitService
         _unitRepository.Delete(name);
     }
 
-    public List<UnitModel> ShowAll()
+    public void Update(UnitDTO unit)
     {
-        return _unitRepository.ShowAll();
+
     }
 
     public int GetIdByName(string name)
@@ -44,25 +44,35 @@ public class UnitService : IUnitService
         return _unitRepository.GetIdByName(name);
     }
 
-    public void Update(UnitDTO unit)
+    public UnitModel GetById(int id)
     {
-        var entity = _unitRepository.ShowAll().FirstOrDefault(u => u.Name == unit.Name);
+        var entity = _unitRepository.GetById(id);
 
-        if(unit.Name != null)
+        return new UnitModel
         {
-            entity.Name = unit.Name;
+            Name = entity.Name,
+            Health = entity.Health,
+            Weapon = entity.Weapon,
+            OwnerId = entity.OwnerId
+        };
+    }
+
+    public List<UnitModel> GetAll(ulong ownerId)
+    {
+        var list = new List<UnitModel>();
+
+        foreach(var entity in _unitRepository.GetAll(ownerId))
+        {
+            list.Add(
+                new UnitModel
+                {
+                    Name = entity.Name,
+                    Health = entity.Health,
+                    Weapon = entity.Weapon,
+                    OwnerId = entity.OwnerId
+                });
         }
 
-        if(unit.ArmyName != null)
-        {
-            entity.Army = _armyRepository.GetAll().FirstOrDefault(a => a.Name == unit.ArmyName);
-        }
-
-        if(unit.Weapon != null)
-        {
-            entity.Weapon = unit.Weapon;
-        }
-
-        //Here will be update method...SOON
+        return list;
     }
 }

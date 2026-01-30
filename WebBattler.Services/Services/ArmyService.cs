@@ -48,16 +48,59 @@ public class ArmyService : IArmyService
         });
     }
 
-    public List<ArmyModel> GetAll()
+    public List<ArmyModel> GetAll(ulong ownerId)
     {
-        return _repository.GetAll();
+        List<ArmyModel> result = new List<ArmyModel>();
+
+        foreach (var entity in _repository.GetAll(ownerId))
+        {
+            result.Add(new ArmyModel()
+            {
+                Name = entity.Name,
+                OwnerId = entity.OwnerId,
+                Units = entity.Units.Select(u => new UnitModel
+                {
+                    Name = u.Name,
+                    Health = u.Health,
+                    Weapon = u.Weapon,
+                    OwnerId = u.OwnerId
+                }).ToList()
+            });
+        }
+
+        return result;
     }
+
 
     public ArmyModel GetByName(string name)
     {
-        var ArmyList = _repository.GetAll();
+        var ArmyList = GetAll();
 
         return ArmyList.FirstOrDefault(a => a.Name == name);
+    }
+    public ArmyModel GetById(int id)
+    {
+        var entity = _repository.GetById(id);
+
+        var model = new ArmyModel()
+        {
+            Name = entity.Name,
+            OwnerId = entity.OwnerId,
+            SubArmies = entity.SubArmies.Select(s => new ArmyModel()
+            {
+                Name = s.Name,
+                OwnerId = s.OwnerId
+            }).ToList(),
+            Units = entity.Units.Select(u => new UnitModel()
+            {
+                Name = u.Name,
+                OwnerId = u.OwnerId,
+                Weapon = u.Weapon,
+                Health = u.Health
+            }).ToList()
+        };
+
+        return model;
     }
 
     public void Update(ArmyDTO army)

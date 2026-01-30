@@ -1,7 +1,8 @@
-﻿using WebBattler.DAL.DTO;
-using WebBattler.DAL.Models;
+﻿using Discord;
+using WebBattler.DAL.DTO;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
+using WebBattler.DAL.Models;
 using WebBattler.Services.Interfaces;
 
 namespace WebBattler.Services.Services;
@@ -47,9 +48,9 @@ public class CityService : ICityService
         });
     }
 
-    public List<CityModel> GetAll()
+    public void Update(CityDTO city)
     {
-        return _repository.GetAll();
+        throw new NotImplementedException();
     }
 
     public int GetIdByName(string name)
@@ -57,8 +58,50 @@ public class CityService : ICityService
         return _repository.GetIdByName(name);
     }
 
-    public void Update(CityDTO city)
+    public CityModel GetById(int id)
     {
-        throw new NotImplementedException();
+        var entity = _repository.GetById(id);
+
+        return new CityModel()
+        {
+            Name = entity.Name,
+            Population = entity.Population,
+            Level = entity.Level,
+            OwnerId = entity.OwnerId,
+            Buildings = entity.Buildings.Select(b => new BuildingModel()
+            {
+                Name = b.Name,
+                Description = b.Description,
+                Cost = b.Cost,
+                Level = b.Level,
+                OwnerId = entity.OwnerId
+            }).ToList()
+        };
+    }
+
+    public List<CityModel> GetAll(ulong ownerId)
+    {
+        var list = new List<CityModel>();
+
+        foreach(var entity in _repository.GetAll(ownerId))
+        {
+            list.Add(new CityModel()
+            {
+                Name = entity.Name,
+                Population = entity.Population,
+                Level = entity.Level,
+                OwnerId = entity.OwnerId,
+                Buildings = entity.Buildings.Select(b => new BuildingModel()
+                {
+                    Name = b.Name,
+                    Description = b.Description,
+                    Cost = b.Cost,
+                    Level = b.Level,
+                    OwnerId = entity.OwnerId
+                }).ToList()
+            });
+        }
+
+        return list;
     }
 }

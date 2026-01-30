@@ -1,6 +1,7 @@
 ﻿using WebBattler.DAL.Models;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebBattler.DAL.Repositories;
 
@@ -23,19 +24,9 @@ public class ArmyRepository : IArmyRepository
         _context.Armies.Remove(army);
     }
 
-    public List<ArmyModel> GetAll()
+    public void Update(ArmyEntity army)
     {
-        return _context.Armies
-            .Select(a => new ArmyModel
-            {
-                Name = a.Name,
-                Units = a.Units.Select(u => new UnitModel
-                {
-                    Name = u.Name,
-                    Health = u.Health,
-                    Weapon = u.Weapon,
-                }).ToList()
-            }).ToList();
+        throw new NotImplementedException();
     }
 
     public int GetIdByName(string name)
@@ -44,8 +35,16 @@ public class ArmyRepository : IArmyRepository
         return army != null ? army.Id : -1;
     }
 
-    public void Update(ArmyEntity army)
+    public ArmyEntity GetById(int id)
     {
-        throw new NotImplementedException();
+        return _context.Armies.FirstOrDefault(x => x.Id == id);
+    }
+
+    public List<ArmyEntity> GetAll(ulong ownerId)
+    {
+        return _context.Armies
+            .Where(a => a.OwnerId == ownerId)
+            .Include(a => a.Units)
+            .ToList();
     }
 }

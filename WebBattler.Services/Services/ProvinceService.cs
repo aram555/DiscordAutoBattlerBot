@@ -46,9 +46,9 @@ public class ProvinceService : IProvinceService
         });
     }
 
-    public List<ProvinceModel> GetAll()
+    public void Update(ProvinceDTO province)
     {
-        return _repository.GetAll();
+        throw new NotImplementedException();
     }
 
     public int GetIdByName(string name)
@@ -56,8 +56,39 @@ public class ProvinceService : IProvinceService
         return _repository.GetIdByName(name);
     }
 
-    public void Update(ProvinceDTO province)
+    public ProvinceModel GetById(int id)
     {
         throw new NotImplementedException();
+    }
+
+    public List<ProvinceModel> GetAll(ulong ownerId)
+    {
+        var list = new List<ProvinceModel>();
+
+        foreach(var entity in _repository.GetAll(ownerId))
+        {
+            list.Add(new ProvinceModel()
+            {
+                Name = entity.Name,
+                OwnerId = entity.OwnerId,
+                Cities = entity.Cities.Select(c => new CityModel()
+                {
+                    Name = c.Name,
+                    Level = c.Level,
+                    Population = c.Population,
+                    OwnerId = c.OwnerId,
+                    Buildings = c.Buildings.Select(c => new BuildingModel()
+                    {
+                        Name = c.Name,
+                        Description = c.Description,
+                        Cost = c.Cost,
+                        Level = c.Level,
+                        OwnerId = c.OwnerId,
+                    }).ToList()
+                }).ToList()
+            });
+        }
+
+        return list;
     }
 }

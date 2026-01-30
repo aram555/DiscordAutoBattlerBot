@@ -30,18 +30,9 @@ public class UnitSampleRepository : IUnitSampleRepository
         }
     }
 
-    public List<UnitSampleModel> GetAll()
+    public void Update(UnitSampleEntity unitSample)
     {
-        return _dbContext.UnitSamples.Select(u => new UnitSampleModel
-        {
-            Name = u.Name,
-            Health = u.Health,
-            Country = new CountryModel()
-            {
-                Name = u.Country.Name
-            },
-            Weapon = u.Weapon
-        }).ToList();
+        throw new NotImplementedException();
     }
 
     public int GetIdByName(string name)
@@ -49,8 +40,15 @@ public class UnitSampleRepository : IUnitSampleRepository
         return _dbContext.UnitSamples.FirstOrDefault(u => u.Name == name).Id;
     }
 
-    public void Update(UnitSampleEntity unitSample)
+    public UnitSampleEntity GetById(int id)
     {
-        throw new NotImplementedException();
+        return _dbContext.UnitSamples.FirstOrDefault(b => b.Id == id);
+    }
+
+    public List<UnitSampleEntity> GetAll(ulong ownerId)
+    {
+        return _dbContext.UnitSamples
+            .Where(a => a.OwnerId == ownerId)
+            .ToList();
     }
 }

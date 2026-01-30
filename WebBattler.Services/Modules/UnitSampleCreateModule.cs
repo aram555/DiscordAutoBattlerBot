@@ -33,7 +33,7 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
     [SlashCommand("unit_sample_list", "Просмотр доступных шаблонов юнитов.")]
     public async Task UnitSampleListAsync()
     {
-        var list = _service.GetAll();
+        var list = _service.GetAll(Context.User.Id);
 
         foreach (var item in list)
         {

@@ -43,9 +43,9 @@ public class CountryService : ICountryService
         });
     }
 
-    public List<CountryModel> GetAll()
+    public void Update(CountryDTO country)
     {
-        return _repository.GetAll();
+        throw new NotImplementedException();
     }
 
     public int GetIdByName(string name)
@@ -53,8 +53,70 @@ public class CountryService : ICountryService
         return _repository.GetIdByName(name);
     }
 
-    public void Update(CountryDTO country)
+    public CountryModel GetById(int id)
     {
-        throw new NotImplementedException();
+        var entity = _repository.GetById(id);
+
+        return new CountryModel
+        {
+            Name = entity.Name,
+            OwnerId = entity.OwnerId,
+            Provinces = entity.Provinces.Select(p => new ProvinceModel()
+            {
+                Name = p.Name,
+                OwnerId = p.OwnerId,
+                Cities = p.Cities.Select(c => new CityModel()
+                {
+                    Name = c.Name,
+                    Population = c.Population,
+                    Level = c.Level,
+                    OwnerId= c.OwnerId,
+                    Buildings = c.Buildings.Select(p => new BuildingModel()
+                    {
+                        Name = p.Name,
+                        Description = p.Description,
+                        Cost = p.Cost,
+                        Level = p.Level,
+                        OwnerId = c.OwnerId
+                    }).ToList()
+                }).ToList()
+            }).ToList()
+        };
+    }
+
+    public List<CountryModel> GetAll(ulong ownerId)
+    {
+        var list = new List<CountryModel>();
+
+        foreach(var entity in _repository.GetAll(ownerId))
+        {
+            list.Add(new CountryModel
+            {
+                Name = entity.Name,
+                OwnerId = entity.OwnerId,
+                Provinces = entity.Provinces.Select(p => new ProvinceModel()
+                {
+                    Name = p.Name,
+                    OwnerId = p.OwnerId,
+                    Cities = p.Cities.Select(c => new CityModel()
+                    {
+                        Name = c.Name,
+                        Population = c.Population,
+                        Level = c.Level,
+                        OwnerId = c.OwnerId,
+                        Buildings = c.Buildings.Select(p => new BuildingModel()
+                        {
+                            Name = p.Name,
+                            Description = p.Description,
+                            Cost = p.Cost,
+                            Level = p.Level,
+                            OwnerId = c.OwnerId
+                        }).ToList()
+                    }).ToList()
+                }).ToList()
+            });
+        }
+
+        return list;
     }
 }

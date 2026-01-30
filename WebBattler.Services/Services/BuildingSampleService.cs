@@ -40,18 +40,47 @@ public class BuildingSampleService : IBuildingSampleService
         _repository.Delete(entity);
     }
 
+    public void Update(BuildingSampleDTO buildingSample)
+    {
+        throw new NotImplementedException();
+    }
+
     public int GetIdByName(string name)
     {
         return _repository.GetIdByName(name);
     }
 
-    public List<BuildingSampleModel> GetAll()
+    public BuildingSampleModel GetById(int id)
     {
-        return _repository.GetAll();
+        var entity = _repository.GetById(id);
+
+        return new BuildingSampleModel()
+        {
+            Name = entity.Name,
+            Description = entity.Description,
+            Cost = entity.Cost,
+            Level = entity.Level,
+            OwnerId = entity.OwnerId
+        };
     }
 
-    public void Update(BuildingSampleDTO buildingSample)
+    public List<BuildingSampleModel> GetAll(ulong ownerId)
     {
-        throw new NotImplementedException();
+        var list = new List<BuildingSampleModel>();
+
+        foreach(var entity in _repository.GetAll(ownerId))
+        {
+            list.Add(new BuildingSampleModel()
+            {
+                Name = entity.Name,
+                Description = entity.Description,
+                Cost = entity.Cost,
+                Level = entity.Level,
+                OwnerId = entity.OwnerId
+            });
+        }
+
+        return list;
     }
+
 }

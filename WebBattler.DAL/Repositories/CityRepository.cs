@@ -23,22 +23,14 @@ public class CityRepository : ICityRepository
     {
         _context.Cities.Remove(city);
     }
-
-    public List<CityModel> GetAll()
+    public void Update(CityEntity city)
     {
-        return _context.Cities.Select(city => new CityModel
-        {
-            Name = city.Name,
-            Population = city.Population,
-            Level = city.Level,
-            Buildings = city.Buildings.Select(building => new BuildingModel
-            {
-                Name = building.Name,
-                Description = building.Description,
-                Cost = building.Cost,
-                Level = building.Level
-            }).ToList()
-        }).ToList();
+        throw new NotImplementedException();
+    }
+
+    public CityEntity GetById(int id)
+    {
+        return _context.Cities.FirstOrDefault(b => b.Id == id);
     }
 
     public int GetIdByName(string name)
@@ -46,8 +38,11 @@ public class CityRepository : ICityRepository
         return _context.Cities.FirstOrDefault(c => c.Name == name).Id;
     }
 
-    public void Update(CityEntity city)
+    public List<CityEntity> GetAll(ulong ownerId)
     {
-        throw new NotImplementedException();
+        return _context.Cities
+            .Where(a => a.OwnerId == ownerId)
+            .Include(c => c.Buildings)
+            .ToList();
     }
 }

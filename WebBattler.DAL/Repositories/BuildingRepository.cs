@@ -23,15 +23,9 @@ public class BuildingRepository : IBuildingRepository
         _dbContext.Buildings.Remove(building);
     }
 
-    public List<BuildingModel> GetAll()
+    public void Update(BuildingEntity building)
     {
-        return _dbContext.Buildings.Select(building => new BuildingModel
-        {
-            Name = building.Name,
-            Description = building.Description,
-            Cost = building.Cost,
-            Level = building.Level
-        }).ToList();
+        throw new NotImplementedException();
     }
 
     public int GetIdByName(string name)
@@ -39,8 +33,15 @@ public class BuildingRepository : IBuildingRepository
         return _dbContext.Provinces.FirstOrDefault(b => b.Name == name).Id;
     }
 
-    public void Update(BuildingEntity building)
+    public BuildingEntity GetById(int id)
     {
-        throw new NotImplementedException();
+        return _dbContext.Buildings.FirstOrDefault(b => b.Id == id);
+    }
+
+    public List<BuildingEntity> GetAll(ulong ownerId)
+    {
+        return _dbContext.Buildings
+            .Where(a => a.OwnerId == ownerId)
+            .ToList();
     }
 }

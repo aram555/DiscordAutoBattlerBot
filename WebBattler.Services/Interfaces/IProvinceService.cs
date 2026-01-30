@@ -8,6 +8,7 @@ public interface IProvinceService
     public void Create(ProvinceDTO province);
     public void Update(ProvinceDTO province);
     public void Delete(ProvinceDTO province);
-    public List<ProvinceModel> GetAll();
     public int GetIdByName(string name);
+    public ProvinceModel GetById(int id);
+    public List<ProvinceModel> GetAll(ulong ownerId);
 }

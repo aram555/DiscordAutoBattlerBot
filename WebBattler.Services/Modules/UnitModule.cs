@@ -19,7 +19,7 @@ public class UnitModule : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("create_unit", "Создание юнитвоя для армии")]
     public async Task CreateUnitAsync(string sampleName, int quantity, string armyName)
     {
-        var sample = _sampleService.GetAll().FirstOrDefault(s => s.Name == sampleName);
+        var sample = _sampleService.GetAll(Context.User.Id).FirstOrDefault(s => s.Name == sampleName);
 
         UnitDTO unitDTO = new()
         {

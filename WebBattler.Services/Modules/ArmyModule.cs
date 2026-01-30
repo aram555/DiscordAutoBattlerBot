@@ -40,4 +40,14 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
     {
         await RespondAsync("In development...");
     }
+
+    [SlashCommand("show_army", "информация о войсках и юнитах")]
+    public async Task ShowArmyAsync()
+    {
+        await DeferAsync();
+
+        var armyList = _service.GetAll(Context.User.Id);
+
+        await FollowupAsync("In Development...");
+    }
 }

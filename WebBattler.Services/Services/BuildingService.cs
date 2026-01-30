@@ -36,9 +36,9 @@ public class BuildingService : IBuildingService
         });
     }
 
-    public List<BuildingModel> GetAll()
+    public void Update(BuildingDTO building)
     {
-        return _repository.GetAll();
+        throw new NotImplementedException();
     }
 
     public int GetIdByName(string name)
@@ -46,8 +46,34 @@ public class BuildingService : IBuildingService
         return _repository.GetIdByName(name);
     }
 
-    public void Update(BuildingDTO building)
+    public BuildingModel GetById(int id)
     {
-        throw new NotImplementedException();
+        var entity = _repository.GetById(id);
+
+        return new BuildingModel()
+        {
+            Name = entity.Name,
+            Description = entity.Description,
+            Cost = entity.Cost,
+            Level = entity.Level
+        };
+    }
+
+    public List<BuildingModel> GetAll(ulong ownerId)
+    {
+        var list = new List<BuildingModel>();
+
+        foreach (var entity in _repository.GetAll(ownerId))
+        {
+            list.Add(new BuildingModel()
+            {
+                Name = entity.Name,
+                Description = entity.Description,
+                Cost = entity.Cost,
+                Level = entity.Level
+            });
+        }
+
+        return list;
     }
 }

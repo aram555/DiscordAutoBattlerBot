@@ -36,9 +36,9 @@ public class UnitSampleService : IUnitSampleService
         });
     }
 
-    public List<UnitSampleModel> GetAll()
+    public void Update(UnitSampleDTO unitSample)
     {
-        return _repository.GetAll();
+        throw new NotImplementedException();
     }
 
     public int GetIdByName(string name)
@@ -46,8 +46,34 @@ public class UnitSampleService : IUnitSampleService
         return _repository.GetIdByName(name);
     }
 
-    public void Update(UnitSampleDTO unitSample)
+    public UnitSampleModel GetById(int id)
     {
-        throw new NotImplementedException();
+        var entity = _repository.GetById(id);
+
+        return new UnitSampleModel()
+        {
+            Name = entity.Name,
+            Health = entity.Health,
+            Weapon = entity.Weapon,
+            OwnerId = entity.OwnerId
+        };
+    }
+
+    public List<UnitSampleModel> GetAll(ulong ownerId)
+    {
+        var list = new List<UnitSampleModel>();
+
+        foreach (var entity in _repository.GetAll(ownerId))
+        {
+            list.Add(new UnitSampleModel()
+            {
+                Name = entity.Name,
+                Health = entity.Health,
+                Weapon = entity.Weapon,
+                OwnerId = entity.OwnerId
+            });
+        }
+
+        return list;
     }
 }
