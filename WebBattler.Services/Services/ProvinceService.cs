@@ -23,6 +23,7 @@ public class ProvinceService : IProvinceService
         {
             Name = province.Name,
             CountryId = _countryRepository.GetIdByName(province.CountryName),
+            Description = province.Description,
             Cities = province.Cities.Select(cityDto => new CityEntity
             {
                 Name = cityDto.Name,
@@ -70,10 +71,12 @@ public class ProvinceService : IProvinceService
             list.Add(new ProvinceModel()
             {
                 Name = entity.Name,
+                Description = entity.Description,
                 OwnerId = entity.OwnerId,
                 Cities = entity.Cities.Select(c => new CityModel()
                 {
                     Name = c.Name,
+                    Description = c.Description,
                     Level = c.Level,
                     Population = c.Population,
                     OwnerId = c.OwnerId,

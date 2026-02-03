@@ -14,13 +14,15 @@ public class ProvinceModule : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("create_province", "Создание провинции")]
-    public async Task CreateProvinceAsync(string name, string countryName) //надо будет потом убрать эту countryName и сделать метод нахождения активной страны
+    public async Task CreateProvinceAsync(string name, string desc, string countryName) //надо будет потом убрать эту countryName и сделать метод нахождения активной страны
     {
         ProvinceDTO province = new()
         {
             OwnerId = Context.User.Id,
+            Description = desc,
             Name = name,
-            CountryName = countryName
+            CountryName = countryName,
+            Cities = new List<CityDTO>()
         };
 
         _service.Create(province);

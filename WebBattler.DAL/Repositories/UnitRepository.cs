@@ -17,6 +17,7 @@ public class UnitRepository : IUnitRepository
     public void Create(UnitEntity unitEntity)
     {
         _context.Units.Add(unitEntity);
+        _context.SaveChanges();
     }
 
     public void Delete(string name)

@@ -35,57 +35,60 @@ public class AutobattlerDbContext : DbContext
             .HasMany(c => c.Provinces)
             .WithOne(p => p.Country)
             .HasForeignKey(p => p.CountryId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<CountryEntity>()
             .HasMany(c => c.UnitSamples)
             .WithOne(u => u.Country)
             .HasForeignKey(u => u.CountryId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<CountryEntity>()
             .HasMany(c => c.BuildingSamples)
             .WithOne(u => u.Country)
             .HasForeignKey(u => u.CountryId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ProvinceEntity>()
             .HasMany(p => p.Cities)
             .WithOne(c => c.Province)
             .HasForeignKey(c =>  c.ProvinceId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<CityEntity>()
             .HasMany(c => c.Buildings)
             .WithOne(b => b.City)
             .HasForeignKey(b => b.CityId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ArmyEntity>()
             .HasMany(a => a.SubArmies)
             .WithOne(a => a.Parent)
             .HasForeignKey(a => a.ParentId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<ArmyEntity>()
             .HasOne(a => a.Province)
             .WithMany()
-            .HasForeignKey(a => a.ProvinceId);
+            .HasForeignKey(a => a.ProvinceId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<ArmyEntity>()
             .HasOne(a => a.City)
             .WithMany()
-            .HasForeignKey(a => a.CityId);
+            .HasForeignKey(a => a.CityId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<ArmyEntity>()
             .HasMany(a => a.Units)
             .WithOne(u => u.Army)
             .HasForeignKey(u => u.ArmyId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ArmyEntity>()
             .HasOne(a => a.Country)
             .WithMany(c => c.Armies)
-            .HasForeignKey(a => a.CountryId);
+            .HasForeignKey(a => a.CountryId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

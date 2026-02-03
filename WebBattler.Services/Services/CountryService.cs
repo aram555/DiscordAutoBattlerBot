@@ -20,16 +20,12 @@ public class CountryService : ICountryService
         CountryEntity countryEntity = new CountryEntity
         {
             Name = country.Name,
-            Provinces = country.Provinces.Select(p => new ProvinceEntity
-            {
-                Name = p.Name,
-                Cities = p.Cities.Select(c => new CityEntity
-                {
-                    Name = c.Name,
-                    Population = c.Population,
-                    Level = c.Level
-                }).ToList()
-            }).ToList()
+            OwnerId = country.OwnerId,
+            Description = country.Description,
+            Provinces = new List<ProvinceEntity>(),
+            Armies = new List<ArmyEntity>(),
+            BuildingSamples = new List<BuildingSampleEntity>(),
+            UnitSamples = new List<UnitSampleEntity>(),
         };
 
         _repository.Create(countryEntity);
@@ -60,14 +56,17 @@ public class CountryService : ICountryService
         return new CountryModel
         {
             Name = entity.Name,
+            Description = entity.Description,
             OwnerId = entity.OwnerId,
             Provinces = entity.Provinces.Select(p => new ProvinceModel()
             {
                 Name = p.Name,
+                Description = p.Description,
                 OwnerId = p.OwnerId,
                 Cities = p.Cities.Select(c => new CityModel()
                 {
                     Name = c.Name,
+                    Description = c.Description,
                     Population = c.Population,
                     Level = c.Level,
                     OwnerId= c.OwnerId,
@@ -93,14 +92,17 @@ public class CountryService : ICountryService
             list.Add(new CountryModel
             {
                 Name = entity.Name,
+                Description = entity.Description,
                 OwnerId = entity.OwnerId,
                 Provinces = entity.Provinces.Select(p => new ProvinceModel()
                 {
                     Name = p.Name,
+                    Description = p.Description,
                     OwnerId = p.OwnerId,
                     Cities = p.Cities.Select(c => new CityModel()
                     {
                         Name = c.Name,
+                        Description = c.Description,
                         Population = c.Population,
                         Level = c.Level,
                         OwnerId = c.OwnerId,

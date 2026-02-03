@@ -9,7 +9,7 @@ public class ArmyEntity
     public List<UnitEntity> Units { get; set; }
 
     public ArmyEntity? Parent { get; set; }
-    public int ParentId { get; set; }
+    public int? ParentId { get; set; }
     public List<ArmyEntity> SubArmies { get; set; }
 
     public CountryEntity Country { get; set; }

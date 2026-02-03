@@ -1,7 +1,8 @@
-﻿using WebBattler.DAL.DTO;
-using WebBattler.DAL.Models;
+﻿using WebBattler.DAL.Basis;
+using WebBattler.DAL.DTO;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
+using WebBattler.DAL.Models;
 using WebBattler.Services.Interfaces;
 
 namespace WebBattler.Services.Services;
@@ -11,12 +12,14 @@ public class ArmyService : IArmyService
     private readonly IArmyRepository _repository;
     private readonly ICountryRepository _countryRepository;
     private readonly IProvinceRepository _provinceRepository;
+    private readonly ICityRepository _cityRepository;
 
-    public ArmyService(IArmyRepository repository, ICountryRepository countryRepository, IProvinceRepository provinceRepository)
+    public ArmyService(IArmyRepository repository, ICountryRepository countryRepository, IProvinceRepository provinceRepository, ICityRepository cityRepository)
     {
         _repository = repository;
         _countryRepository = countryRepository;
         _provinceRepository = provinceRepository;
+        _cityRepository = cityRepository;
     }
 
     public void Create(ArmyDTO army)
@@ -25,17 +28,27 @@ public class ArmyService : IArmyService
         {
             OwnerId = army.OwnerId,
             Name = army.Name,
-            ParentId = _repository.GetIdByName(army.ParentName),
             CountryId = _countryRepository.GetIdByName(army.CountryName),
             ProvinceId = _provinceRepository.GetIdByName(army.ProvinceName),
-            CityId = _provinceRepository.GetIdByName(army?.CityName),
             Units = army.Units.Select(u => new UnitEntity
             {
                 Name = u.Name,
                 Health = 100f,
                 Weapon = u.Weapon,
-            }).ToList()
+                OwnerId = army.OwnerId,
+            }).ToList(),
+            SubArmies = new List<ArmyEntity>(),
         };
+
+        if(army.ParentName != null || army.ParentName.Length <= 0)
+        {
+            entity.ParentId = _repository.GetIdByName(army.ParentName);
+        }
+
+        if(army.CityName != null)
+        {
+            entity.CityId = _cityRepository.GetIdByName(army?.CityName);
+        }
 
         _repository.Create(entity);
     }
@@ -48,36 +61,16 @@ public class ArmyService : IArmyService
         });
     }
 
-    public List<ArmyModel> GetAll(ulong ownerId)
+    public void Update(ArmyDTO army)
     {
-        List<ArmyModel> result = new List<ArmyModel>();
-
-        foreach (var entity in _repository.GetAll(ownerId))
-        {
-            result.Add(new ArmyModel()
-            {
-                Name = entity.Name,
-                OwnerId = entity.OwnerId,
-                Units = entity.Units.Select(u => new UnitModel
-                {
-                    Name = u.Name,
-                    Health = u.Health,
-                    Weapon = u.Weapon,
-                    OwnerId = u.OwnerId
-                }).ToList()
-            });
-        }
-
-        return result;
+        throw new NotImplementedException();
     }
 
-
-    public ArmyModel GetByName(string name)
+    public int? GetIdByName(string name)
     {
-        var ArmyList = GetAll();
-
-        return ArmyList.FirstOrDefault(a => a.Name == name);
+        return _repository.GetIdByName(name);
     }
+
     public ArmyModel GetById(int id)
     {
         var entity = _repository.GetById(id);
@@ -86,11 +79,6 @@ public class ArmyService : IArmyService
         {
             Name = entity.Name,
             OwnerId = entity.OwnerId,
-            SubArmies = entity.SubArmies.Select(s => new ArmyModel()
-            {
-                Name = s.Name,
-                OwnerId = s.OwnerId
-            }).ToList(),
             Units = entity.Units.Select(u => new UnitModel()
             {
                 Name = u.Name,
@@ -103,8 +91,36 @@ public class ArmyService : IArmyService
         return model;
     }
 
-    public void Update(ArmyDTO army)
+    public List<ArmyModel> GetAll(ulong ownerId)
     {
-        throw new NotImplementedException();
+        var entities = _repository.GetAll(ownerId);
+
+        var models = entities.ToDictionary(
+            e => e.Id,
+            e => new ArmyModel()
+            {
+                Name = e.Name,
+                OwnerId = e.OwnerId,
+                Units = e.Units.Select(u => new UnitModel()
+                {
+                    Name = u.Name,
+                    OwnerId = u.OwnerId,
+                    Weapon = u.Weapon,
+                    Health = u.Health
+                }).ToList(),
+                SubArmies = new List<ArmyModel>()
+            }
+        );
+
+        foreach(var entity in entities)
+        {
+            if(entity.ParentId != null)
+            {
+                var parent = models[entity.ParentId.Value];
+                parent.SubArmies.Add(models[entity.Id]);
+            }
+        }
+
+        return models.Values.ToList();
     }
 }

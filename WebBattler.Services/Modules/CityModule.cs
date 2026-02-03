@@ -14,15 +14,17 @@ public class CityModule : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("create_city", "создание города")]
-    public async Task CreateCityAsync(string name, string provinceName, int level, int population)
+    public async Task CreateCityAsync(string name, string desc, string provinceName, int level, int population)
     {
         CityDTO cityDTO = new()
         {
             OwnerId = Context.User.Id,
             Name = name,
+            Description = desc,
             ProvinceName = provinceName,
             Level = level,
             Population = population,
+            Buildings = new List<BuildingDTO>()
         };
 
         _service.Create(cityDTO);

@@ -19,6 +19,7 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
     {
         UnitSampleDTO dto = new UnitSampleDTO()
         {
+            OwnerId = Context.User.Id,
             Name = unitName,
             Weapon = weapon,
             Health = Health,
@@ -27,17 +28,19 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
 
         _service.Create(dto);
 
-        await RespondAsync("Команда в разработке.");
+        await RespondAsync($"Создан шаблон Юнита - {unitName}");
     }
 
     [SlashCommand("unit_sample_list", "Просмотр доступных шаблонов юнитов.")]
     public async Task UnitSampleListAsync()
     {
+        await DeferAsync();
+
         var list = _service.GetAll(Context.User.Id);
 
         foreach (var item in list)
         {
-            await RespondAsync(item.Name);
+            await FollowupAsync(item.Name);
         }
     }
 

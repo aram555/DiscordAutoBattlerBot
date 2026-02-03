@@ -9,20 +9,23 @@ namespace WebBattler.Services.Services;
 public class UnitSampleService : IUnitSampleService
 {
     private readonly IUnitSampleRepository _repository;
+    private readonly ICountryRepository _countryRepository;
 
-    public UnitSampleService(IUnitSampleRepository repository)
+    public UnitSampleService(IUnitSampleRepository repository, ICountryRepository countryRepository)
     {
-        _repository = repository; 
+        _repository = repository;
+        _countryRepository = countryRepository;
     }
 
     public void Create(UnitSampleDTO unitSample)
     {
         var entity = new UnitSampleEntity()
         {
+            OwnerId = unitSample.OwnerId,
             Name = unitSample.Name,
             Health = unitSample.Health,
             Weapon = unitSample.Weapon,
-            CountryId = GetIdByName(unitSample.Name)
+            CountryId = _countryRepository.GetIdByName(unitSample.Countryname)
         };
 
         _repository.Create(entity);

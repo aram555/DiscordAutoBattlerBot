@@ -23,6 +23,7 @@ public class CityService : ICityService
         CityEntity cityEntity = new CityEntity
         {
             Name = city.Name,
+            Description = city.Description,
             Population = city.Population,
             Level = city.Level,
             ProvinceId = _provinceRepository.GetIdByName(city.ProvinceName),
@@ -65,6 +66,7 @@ public class CityService : ICityService
         return new CityModel()
         {
             Name = entity.Name,
+            Description = entity.Description,
             Population = entity.Population,
             Level = entity.Level,
             OwnerId = entity.OwnerId,
@@ -88,6 +90,7 @@ public class CityService : ICityService
             list.Add(new CityModel()
             {
                 Name = entity.Name,
+                Description = entity.Description,
                 Population = entity.Population,
                 Level = entity.Level,
                 OwnerId = entity.OwnerId,

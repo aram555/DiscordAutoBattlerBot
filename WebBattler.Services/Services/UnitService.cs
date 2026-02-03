@@ -23,7 +23,7 @@ public class UnitService : IUnitService
             Name = unitDBO.Name,
             Health = 100f,
             Weapon = unitDBO.Weapon,
-            ArmyId = _armyRepository.GetIdByName(unitDBO.ArmyName)
+            ArmyId = _armyRepository.GetIdByName(unitDBO.ArmyName) ?? 0
         };
 
         _unitRepository.Create(entity);

@@ -17,6 +17,7 @@ public class ProvinceRepository : IProvinceRepository
     public void Create(ProvinceEntity province)
     {
         _dbContext.Provinces.Add(province);
+        _dbContext.SaveChanges();
     }
 
     public void Delete(ProvinceEntity city)
@@ -31,7 +32,13 @@ public class ProvinceRepository : IProvinceRepository
 
     public int GetIdByName(string name)
     {
-        return _dbContext.Provinces.FirstOrDefault(p => p.Name == name).Id;
+        var province = _dbContext.Provinces
+       .FirstOrDefault(p => p.Name == name);
+
+        if (province == null)
+            throw new Exception($"Провинция '{name}' не найдена");
+
+        return province.Id;
     }
 
     public ProvinceEntity GetById(int id)

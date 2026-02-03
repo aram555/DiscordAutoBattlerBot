@@ -14,7 +14,7 @@ public class Move
 
     public MoveResult MoveToProvince(ArmyEntity army, string provinceName)
     {
-        var provinceList = _service.GetAll();
+        var provinceList = _service.GetAll(army.OwnerId);
 
         var province = provinceList.FirstOrDefault(p => p.Name == provinceName);
 

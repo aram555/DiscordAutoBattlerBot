@@ -16,6 +16,7 @@ public class BuildingRepository : IBuildingRepository
     public void Create(BuildingEntity building)
     {
         _dbContext.Buildings.Add(building);
+        _dbContext.SaveChanges();
     }
 
     public void Delete(BuildingEntity building)

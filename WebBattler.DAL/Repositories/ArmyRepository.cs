@@ -17,6 +17,7 @@ public class ArmyRepository : IArmyRepository
     public void Create(ArmyEntity army)
     {
         _context.Armies.Add(army);
+        _context.SaveChanges();
     }
 
     public void Delete(ArmyEntity army)
@@ -29,10 +30,9 @@ public class ArmyRepository : IArmyRepository
         throw new NotImplementedException();
     }
 
-    public int GetIdByName(string name)
+    public int? GetIdByName(string name)
     {
-        var army = _context.Armies.FirstOrDefault(a => a.Name == name);
-        return army != null ? army.Id : -1;
+        return _context.Armies.FirstOrDefault(a => a.Name == name)?.Id;
     }
 
     public ArmyEntity GetById(int id)

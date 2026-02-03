@@ -17,6 +17,7 @@ public class CityRepository : ICityRepository
     public void Create(CityEntity city)
     {
         _context.Cities.Add(city);
+        _context.SaveChanges();
     }
 
     public void Delete(CityEntity city)

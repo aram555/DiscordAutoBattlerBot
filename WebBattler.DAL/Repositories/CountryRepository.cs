@@ -17,6 +17,7 @@ public class CountryRepository : ICountryRepository
     public void Create(CountryEntity country)
     {
         _context.Countries.Add(country);
+        _context.SaveChanges();
     }
 
     public void Delete(CountryEntity country)
@@ -26,7 +27,7 @@ public class CountryRepository : ICountryRepository
 
     public void Update(CountryEntity country)
     {
-        throw new NotImplementedException();
+        _context.SaveChanges();
     }
 
     public CountryEntity GetById(int id)
