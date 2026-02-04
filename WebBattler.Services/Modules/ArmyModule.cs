@@ -52,45 +52,54 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
     {
         await DeferAsync();
 
-        EmbedBuilder embed = new EmbedBuilder()
-            .WithTitle("Ваша армия");
-
-
         var armyList = _service.GetAll(Context.User.Id);
+
+        if(!armyList.Any())
+        {
+            await FollowupAsync("У Вас нет армий, создайте их с помощью команды /create_army");
+            return;
+        }
+
+        var sb = new StringBuilder();
 
         foreach (var army in armyList)
         {
-            PrintArmy(army, embed);
+            PrintArmy(army, sb, 0);
         }
+
+        EmbedBuilder embed = new EmbedBuilder()
+            .WithTitle("Ваша армия")
+            .WithColor(Color.DarkGreen)
+            .WithDescription($"```text\n{sb}\n```");
+
 
         await FollowupAsync(embed: embed.Build());
     }
 
-    void PrintArmy(ArmyModel army, EmbedBuilder embed)
+    void PrintArmy(ArmyModel army, StringBuilder sb, int depth)
     {
-        var sb = new StringBuilder();
+        string indent = new string(' ', depth * 3);
+
+        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count})");
 
         if (army.Units.Any())
         {
             foreach (var unit in army.Units)
             {
-                sb.AppendLine($"{unit.Name} | {unit.Weapon} | HP: {unit.Health}");
+                sb.AppendLine(
+                    $"{indent}   • {unit.Name} | {unit.Weapon} | HP {unit.Health}"
+                );
             }
         }
         else
         {
-            sb.AppendLine("Юнитов нет");
+            sb.AppendLine($"{indent}   • Юнитов нет");
         }
-
-        embed.AddField(
-                name: $"{army.Name} | Юниты: {army.Units.Count}",
-                value: sb.ToString(),
-                inline: false
-            );
 
         foreach (var subArmy in army.SubArmies)
         {
-            PrintArmy(subArmy, embed);
+            PrintArmy(subArmy, sb, depth + 1);
         }
+
     }
 }

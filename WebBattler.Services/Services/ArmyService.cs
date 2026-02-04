@@ -121,6 +121,8 @@ public class ArmyService : IArmyService
             }
         }
 
-        return models.Values.ToList();
+        return models.Values
+            .Where(m => entities.First(e => e.Name == m.Name).ParentId == null)
+            .ToList();
     }
 }
