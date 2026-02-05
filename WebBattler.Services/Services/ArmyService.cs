@@ -108,7 +108,7 @@ public class ArmyService : IArmyService
                 OwnerId = e.OwnerId,
                 Province = new ProvinceModel()
                 {
-                    Name = _provinceRepository.GetById(e.ProvinceId).Name,
+                    Name = e.Province.Name,
                     Neighbours = e.Province.Neighbours.Select(n => new ProvinceModel()
                     {
                         Name = n.Name,
@@ -117,7 +117,8 @@ public class ArmyService : IArmyService
                 },
                 Country = new CountryModel()
                 {
-                    Name = _countryRepository.GetById(e.CountryId).Name
+                    Name = e.Country.Name,
+                    OwnerId = e.OwnerId,
                 },
                 Units = e.Units.Select(u => new UnitModel()
                 {
