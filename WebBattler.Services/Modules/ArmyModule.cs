@@ -72,6 +72,12 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
         }
 
         _service.MoveToProvince(armyName, provinceName);
+
+        foreach(var subArmy in army.SubArmies)
+        {
+            _service.MoveToProvince(subArmy.Name, provinceName);
+        }
+
         await FollowupAsync($"Армия {armyName} переместилась в провинцю {provinceName}");
     }
 
