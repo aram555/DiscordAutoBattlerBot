@@ -11,4 +11,5 @@ public class ProvinceEntity
     public int CountryId { get; set; }
 
     public List<CityEntity> Cities { get; set; }
+    public List<ProvinceEntity> Neighbours { get; set; }
 }

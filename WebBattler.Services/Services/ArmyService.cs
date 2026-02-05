@@ -66,6 +66,11 @@ public class ArmyService : IArmyService
         throw new NotImplementedException();
     }
 
+    public void MoveToProvince(string armyName, string provinceName)
+    {
+        _repository.MoveToProvince(armyName, provinceName);
+    }
+
     public int? GetIdByName(string name)
     {
         return _repository.GetIdByName(name);
@@ -101,6 +106,18 @@ public class ArmyService : IArmyService
             {
                 Name = e.Name,
                 OwnerId = e.OwnerId,
+                Province = new ProvinceModel()
+                {
+                    Name = _provinceRepository.GetById(e.ProvinceId).Name,
+                    Neighbours = _provinceRepository.GetNeighbours(ownerId).Select(n => new ProvinceModel()
+                    {
+                        Name = _provinceRepository.GetById(n.Id).Name
+                    }).ToList()
+                },
+                Country = new CountryModel()
+                {
+                    Name = _countryRepository.GetById(e.CountryId).Name
+                },
                 Units = e.Units.Select(u => new UnitModel()
                 {
                     Name = u.Name,

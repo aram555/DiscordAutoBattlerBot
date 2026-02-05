@@ -57,6 +57,11 @@ public class CountryModule : InteractionModuleBase<SocketInteractionContext>
                 sb.AppendLine(province.Description);
                 sb.AppendLine($"-Количество Городов {province.Cities.Count}");
 
+                foreach(var neightbour in province.Neighbours)
+                {
+                    sb.AppendLine($"-Соседняя провинция: {neightbour.Name}");
+                }
+
                 foreach (var city in province.Cities)
                 {
                     sb.AppendLine($"--🏙 **{city.Name}** (строений: {city.Buildings.Count})");

@@ -30,13 +30,30 @@ public class ProvinceRepository : IProvinceRepository
         throw new NotImplementedException();
     }
 
+    public void AddNeightbour(string provinceName, string neightbourName)
+    {
+        var province = _dbContext.Provinces
+            .Include(p => p.Neighbours)
+            .FirstOrDefault(p => p.Name == provinceName);
+            
+        var neighbour = _dbContext.Provinces
+            .Include(p => p.Neighbours)
+            .FirstOrDefault(p => p.Name == neightbourName);
+            
+        province.Neighbours.Add(neighbour);
+        neighbour.Neighbours.Add(province);
+        _dbContext.SaveChanges();
+    }
+
     public int GetIdByName(string name)
     {
         var province = _dbContext.Provinces
        .FirstOrDefault(p => p.Name == name);
 
         if (province == null)
+        {
             throw new Exception($"Провинция '{name}' не найдена");
+        }
 
         return province.Id;
     }
@@ -50,8 +67,17 @@ public class ProvinceRepository : IProvinceRepository
     {
         return _dbContext.Provinces
             .Where(a => a.OwnerId == ownerId)
+            .Include(a => a.Neighbours)
             .Include(p => p.Cities)
             .ThenInclude(c => c.Buildings)
+            .ToList();
+    }
+
+    public List<ProvinceEntity> GetNeighbours(ulong ownerId)
+    {
+        return _dbContext.Provinces
+            .Where(p => p.OwnerId == ownerId)
+            .Include(p => p.Neighbours)
             .ToList();
     }
 }

@@ -99,6 +99,12 @@ public class CountryService : ICountryService
                     Name = p.Name,
                     Description = p.Description,
                     OwnerId = p.OwnerId,
+                    Neighbours = p.Neighbours.Select(n => new ProvinceModel()
+                    {
+                        Name = n.Name,
+                        Description = n.Description,
+                        OwnerId = n.OwnerId
+                    }).ToList(),
                     Cities = p.Cities.Select(c => new CityModel()
                     {
                         Name = c.Name,

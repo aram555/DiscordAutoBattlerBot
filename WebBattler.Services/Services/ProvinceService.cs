@@ -1,7 +1,8 @@
-﻿using WebBattler.DAL.DTO;
-using WebBattler.DAL.Models;
+﻿using Discord;
+using WebBattler.DAL.DTO;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
+using WebBattler.DAL.Models;
 using WebBattler.Services.Interfaces;
 
 namespace WebBattler.Services.Services;
@@ -33,7 +34,9 @@ public class ProvinceService : IProvinceService
                     Name = buildingDto.Name,
                     Level = buildingDto.Level
                 }).ToList()
-            }).ToList()
+            }).ToList(),
+
+            Neighbours = new List<ProvinceEntity>()
         };
 
         _repository.Create(provinceEntity);
@@ -52,6 +55,25 @@ public class ProvinceService : IProvinceService
         throw new NotImplementedException();
     }
 
+    public string AddNeightbour(string provinceName, string neighbourName)
+    {
+        var province = _repository.GetById(_repository.GetIdByName(provinceName));
+        var neighbour = _repository.GetById(_repository.GetIdByName(neighbourName));
+
+        if (province.Id == neighbour.Id)
+        {
+            return "Провинция не может быть соседом сама для себя.";
+        }
+
+        if(province == null || neighbour == null)
+        {
+            return "Одна из указанных провинций не найдена.";
+        }
+
+        _repository.AddNeightbour(provinceName, neighbourName);
+        return "Сосед успешно добавлен.";
+    }
+
     public int GetIdByName(string name)
     {
         return _repository.GetIdByName(name);
@@ -59,7 +81,38 @@ public class ProvinceService : IProvinceService
 
     public ProvinceModel GetById(int id)
     {
-        throw new NotImplementedException();
+        var entity = _repository.GetById(id);
+
+        Console.WriteLine(entity.Neighbours.Count);
+
+        return new ProvinceModel()
+        {
+            Name = entity.Name,
+            Description = entity.Description,
+            OwnerId = entity.OwnerId,
+            Neighbours = entity.Neighbours.Select(n => new ProvinceModel()
+            {
+                Name = n.Name,
+                Description = n.Description,
+                OwnerId = n.OwnerId,
+            }).ToList(),
+            Cities = entity.Cities.Select(c => new CityModel()
+            {
+                Name = c.Name,
+                Description = c.Description,
+                Level = c.Level,
+                Population = c.Population,
+                OwnerId = c.OwnerId,
+                Buildings = c.Buildings.Select(c => new BuildingModel()
+                {
+                    Name = c.Name,
+                    Description = c.Description,
+                    Cost = c.Cost,
+                    Level = c.Level,
+                    OwnerId = c.OwnerId,
+                }).ToList()
+            }).ToList()
+        };
     }
 
     public List<ProvinceModel> GetAll(ulong ownerId)
@@ -73,6 +126,12 @@ public class ProvinceService : IProvinceService
                 Name = entity.Name,
                 Description = entity.Description,
                 OwnerId = entity.OwnerId,
+                Neighbours = entity.Neighbours.Select(n => new ProvinceModel()
+                {
+                    Name = n.Name,
+                    Description = n.Description,
+                    OwnerId = n.OwnerId,
+                }).ToList(),
                 Cities = entity.Cities.Select(c => new CityModel()
                 {
                     Name = c.Name,
@@ -93,5 +152,21 @@ public class ProvinceService : IProvinceService
         }
 
         return list;
+    }
+
+    public List<ProvinceModel> GetNeighbours(ulong ownerId)
+    {
+        return _repository.GetNeighbours(ownerId).Select(entity => new ProvinceModel()
+        {
+            Name = entity.Name,
+            Description = entity.Description,
+            OwnerId = entity.OwnerId,
+            Neighbours = entity.Neighbours.Select(n => new ProvinceModel()
+            {
+                Name = n.Name,
+                Description = n.Description,
+                OwnerId = n.OwnerId,
+            }).ToList(),
+        }).ToList();
     }
 }

@@ -30,6 +30,18 @@ public class ArmyRepository : IArmyRepository
         throw new NotImplementedException();
     }
 
+    public void MoveToProvince(string armyName, string provinceName)
+    {
+        var army = _context.Armies.FirstOrDefault(a => a.Name == armyName);
+        if (army == null) return;
+
+        var province = _context.Provinces.FirstOrDefault(p => p.Name == provinceName);
+        if (province == null) return;
+
+        army.ProvinceId = province.Id;
+        _context.SaveChanges();
+    }
+
     public int? GetIdByName(string name)
     {
         return _context.Armies.FirstOrDefault(a => a.Name == name)?.Id;
@@ -44,6 +56,8 @@ public class ArmyRepository : IArmyRepository
     {
         return _context.Armies
             .Where(a => a.OwnerId == ownerId)
+            .Include(p => p.Province)
+                .ThenInclude(n => n.Neighbours)
             .Include(a => a.Units)
             .ToList();
     }

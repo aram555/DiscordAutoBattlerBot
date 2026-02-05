@@ -7,4 +7,5 @@ public class ProvinceDTO
     public string Description { get; set; }
     public string CountryName { get; set; }
     public List<CityDTO> Cities { get; set; }
+    public List<ProvinceDTO> Neighbours { get; set; }
 }

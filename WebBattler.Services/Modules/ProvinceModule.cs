@@ -22,11 +22,22 @@ public class ProvinceModule : InteractionModuleBase<SocketInteractionContext>
             Description = desc,
             Name = name,
             CountryName = countryName,
+            Neighbours = new List<ProvinceDTO>(),
             Cities = new List<CityDTO>()
         };
 
         _service.Create(province);
 
         await RespondAsync($"Создана провинция {name}");
+    }
+
+    [SlashCommand("add_neighbour", "Добавление соседней провинции")]
+    public async Task AddNeighbourAsync(string provinceName, string neighbourName)
+    {
+        await DeferAsync();
+
+        string result = _service.AddNeightbour(provinceName, neighbourName);
+
+        await FollowupAsync(result);
     }
 }

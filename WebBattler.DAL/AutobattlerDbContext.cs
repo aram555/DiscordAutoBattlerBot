@@ -10,6 +10,7 @@ public class AutobattlerDbContext : DbContext
     public DbSet<UnitSampleEntity> UnitSamples { get; set; }
     public DbSet<CountryEntity> Countries { get; set; }
     public DbSet<ProvinceEntity> Provinces { get; set; }
+    public DbSet<ProvinceEntity> Neighbours { get; set; }
     public DbSet<CityEntity> Cities { get; set; }
     public DbSet<BuildingEntity> Buildings { get; set; }
     public DbSet<BuildingSampleEntity> BuildingSamples { get; set; }
@@ -54,6 +55,11 @@ public class AutobattlerDbContext : DbContext
             .WithOne(c => c.Province)
             .HasForeignKey(c =>  c.ProvinceId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ProvinceEntity>()
+            .HasMany(p => p.Neighbours)
+            .WithMany()
+            .UsingEntity(n => n.ToTable("ProvinceNeighbours"));
 
         modelBuilder.Entity<CityEntity>()
             .HasMany(c => c.Buildings)

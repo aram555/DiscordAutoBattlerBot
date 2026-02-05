@@ -12,10 +12,12 @@ namespace WebBattler.Services.Modules;
 public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly IArmyService _service;
+    private readonly IProvinceService _provinceService;
 
-    public ArmyModule(IArmyService service)
+    public ArmyModule(IArmyService service, IProvinceService provinceService)
     {
         _service = service;
+        _provinceService = provinceService;
     }
 
     [SlashCommand("create_army", "Создание армии")]
@@ -44,7 +46,31 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("move_to_province", "Движение к провинции")]
     public async Task MoveToProvinceAsync(string provinceName, string armyName)
     {
-        await RespondAsync("In development...");
+        await DeferAsync();
+
+        var army  = _service.GetAll(Context.User.Id).FirstOrDefault(a => a.Name == armyName);
+        var province = army.Province.Neighbours.FirstOrDefault(n => n.Name == provinceName);
+
+        if (province == null)
+        {
+            await FollowupAsync("Провинция не найдена");
+        }
+
+        if (army == null)
+        {
+            await FollowupAsync("Армия не найдена");
+        }
+
+        var armyProvince = army.Province;
+
+        if (armyProvince == null)
+        {
+            await FollowupAsync("Провинция армии не найдена");
+            return;
+        }
+
+        _service.MoveToProvince(armyName, provinceName);
+        await FollowupAsync($"Армия {armyName} переместилась в провинцю {provinceName}");
     }
 
     [SlashCommand("show_army", "информация о войсках и юнитах")]
@@ -80,7 +106,7 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
     {
         string indent = new string(' ', depth * 3);
 
-        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count})");
+        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count}) (Провинция: {army.Province.Name})");
 
         if (army.Units.Any())
         {
