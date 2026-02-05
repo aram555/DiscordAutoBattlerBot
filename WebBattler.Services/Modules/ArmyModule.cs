@@ -54,11 +54,13 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
         if (province == null)
         {
             await FollowupAsync("Провинция не найдена");
+            return;
         }
 
         if (army == null)
         {
             await FollowupAsync("Армия не найдена");
+            return;
         }
 
         var armyProvince = army.Province;
@@ -106,7 +108,7 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
     {
         string indent = new string(' ', depth * 3);
 
-        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count}) (Провинция: {army.Province.Name})");
+        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count}) (Провинция: {army.Province.Name} : {army.Province.Neighbours.Count})");
 
         if (army.Units.Any())
         {

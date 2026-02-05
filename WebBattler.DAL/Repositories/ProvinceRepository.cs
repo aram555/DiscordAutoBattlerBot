@@ -77,7 +77,6 @@ public class ProvinceRepository : IProvinceRepository
     {
         return _dbContext.Provinces
             .Where(p => p.OwnerId == ownerId)
-            .Include(p => p.Neighbours)
             .ToList();
     }
 }
