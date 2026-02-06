@@ -59,6 +59,7 @@ public class ArmyRepository : IArmyRepository
             .Include(p => p.Province)
                 .ThenInclude(n => n.Neighbours)
             .Include(a => a.Units)
+            .Include(a => a.Country)
             .ToList();
     }
 }

@@ -44,41 +44,20 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("move_to_province", "Движение к провинции")]
-    public async Task MoveToProvinceAsync(string provinceName, string armyName)
+    public async Task MoveToProvinceAsync(string armyName, string provinceName)
     {
         await DeferAsync();
 
-        var army  = _service.GetAll(Context.User.Id).FirstOrDefault(a => a.Name == armyName);
-        var province = army.Province.Neighbours.FirstOrDefault(n => n.Name == provinceName);
-
-        if (province == null)
-        {
-            await FollowupAsync("Провинция не найдена");
-            return;
-        }
+        var army = _service.GetAll(Context.User.Id).FirstOrDefault(a => a.Name == armyName);
 
         if (army == null)
         {
-            await FollowupAsync("Армия не найдена");
-            return;
+            await FollowupAsync("Армия не найдена. Убедитесь, что вы указали правильное имя армии.");
         }
+        
+        var result = new Move(_service).MoveToProvince(army, provinceName);
 
-        var armyProvince = army.Province;
-
-        if (armyProvince == null)
-        {
-            await FollowupAsync("Провинция армии не найдена");
-            return;
-        }
-
-        _service.MoveToProvince(armyName, provinceName);
-
-        foreach(var subArmy in army.SubArmies)
-        {
-            _service.MoveToProvince(subArmy.Name, provinceName);
-        }
-
-        await FollowupAsync($"Армия {armyName} переместилась в провинцю {provinceName}");
+        await FollowupAsync(result.Message);
     }
 
     [SlashCommand("show_army", "информация о войсках и юнитах")]
