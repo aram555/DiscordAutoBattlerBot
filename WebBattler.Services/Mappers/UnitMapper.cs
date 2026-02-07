@@ -1,23 +1,24 @@
 ﻿using WebBattler.DAL.Basis;
 using WebBattler.DAL.Entities;
+using WebBattler.DAL.Models;
 
 namespace WebBattler.Services.Mappers;
 
-public class UnitMapper : EntityMapperBase<UnitEntity, Unit>
+public class UnitMapper : EntityMapperBase<UnitModel, Unit>
 {
-    protected override Unit MapToDomain(UnitEntity entity)
+    protected override Unit MapToDomain(UnitModel model)
     {
         return new Unit(
-            entity.Name,
-            entity.Health,
-            entity.Weapon
+            model.Name,
+            model.Health,
+            model.Weapon
         );
     }
 
-    protected override void MapToEntity(Unit domain, UnitEntity entity)
+    protected override void MapToModel(Unit domain, UnitModel model)
     {
-        entity.Name = domain.Name;
-        entity.Health = domain.Health;
-        entity.Weapon = domain.Weapon;
+        model.Name = domain.Name;
+        model.Health = domain.Health;
+        model.Weapon = domain.Weapon;
     }
 }

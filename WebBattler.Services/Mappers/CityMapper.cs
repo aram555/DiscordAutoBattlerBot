@@ -1,31 +1,31 @@
 ﻿using WebBattler.DAL.Basis;
 using WebBattler.DAL.Entities;
+using WebBattler.DAL.Models;
 
 namespace WebBattler.Services.Mappers;
 
-public class CityMapper : EntityMapperBase<CityEntity, City>
+public class CityMapper : EntityMapperBase<CityModel, City>
 {
-    protected override City MapToDomain(CityEntity entity)
+    protected override City MapToDomain(CityModel model)
     {
         City city = new City(
-            entity.OwnerId,
-            entity.Name,
-            entity.Description,
-            entity.Level,
-            entity.Population,
-            entity.IsCapital,
-            new ProvinceMapper().ToDomain(entity.Province));
+            model.OwnerId,
+            model.Name,
+            model.Description,
+            model.Level,
+            model.Population,
+            model.IsCapital);
 
         return city;
     }
 
-    protected override void MapToEntity(City domain, CityEntity entity)
+    protected override void MapToModel(City domain, CityModel model)
     {
-        entity.OwnerId = domain.OwnerId;
-        entity.Name = domain.Name;
-        entity.Description = domain.Description;
-        entity.Level = domain.Level;
-        entity.Population = domain.Population;
-        entity.IsCapital = domain.IsCapital;
+        model.OwnerId = domain.OwnerId;
+        model.Name = domain.Name;
+        model.Description = domain.Description;
+        model.Level = domain.Level;
+        model.Population = domain.Population;
+        model.IsCapital = domain.IsCapital;
     }
 }

@@ -1,23 +1,23 @@
 ﻿using WebBattler.DAL.Basis;
 using WebBattler.DAL.Entities;
+using WebBattler.DAL.Models;
 
 namespace WebBattler.Services.Mappers;
 
-public class ProvinceMapper : EntityMapperBase<ProvinceEntity, Province>
+public class ProvinceMapper : EntityMapperBase<ProvinceModel, Province>
 {
-    protected override Province MapToDomain(ProvinceEntity entity)
+    protected override Province MapToDomain(ProvinceModel model)
     {
         return new Province(
-            entity.OwnerId,
-            entity.Name,
-            entity.Description,
-            new CountryMapper().ToDomain(entity.Country));
+            model.OwnerId,
+            model.Name,
+            model.Description);
     }
 
-    protected override void MapToEntity(Province domain, ProvinceEntity entity)
+    protected override void MapToModel(Province domain, ProvinceModel model)
     {
-        entity.Name = domain.Name;
-        entity.Description = domain.Description;
-        entity.OwnerId = domain.OwnerId;
+        model.Name = domain.Name;
+        model.Description = domain.Description;
+        model.OwnerId = domain.OwnerId;
     }
 }

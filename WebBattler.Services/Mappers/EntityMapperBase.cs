@@ -1,22 +1,22 @@
 ﻿namespace WebBattler.Services.Mappers;
 
-public abstract class EntityMapperBase<TEntity, TDomain>
-    : IEntityMapper<TEntity, TDomain>
-    where TEntity : class, new()
+public abstract class EntityMapperBase<TModel, TDomain>
+    : IEntityMapper<TModel, TDomain>
+    where TModel : class, new()
 {
-    public TEntity ToEntity(TDomain domain, TEntity entity = null)
+    public TModel ToModel(TDomain domain, TModel model = null)
     {
-        entity ??= new TEntity();
-        MapToEntity(domain, entity);
+        model ??= new TModel();
+        MapToModel(domain, model);
 
-        return entity;
+        return model;
     }
 
-    public TDomain ToDomain(TEntity entity)
+    public TDomain ToDomain(TModel model)
     {
-        return MapToDomain(entity);
+        return MapToDomain(model);
     }
 
-    protected abstract void MapToEntity(TDomain domain, TEntity entity);
-    protected abstract TDomain MapToDomain(TEntity entity);
+    protected abstract void MapToModel(TDomain domain, TModel model);
+    protected abstract TDomain MapToDomain(TModel model);
 }

@@ -109,15 +109,19 @@ public class ArmyService : IArmyService
                 Province = new ProvinceModel()
                 {
                     Name = e.Province.Name,
+                    Description = e.Province.Description,
+                    OwnerId = e.Province.OwnerId,
                     Neighbours = e.Province.Neighbours.Select(n => new ProvinceModel()
                     {
                         Name = n.Name,
+                        Description = n.Description,
                         OwnerId = n.OwnerId,
                     }).ToList()
                 },
                 Country = new CountryModel()
                 {
                     Name = e.Country.Name,
+                    Description = e.Country.Description,
                     OwnerId = e.OwnerId,
                 },
                 Units = e.Units.Select(u => new UnitModel()

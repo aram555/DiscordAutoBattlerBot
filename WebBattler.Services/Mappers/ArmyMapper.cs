@@ -1,32 +1,23 @@
-﻿using WebBattler.DAL.Entities;
-using WebBattler.DAL.Basis;
+﻿using WebBattler.DAL.Basis;
+using WebBattler.DAL.Models;
+using WebBattler.Services.Fabrics;
 
 namespace WebBattler.Services.Mappers;
 
-public class ArmyMapper : EntityMapperBase<ArmyEntity, DAL.Basis.Army>
+public class ArmyMapper : EntityMapperBase<ArmyModel, DAL.Basis.Army>
 {
-    protected override DAL.Basis.Army MapToDomain(ArmyEntity entity)
+    protected override DAL.Basis.Army MapToDomain(ArmyModel model)
     {
-        DAL.Basis.Army army = new(
-            entity.Name,
-            new CountryMapper().ToDomain(entity.Country),
-            new ArmyLocation() 
-            { 
-                CountryId = entity.CountryId,
-                ProvinceId = entity.ProvinceId,
-                CityId = entity.CityId
-            },
-            new ArmyMapper().ToDomain(entity.Parent)
-        );
-
-        return army;
+        return new ArmyFabric().Build(model);
     }
 
-    protected override void MapToEntity(DAL.Basis.Army domain, ArmyEntity entity)
+    protected override void MapToModel(DAL.Basis.Army domain, ArmyModel model)
     {
-        entity.Name = domain.Name;
-        entity.OwnerId = domain.Country.OwnerId;
-        entity.ProvinceId = domain.Location.ProvinceId;
-        entity.CityId = domain.Location.CityId;
+        model.Name = domain.Name;
+        model.OwnerId = domain.Country.OwnerId;
+        model.Country = new CountryMapper().ToModel(domain.Country);
+        model.Province = new ProvinceMapper().ToModel(domain.Location.Province);
+        model.City = domain.Location.City is not null ? new CityMapper().ToModel(domain.Location.City) : null;
+
     }
 }

@@ -1,22 +1,23 @@
 ﻿using WebBattler.DAL.Basis;
 using WebBattler.DAL.Entities;
+using WebBattler.DAL.Models;
 
 namespace WebBattler.Services.Mappers;
 
-public class CountryMapper : EntityMapperBase<CountryEntity, Country>
+public class CountryMapper : EntityMapperBase<CountryModel, Country>
 {
-    protected override Country MapToDomain(CountryEntity entity)
+    protected override Country MapToDomain(CountryModel model)
     {
         return new Country(
-            entity.OwnerId,
-            entity.Name,
-            entity.Description);
+            model.OwnerId,
+            model.Name,
+            model.Description);
     }
 
-    protected override void MapToEntity(Country domain, CountryEntity entity)
+    protected override void MapToModel(Country domain, CountryModel model)
     {
-        entity.Name = domain.Name;
-        entity.Description = domain.Description;
-        entity.OwnerId = domain.OwnerId;
+        model.Name = domain.Name;
+        model.Description = domain.Description;
+        model.OwnerId = domain.OwnerId;
     }
 }

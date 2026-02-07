@@ -12,23 +12,21 @@ public class Province
 
     public List<City> Cities { get; set; }
 
-    public Province(ulong ownerId, string name, string desc, Country country)
+    public Province(ulong ownerId, string name, string desc)
     {
         OwnerId = ownerId;
         Name = name;
         Description = desc;
-        Country = country;
 
         Neighbours = new List<Province>();
         Cities = new List<City>();
     }
 
-    public Province(ulong ownerId, string name, string description, Country country, List<Province> neighbours, List<City> cities)
+    public Province(ulong ownerId, string name, string description, List<Province> neighbours, List<City> cities)
     {
         OwnerId = ownerId;
         Name = name;
         Description = description;
-        Country = country;
         Neighbours = neighbours;
         Cities = cities;
     }

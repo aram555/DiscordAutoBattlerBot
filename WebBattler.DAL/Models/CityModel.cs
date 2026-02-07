@@ -7,5 +7,7 @@ public class CityModel
     public string Description { get; set; }
     public int Population { get; set; }
     public int Level { get; set; }
+    public bool IsCapital { get; set; }
+    public ProvinceModel Province { get; set; }
     public List<BuildingModel> Buildings { get; set; }
 }

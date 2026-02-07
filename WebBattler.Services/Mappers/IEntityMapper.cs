@@ -1,8 +1,8 @@
 ﻿namespace WebBattler.Services.Mappers;
 
-public interface IEntityMapper<TEntity, TDomain>
-    where TEntity : class
+public interface IEntityMapper<TModel, TDomain>
+    where TModel : class
 {
-    public TEntity ToEntity(TDomain domain, TEntity entity = null);
-    public TDomain ToDomain(TEntity entity);
+    public TModel ToModel(TDomain domain, TModel model = null);
+    public TDomain ToDomain(TModel entity);
 }

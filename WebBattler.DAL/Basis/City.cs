@@ -13,7 +13,7 @@ public class City
 
     public List<Building> Buildings { get; set; }
 
-    public City(ulong ownerId, string name, string desc, int level, int population, bool isCapital, Province province)
+    public City(ulong ownerId, string name, string desc, int level, int population, bool isCapital)
     {
         OwnerId = ownerId;
         Name = name;
@@ -21,12 +21,11 @@ public class City
         Level = level;
         Population = population;
         IsCapital = isCapital;
-        Province = province;
 
         Buildings = new List<Building>();
     }
 
-    public City(ulong ownerId, string name, string description, int level, int population, bool isCapital, Province province, List<Building> buildings)
+    public City(ulong ownerId, string name, string description, int level, int population, bool isCapital, List<Building> buildings)
     {
         OwnerId = ownerId;
         Name = name;
@@ -34,7 +33,6 @@ public class City
         Level = level;
         Population = population;
         IsCapital = isCapital;
-        Province = province;
         Buildings = buildings;
     }
 }

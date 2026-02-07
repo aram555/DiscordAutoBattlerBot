@@ -6,6 +6,7 @@ using WebBattler.Services.Army.MoveingService;
 using WebBattler.DAL.Models;
 using Discord;
 using System.Text;
+using WebBattler.Services.Fabrics;
 
 namespace WebBattler.Services.Modules;
 
@@ -77,7 +78,9 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
 
         foreach (var army in armyList)
         {
-            PrintArmy(army, sb, 0);
+            var domain = new ArmyFabric().BuildTree(army);
+
+            PrintArmy(domain, sb, 0);
         }
 
         EmbedBuilder embed = new EmbedBuilder()
@@ -89,11 +92,11 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
         await FollowupAsync(embed: embed.Build());
     }
 
-    void PrintArmy(ArmyModel army, StringBuilder sb, int depth)
+    void PrintArmy(WebBattler.DAL.Basis.Army army, StringBuilder sb, int depth)
     {
         string indent = new string(' ', depth * 3);
 
-        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count}) (Провинция: {army.Province.Name} : {army.Province.Neighbours.Count})");
+        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count})");
 
         if (army.Units.Any())
         {

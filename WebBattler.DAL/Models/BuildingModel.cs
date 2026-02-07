@@ -7,5 +7,6 @@ public class BuildingModel
     public string Description { get; set; }
     public int Level { get; set; }
     public int Cost { get; set; }
+    public int Profit { get; set; }
     public CityModel Province { get; set; }
 }
