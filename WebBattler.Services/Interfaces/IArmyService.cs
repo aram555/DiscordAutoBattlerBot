@@ -12,4 +12,5 @@ public interface IArmyService
     public int? GetIdByName(string name);
     public ArmyModel GetById(int id);
     public List<ArmyModel> GetAll(ulong ownerId);
+    public List<ArmyModel> GetAllInProvince(string provinceName);
 }

@@ -46,6 +46,7 @@ public class Army
 
     public void AddSubArmy(Army subArmy)
     {
+        subArmy.Parent = this;
         subArmy.ChangeParent(this);
     }
 

@@ -7,6 +7,7 @@ using WebBattler.DAL.Models;
 using Discord;
 using System.Text;
 using WebBattler.Services.Fabrics;
+using WebBattler.Services.Mappers;
 
 namespace WebBattler.Services.Modules;
 
@@ -59,6 +60,7 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
         var result = new Move(_service).MoveToProvince(army, provinceName);
 
         await FollowupAsync(result.Message);
+        await FollowupAsync(result.BattleResult?.ToString() ?? "");
     }
 
     [SlashCommand("show_army", "информация о войсках и юнитах")]
@@ -78,9 +80,7 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
 
         foreach (var army in armyList)
         {
-            var domain = new ArmyFabric().BuildTree(army);
-
-            PrintArmy(domain, sb, 0);
+            PrintArmy(army, sb, 0);
         }
 
         EmbedBuilder embed = new EmbedBuilder()
@@ -92,11 +92,11 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
         await FollowupAsync(embed: embed.Build());
     }
 
-    void PrintArmy(WebBattler.DAL.Basis.Army army, StringBuilder sb, int depth)
+    void PrintArmy(ArmyModel army, StringBuilder sb, int depth)
     {
         string indent = new string(' ', depth * 3);
 
-        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count})");
+        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count}) | {army.Province.Name} | {army.Country.Name}");
 
         if (army.Units.Any())
         {

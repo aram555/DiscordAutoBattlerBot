@@ -100,7 +100,31 @@ public class ArmyService : IArmyService
     {
         var entities = _repository.GetAll(ownerId);
 
-        var models = entities.ToDictionary(
+        var models = _GetSubArmies(entities);
+        _GetParents(entities, models);
+
+        return models.Values
+            .Where(m => entities.First(e => e.Name == m.Name).ParentId == null)
+            .ToList();
+    }
+
+    public List<ArmyModel> GetAllInProvince(string provinceName)
+    {
+        var province = _provinceRepository.GetIdByName(provinceName);
+
+        var entities = _repository.GetAllInProvince(province);
+
+        var models = _GetSubArmies(entities);
+        _GetParents(entities, models);
+
+        return models.Values
+            .Where(m => entities.First(e => e.Name == m.Name).ParentId == null)
+            .ToList();
+    }
+
+    private Dictionary<int, ArmyModel> _GetSubArmies(List<ArmyEntity> entity)
+    {
+        var models = entity.ToDictionary(
             e => e.Id,
             e => new ArmyModel()
             {
@@ -135,17 +159,18 @@ public class ArmyService : IArmyService
             }
         );
 
-        foreach(var entity in entities)
+        return models;
+    }
+
+    private void _GetParents(List<ArmyEntity> entities, Dictionary<int, ArmyModel> models)
+    {
+        foreach (var entity in entities)
         {
-            if(entity.ParentId != null)
+            if (entity.ParentId != null)
             {
                 var parent = models[entity.ParentId.Value];
                 parent.SubArmies.Add(models[entity.Id]);
             }
         }
-
-        return models.Values
-            .Where(m => entities.First(e => e.Name == m.Name).ParentId == null)
-            .ToList();
     }
 }

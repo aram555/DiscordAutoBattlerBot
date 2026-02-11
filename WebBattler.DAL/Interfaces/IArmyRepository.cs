@@ -11,4 +11,5 @@ public interface IArmyRepository
     public int? GetIdByName(string name);
     public ArmyEntity GetById(int id);
     public List<ArmyEntity> GetAll(ulong ownerId);
+    public List<ArmyEntity> GetAllInProvince(int provinceId);
 }

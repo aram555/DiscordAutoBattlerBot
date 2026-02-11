@@ -1,5 +1,4 @@
-﻿using WebBattler.DAL.Models;
-using WebBattler.DAL.Entities;
+﻿using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,6 +55,17 @@ public class ArmyRepository : IArmyRepository
     {
         return _context.Armies
             .Where(a => a.OwnerId == ownerId)
+            .Include(p => p.Province)
+                .ThenInclude(n => n.Neighbours)
+            .Include(a => a.Units)
+            .Include(a => a.Country)
+            .ToList();
+    }
+
+    public List<ArmyEntity> GetAllInProvince(int provinceId)
+    {
+        return _context.Armies
+            .Where(a => a.ProvinceId == provinceId)
             .Include(p => p.Province)
                 .ThenInclude(n => n.Neighbours)
             .Include(a => a.Units)
