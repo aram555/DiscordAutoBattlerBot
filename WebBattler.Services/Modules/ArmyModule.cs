@@ -15,11 +15,13 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly IArmyService _service;
     private readonly IProvinceService _provinceService;
+    private readonly IUnitService _unitService;
 
-    public ArmyModule(IArmyService service, IProvinceService provinceService)
+    public ArmyModule(IArmyService service, IProvinceService provinceService, IUnitService unitService)
     {
         _service = service;
         _provinceService = provinceService;
+        _unitService = unitService;
     }
 
     [SlashCommand("create_army", "Создание армии")]
@@ -56,8 +58,8 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
         {
             await FollowupAsync("Армия не найдена. Убедитесь, что вы указали правильное имя армии.");
         }
-        
-        var result = new Move(_service).MoveToProvince(army, provinceName);
+
+        var result = new Move(_service, _unitService).MoveToProvince(army, provinceName);
 
         await FollowupAsync(result.Message);
         await FollowupAsync(result.BattleResult?.ToString() ?? "");
@@ -103,7 +105,7 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
             foreach (var unit in army.Units)
             {
                 sb.AppendLine(
-                    $"{indent}   • {unit.Name} | {unit.Weapon} | HP {unit.Health}"
+                    $"{indent}   • {_GetDisplayUnitName(unit.Name)} | {unit.Weapon} | HP {unit.Health}"
                 );
             }
         }
@@ -116,6 +118,19 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
         {
             PrintArmy(subArmy, sb, depth + 1);
         }
+    }
 
+    private string _GetDisplayUnitName(string unitName)
+    {
+        var lastDash = unitName.LastIndexOf('-');
+
+        if (lastDash <= 0)
+        {
+            return unitName;
+        }
+
+        var suffix = unitName[(lastDash + 1)..];
+
+        return int.TryParse(suffix, out _) ? unitName[..lastDash] : unitName;
     }
 }

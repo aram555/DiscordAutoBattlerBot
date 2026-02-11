@@ -1,32 +1,35 @@
-﻿using WebBattler.Services.Interfaces;
+﻿using System.Text;
+using WebBattler.DAL.DTO;
 using WebBattler.DAL.Models;
 using WebBattler.Services.Army.BattleService;
+using WebBattler.Services.Interfaces;
 using WebBattler.Services.Mappers;
-using System.Text;
 
 namespace WebBattler.Services.Army.MoveingService;
 
 public class Move
 {
     private readonly IArmyService _service;
+    private readonly IUnitService _unitService;
 
-    public Move(IArmyService service)
+    public Move(IArmyService service, IUnitService unitService)
     {
         _service = service;
+        _unitService = unitService;
     }
 
     public MoveResult MoveToProvince(ArmyModel army, string provinceName)
     {
         var province = army.Province.Neighbours.FirstOrDefault(n => n.Name == provinceName);
 
-        if (province == null)
-        {
-            return new MoveResult(false, "Провинция не найдена");
-        }
-
         if (army == null)
         {
             return new MoveResult(false, "Армия не найдена");
+        }
+
+        if (province == null)
+        {
+            return new MoveResult(false, "Провинция не найдена");
         }
 
         var armyProvince = army.Province;
@@ -71,7 +74,26 @@ public class Move
         var firstArmy = mapper.ToDomain(attacker);
         var secondArmy = mapper.ToDomain(defender);
 
-        return new Battle(firstArmy, secondArmy).StartBattle();
+        var battleResult = new Battle(firstArmy, secondArmy).StartBattle();
+
+        _PersistBattleResults(battleResult.FirstArmyResult, attacker.Name);
+        _PersistBattleResults(battleResult.SecondArmyResult, defender.Name);
+
+        return battleResult;
+    }
+
+    private void _PersistBattleResults(WebBattler.DAL.Basis.Army armyResult, string armyName)
+    {
+        foreach (var unit in armyResult.GetAllUnits())
+        {
+            _unitService.Update(new UnitDTO
+            {
+                Name = unit.Name,
+                Health = unit.Health,
+                Weapon = unit.Weapon,
+                ArmyName = armyName
+            });
+        }
     }
 
 }

@@ -20,10 +20,11 @@ public class UnitService : IUnitService
     {
         UnitEntity entity = new()
         {
-            Name = unitDBO.Name,
-            Health = 100f,
+            Name = _GetUniqueName(unitDBO.OwnerId, unitDBO.Name),
+            Health = unitDBO.Health,
             Weapon = unitDBO.Weapon,
-            ArmyId = _armyRepository.GetIdByName(unitDBO.ArmyName) ?? 0
+            ArmyId = _armyRepository.GetIdByName(unitDBO.ArmyName) ?? 0,
+            OwnerId = unitDBO.OwnerId
         };
 
         _unitRepository.Create(entity);
@@ -36,7 +37,15 @@ public class UnitService : IUnitService
 
     public void Update(UnitDTO unit)
     {
+        UnitEntity entity = new()
+        {
+            Name = unit.Name,
+            Health = unit.Health,
+            Weapon = unit.Weapon,
+            ArmyId = _armyRepository.GetIdByName(unit.ArmyName) ?? 0,
+        };
 
+        _unitRepository.Update(entity);
     }
 
     public int GetIdByName(string name)
@@ -74,5 +83,25 @@ public class UnitService : IUnitService
         }
 
         return list;
+    }
+
+    private string _GetUniqueName(ulong ownerId, string unitName)
+    {
+        var existingNames = _unitRepository
+            .GetAll(ownerId)
+            .Where(u => u.Name.StartsWith($"{unitName}-"))
+            .Select(u => u.Name)
+            .ToHashSet();
+
+        var index = 1;
+        var candidate = $"{unitName}-{index}";
+
+        while (existingNames.Contains(candidate))
+        {
+            index++;
+            candidate = $"{unitName}-{index}";
+        }
+
+        return candidate;
     }
 }
