@@ -102,7 +102,7 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
 
         if (army.Units.Any())
         {
-            foreach (var unit in army.Units)
+            foreach (var unit in army.Units.Where(u => u.Health > 0))
             {
                 sb.AppendLine(
                     $"{indent}   • {_GetDisplayUnitName(unit.Name)} | {unit.Weapon} | HP {unit.Health}"

@@ -25,6 +25,7 @@ public class UnitSampleService : IUnitSampleService
             Name = unitSample.Name,
             Health = unitSample.Health,
             Weapon = unitSample.Weapon,
+            BuildTurns = unitSample.BuildTurns,
             CountryId = _countryRepository.GetIdByName(unitSample.Countryname)
         };
 
@@ -58,6 +59,7 @@ public class UnitSampleService : IUnitSampleService
             Name = entity.Name,
             Health = entity.Health,
             Weapon = entity.Weapon,
+            BuildTurns = entity.BuildTurns,
             OwnerId = entity.OwnerId
         };
     }
@@ -73,6 +75,7 @@ public class UnitSampleService : IUnitSampleService
                 Name = entity.Name,
                 Health = entity.Health,
                 Weapon = entity.Weapon,
+                BuildTurns = entity.BuildTurns,
                 OwnerId = entity.OwnerId
             });
         }

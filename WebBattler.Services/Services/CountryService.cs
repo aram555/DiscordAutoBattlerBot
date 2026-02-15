@@ -22,6 +22,7 @@ public class CountryService : ICountryService
             Name = country.Name,
             OwnerId = country.OwnerId,
             Description = country.Description,
+            GameSessionId = country.GameSessionId,
             Provinces = new List<ProvinceEntity>(),
             Armies = new List<ArmyEntity>(),
             BuildingSamples = new List<BuildingSampleEntity>(),

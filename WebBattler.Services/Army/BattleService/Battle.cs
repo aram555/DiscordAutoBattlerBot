@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Reactive;
+using System.Text;
+using WebBattler.DAL.Basis;
 
 namespace WebBattler.Services.Army.BattleService;
 
@@ -26,10 +28,8 @@ public class Battle
 
             if (enemyUnit != null)
             {
-                var damage = new Random().Next(15, 50); // Example random damage between 5 and 15
-
-                enemyUnit.TakeDamage(damage); // Example damage value
-                sb.AppendLine($"{unit.Name} атакавал {enemyUnit.Name} и нанёс {damage} урон.");
+                _BattleStage(unit, enemyUnit, sb);
+                _BattleStage(enemyUnit, unit, sb); // Counterattack
             }
         }
 
@@ -39,10 +39,8 @@ public class Battle
 
             if (enemyUnit != null)
             {
-                var damage = new Random().Next(15, 50); // Example random damage between 5 and 15
-
-                enemyUnit.TakeDamage(damage); // Example damage value
-                sb.AppendLine($"{unit.Name} атакавал {enemyUnit.Name} и нанёс {damage} урон.");
+                _BattleStage(unit, enemyUnit, sb);
+                _BattleStage(enemyUnit, unit, sb); // Counterattack
             }
         }
 
@@ -59,5 +57,13 @@ public class Battle
             _firstArmy,
             _secondArmy
             );
+    }
+
+    private void _BattleStage(DAL.Basis.Unit attacker, DAL.Basis.Unit enemy, StringBuilder sb)
+    {
+        var damage = new Random().Next(15, 50); // Example random damage between 5 and 15
+
+        enemy.TakeDamage(damage); // Example damage value
+        sb.AppendLine($"{attacker.Name} атакавал {attacker.Name} и нанёс {damage} урон.");
     }
 }

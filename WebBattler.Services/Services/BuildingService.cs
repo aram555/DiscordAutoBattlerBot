@@ -8,32 +8,33 @@ namespace WebBattler.Services.Services;
 public class BuildingService : IBuildingService
 {
     private readonly IBuildingRepository _repository;
+    private readonly ICityRepository _cityRepository;
 
-    public BuildingService(IBuildingRepository buildingRepository)
+    public BuildingService(IBuildingRepository buildingRepository, ICityRepository cityRepository)
     {
         _repository = buildingRepository;
+        _cityRepository = cityRepository;
     }
 
     public void Create(BuildingDTO building)
     {
+        var cityId = _cityRepository.GetIdByName(building.CityName);
+
         _repository.Create(new DAL.Entities.BuildingEntity
         {
             Name = building.Name,
             Description = building.Description,
             Cost = building.Cost,
-            Level = building.Level
+            Level = building.Level,
+            Profit = building.Profit,
+            OwnerId = building.OwnerId,
+            CityId = cityId
         });
     }
 
     public void Delete(BuildingDTO building)
     {
-        _repository.Delete(new DAL.Entities.BuildingEntity
-        {
-            Name = building.Name,
-            Description = building.Description,
-            Cost = building.Cost,
-            Level = building.Level
-        });
+        
     }
 
     public void Update(BuildingDTO building)
@@ -55,7 +56,9 @@ public class BuildingService : IBuildingService
             Name = entity.Name,
             Description = entity.Description,
             Cost = entity.Cost,
-            Level = entity.Level
+            Level = entity.Level,
+            Profit = entity.Profit,
+            OwnerId = entity.OwnerId
         };
     }
 
@@ -70,7 +73,9 @@ public class BuildingService : IBuildingService
                 Name = entity.Name,
                 Description = entity.Description,
                 Cost = entity.Cost,
-                Level = entity.Level
+                Level = entity.Level,
+                Profit = entity.Profit,
+                OwnerId = ownerId
             });
         }
 

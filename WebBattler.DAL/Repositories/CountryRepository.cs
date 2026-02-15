@@ -45,9 +45,10 @@ public class CountryRepository : ICountryRepository
         return _context.Countries
             .Where(a => a.OwnerId == ownerId)
             .Include(c => c.Provinces)
-            .ThenInclude(n => n.Neighbours)
-            .ThenInclude(p => p.Cities)
-            .ThenInclude(c => c.Buildings)
+                .ThenInclude(n => n.Neighbours)
+            .Include(c => c.Provinces)
+                .ThenInclude(c => c.Cities)
+                    .ThenInclude(b => b.Buildings)
             .ToList();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using Discord;
 using Discord.Interactions;
-using WebBattler.DAL.Basis;
 using WebBattler.DAL.DTO;
 using WebBattler.Services.Interfaces;
 
@@ -10,20 +9,36 @@ namespace WebBattler.Services.Modules;
 public class CountryModule : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly ICountryService _service;
+    private readonly IGameSessionService _gameSessionService;
 
-    public CountryModule(ICountryService service)
+    public CountryModule(ICountryService service, IGameSessionService gameSessionService)
     {
-        _service = service; 
+        _service = service;
+        _gameSessionService = gameSessionService;
     }
 
     [SlashCommand("create_country", "Создание страны")]
     public async Task CreateCountryAsync(string name, string desc)
     {
+        if(Context.Guild == null)
+        {
+            await RespondAsync("Эта команда может быть использована только в серверах.");
+            return;
+        }
+
+        var gameSession = _gameSessionService.GetByGuildId(Context.Guild.Id);
+        if(gameSession == null)
+        {
+            await RespondAsync("На этом сервере нет активной игровой сессии. Попросите администраторов создать её.");
+            return;
+        }
+
         CountryDTO country = new()
         {
             OwnerId = Context.User.Id,
             Name = name,
             Description = desc,
+            GameSessionId = gameSession.Id,
             Provinces = new List<ProvinceDTO>()
         };
 

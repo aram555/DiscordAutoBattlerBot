@@ -15,7 +15,7 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
     }
 
     [SlashCommand("unit_sample_create", "Создание шаблона юнита для дальнешйего найма.")]
-    public async Task UnitSampleCreateAsync(string unitName, string weapon, int Health, string countryName)
+    public async Task UnitSampleCreateAsync(string unitName, string weapon, int Health, int buildTurns, string countryName)
     {
         UnitSampleDTO dto = new UnitSampleDTO()
         {
@@ -23,12 +23,13 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
             Name = unitName,
             Weapon = weapon,
             Health = Health,
+            BuildTurns = buildTurns,
             Countryname = countryName
         };
 
         _service.Create(dto);
 
-        await RespondAsync($"Создан шаблон Юнита - {unitName}");
+        await RespondAsync($"Создан шаблон Юнита - {unitName} ({buildTurns} ходов)");
     }
 
     [SlashCommand("unit_sample_list", "Просмотр доступных шаблонов юнитов.")]
@@ -40,7 +41,7 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
 
         foreach (var item in list)
         {
-            await FollowupAsync(item.Name);
+            await FollowupAsync($"{item.Name} | {item.BuildTurns} ходов");
         }
     }
 

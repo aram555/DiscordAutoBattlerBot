@@ -14,6 +14,8 @@ public class AutobattlerDbContext : DbContext
     public DbSet<CityEntity> Cities { get; set; }
     public DbSet<BuildingEntity> Buildings { get; set; }
     public DbSet<BuildingSampleEntity> BuildingSamples { get; set; }
+    public DbSet<GameSessionEntity> GameSessions { get; set; }
+    public DbSet<ProductionOrderEntity> ProductionOrders { get; set; }
 
     public AutobattlerDbContext(DbContextOptions<AutobattlerDbContext> options) : base(options)
     {
@@ -32,6 +34,46 @@ public class AutobattlerDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<GameSessionEntity>()
+            .HasIndex(g => g.GuildId)
+            .IsUnique();
+
+        modelBuilder.Entity<CountryEntity>()
+            .HasOne(c => c.GameSession)
+            .WithMany(g => g.Countries)
+            .HasForeignKey(c => c.GameSessionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ProductionOrderEntity>()
+            .HasOne(o => o.GameSession)
+            .WithMany(g => g.ProductionOrders)
+            .HasForeignKey(o => o.GameSessionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ProductionOrderEntity>()
+            .HasOne(o => o.UnitSample)
+            .WithMany()
+            .HasForeignKey(o => o.UnitSampleId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ProductionOrderEntity>()
+            .HasOne(o => o.BuildingSample)
+            .WithMany()
+            .HasForeignKey(o => o.BuildingSampleId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ProductionOrderEntity>()
+            .HasOne(o => o.Army)
+            .WithMany()
+            .HasForeignKey(o => o.ArmyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ProductionOrderEntity>()
+            .HasOne(o => o.City)
+            .WithMany()
+            .HasForeignKey(o => o.CityId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<CountryEntity>()
             .HasMany(c => c.Provinces)
             .WithOne(p => p.Country)

@@ -33,7 +33,7 @@ public class ArmyService : IArmyService
             Units = army.Units.Select(u => new UnitEntity
             {
                 Name = u.Name,
-                Health = 100f,
+                Health = u.Health,
                 Weapon = u.Weapon,
                 OwnerId = army.OwnerId,
             }).ToList(),

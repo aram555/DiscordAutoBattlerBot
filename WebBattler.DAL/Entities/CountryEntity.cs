@@ -7,6 +7,9 @@ public class CountryEntity
     public string Name { get; set; }
     public string Description { get; set; }
 
+    public int GameSessionId { get; set; }
+    public GameSessionEntity GameSession { get; set; } = null!;
+
     public List<ProvinceEntity> Provinces { get; set; }
     public List<ArmyEntity> Armies { get; set; }
     public List<UnitSampleEntity> UnitSamples { get; set; }

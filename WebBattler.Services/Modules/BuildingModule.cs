@@ -1,0 +1,62 @@
+﻿using Discord.Interactions;
+using WebBattler.DAL.DTO;
+using WebBattler.Services.Interfaces;
+
+namespace WebBattler.Services.Modules;
+
+public class BuildingModule : InteractionModuleBase<SocketInteractionContext>
+{
+    private readonly IBuildingSampleService _sampleService;
+    private readonly IGameSessionService _sessions;
+    private readonly IProductionOrderService _orders;
+    private readonly ICityService _cities;
+
+    public BuildingModule(
+        IBuildingSampleService sampleService,
+        IGameSessionService sessions,
+        IProductionOrderService orders,
+        ICityService cities)
+    {
+        _sampleService = sampleService;
+        _sessions = sessions;
+        _orders = orders;
+        _cities = cities;
+    }
+
+    [SlashCommand("create_building", "Запустить строительство по шаблону")]
+    public async Task CreateBuildingAsync(string sampleName, string cityName)
+    {
+        if (Context.Guild == null)
+        {
+            await RespondAsync("Команда доступна только на сервере.");
+            return;
+        }
+
+        var session = _sessions.GetByGuildId(Context.Guild.Id);
+        if (session == null)
+        {
+            await RespondAsync("Сессия не найдена. Используйте /game_create.");
+            return;
+        }
+
+        var sample = _sampleService.GetAll(Context.User.Id).FirstOrDefault(s => s.Name == sampleName);
+        if (sample == null)
+        {
+            await RespondAsync("Шаблон строения не найден.");
+            return;
+        }
+
+        _orders.Queue(new ProductionOrderDTO
+        {
+            OwnerId = Context.User.Id,
+            GameSessionId = session.Id,
+            OrderType = "Building",
+            Quantity = 1,
+            BuildingSampleId = _sampleService.GetIdByName(sampleName),
+            CityId = _cities.GetIdByName(cityName),
+            BuildTurns = sample.BuildTurns
+        });
+
+        await RespondAsync($"Строительство {sampleName} начато. Готово через {sample.BuildTurns} ход(а/ов).");
+    }
+}

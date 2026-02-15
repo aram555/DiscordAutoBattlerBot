@@ -1,30 +1,33 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WebBattler.DAL.DTO;
-using WebBattler.DAL.Entities;
+﻿using WebBattler.Services.Interfaces;
 using WebBattler.DAL.Interfaces;
+using WebBattler.DAL.Entities;
 using WebBattler.DAL.Models;
-using WebBattler.Services.Interfaces;
+using WebBattler.DAL.DTO;
 
 namespace WebBattler.Services.Services;
 
 public class BuildingSampleService : IBuildingSampleService
 {
     private readonly IBuildingSampleRepository _repository;
+    private readonly ICountryRepository _countryRepository;
 
-    public BuildingSampleService(IBuildingSampleRepository buildingSampleRepository)
+    public BuildingSampleService(IBuildingSampleRepository buildingSampleRepository, ICountryRepository countryRepository)
     {
         _repository = buildingSampleRepository;
+        _countryRepository = countryRepository;
     }
 
     public void Create(BuildingSampleDTO buildingSample)
     {
         var entity = new BuildingSampleEntity()
         {
+            OwnerId = buildingSample.OwnerId,
             Name = buildingSample.Name,
             Description = buildingSample.Description,
             Cost = buildingSample.Cost,
             Level = buildingSample.Level,
-            CountryId = _repository.GetIdByName(buildingSample.CountryName),
+            BuildTurns = buildingSample.BuildTurns,
+            CountryId = _countryRepository.GetIdByName(buildingSample.CountryName),
         };
 
         _repository.Create(entity);
@@ -60,6 +63,7 @@ public class BuildingSampleService : IBuildingSampleService
             Description = entity.Description,
             Cost = entity.Cost,
             Level = entity.Level,
+            BuildTurns = entity.BuildTurns,
             OwnerId = entity.OwnerId
         };
     }
@@ -68,7 +72,7 @@ public class BuildingSampleService : IBuildingSampleService
     {
         var list = new List<BuildingSampleModel>();
 
-        foreach(var entity in _repository.GetAll(ownerId))
+        foreach (var entity in _repository.GetAll(ownerId))
         {
             list.Add(new BuildingSampleModel()
             {
@@ -76,11 +80,11 @@ public class BuildingSampleService : IBuildingSampleService
                 Description = entity.Description,
                 Cost = entity.Cost,
                 Level = entity.Level,
+                BuildTurns = entity.BuildTurns,
                 OwnerId = entity.OwnerId
             });
         }
 
         return list;
     }
-
 }

@@ -7,6 +7,7 @@ public class UnitSampleEntity
     public string Name { get; set; }
     public float Health { get; set; }
     public string Weapon { get; set; }
+    public int BuildTurns { get; set; }
 
     public CountryEntity Country { get; set; }
     public int CountryId { get; set; }

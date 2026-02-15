@@ -27,6 +27,8 @@ public class Program
         builder.Services.AddTransient<ICountryRepository, CountryRepository>();
         builder.Services.AddTransient<IBuildingSampleRepository, BuildingSampleRepository>();
         builder.Services.AddTransient<IUnitSampleRepository, UnitSampleRepository>();
+        builder.Services.AddTransient<IGameSessionRepository, GameSessionRepository>();
+        builder.Services.AddTransient<IProductionOrderRepository, ProductionOrderRepository>();
 
         builder.Services.AddScoped<IArmyService, ArmyService>();
         builder.Services.AddScoped<IBuildingSampleService, BuildingSampleService>();
@@ -36,6 +38,8 @@ public class Program
         builder.Services.AddScoped<IProvinceService, ProvinceService>();
         builder.Services.AddScoped<IUnitSampleService, UnitSampleService>();
         builder.Services.AddScoped<IUnitService, UnitService>();
+        builder.Services.AddScoped<IGameSessionService, GameSessionService>();
+        builder.Services.AddScoped<IProductionOrderService, ProductionOrderService>();
 
         //Addint discord bot service
         builder.Services.AddSingleton(sp =>
