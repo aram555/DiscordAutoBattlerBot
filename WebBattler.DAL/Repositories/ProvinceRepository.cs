@@ -62,7 +62,7 @@ public class ProvinceRepository : IProvinceRepository
         {
             province.Neighbours.Add(neighbour);
         }
-        if(!neighbour.Neighbours.All(n => n.Id == province.Id))
+        if(!neighbour.Neighbours.Any(n => n.Id == province.Id))
         {
             neighbour.Neighbours.Add(province);
         }

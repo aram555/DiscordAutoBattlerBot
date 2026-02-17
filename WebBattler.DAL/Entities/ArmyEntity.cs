@@ -2,6 +2,8 @@
 
 public class ArmyEntity
 {
+    public const int MaxTurnCount = 3;
+
     public int Id { get; set; }
     public ulong OwnerId { get; set; }
     public string Name { get; set; }
@@ -20,4 +22,6 @@ public class ArmyEntity
 
     public CityEntity City { get; set; }
     public int? CityId { get; set; }
+
+    public int CurrentTurnCount { get; set; } = MaxTurnCount;
 }

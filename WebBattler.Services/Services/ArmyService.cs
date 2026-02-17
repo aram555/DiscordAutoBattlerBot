@@ -1,9 +1,12 @@
-﻿using WebBattler.DAL.Basis;
+﻿using System.Text;
+using WebBattler.DAL.Basis;
 using WebBattler.DAL.DTO;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
 using WebBattler.DAL.Models;
+using WebBattler.Services.Army.BattleService;
 using WebBattler.Services.Interfaces;
+using WebBattler.Services.Mappers;
 
 namespace WebBattler.Services.Services;
 
@@ -13,13 +16,19 @@ public class ArmyService : IArmyService
     private readonly ICountryRepository _countryRepository;
     private readonly IProvinceRepository _provinceRepository;
     private readonly ICityRepository _cityRepository;
+    private readonly IUnitService _unitService;
 
-    public ArmyService(IArmyRepository repository, ICountryRepository countryRepository, IProvinceRepository provinceRepository, ICityRepository cityRepository)
+    public ArmyService(IArmyRepository repository,
+        ICountryRepository countryRepository,
+        IProvinceRepository provinceRepository,
+        ICityRepository cityRepository,
+        IUnitService unitServicey)
     {
         _repository = repository;
         _countryRepository = countryRepository;
         _provinceRepository = provinceRepository;
         _cityRepository = cityRepository;
+        _unitService = unitServicey;
     }
 
     public void Create(ArmyDTO army)
@@ -63,9 +72,9 @@ public class ArmyService : IArmyService
         throw new NotImplementedException();
     }
 
-    public void MoveToProvince(string armyName, string provinceName)
+    public bool TryMoveToProvince(string armyName, string provinceName)
     {
-        _repository.MoveToProvince(armyName, provinceName);
+        return _repository.TryMoveToProvince(armyName, provinceName);
     }
 
     public int? GetIdByName(string name)
@@ -87,7 +96,8 @@ public class ArmyService : IArmyService
                 OwnerId = u.OwnerId,
                 Weapon = u.Weapon,
                 Health = u.Health
-            }).ToList()
+            }).ToList(),
+            CurrentTurnCount = entity.CurrentTurnCount
         };
 
         return model;
@@ -117,6 +127,124 @@ public class ArmyService : IArmyService
         return models.Values
             .Where(m => entities.First(e => e.Name == m.Name).ParentId == null)
             .ToList();
+    }
+
+    public List<ArmyModel> GetAll()
+    {
+        var entities = _repository.GetAll();
+
+        var models = _GetSubArmies(entities);
+        _GetParents(entities, models);
+
+        return models.Values
+            .Where(m => entities.First(e => e.Name == m.Name).ParentId == null)
+            .ToList();
+    }
+
+    public void ResetMovementPointsForAllArmies()
+    {
+        _repository.ResetMovementPointsForAllArmies();
+    }
+
+    public string ResolveAutomaticBattlesForAllProvinces()
+    {
+        var armyMapper = new ArmyMapper();
+
+        var allArmies = _repository.GetAll();
+        var log = new StringBuilder();
+
+        foreach(var provinceGroup in allArmies.GroupBy(a => a.ProvinceId))
+        {
+            var armiesInProvince = provinceGroup.ToList();
+
+            while(armiesInProvince.Select(a => a.CountryId).Distinct().Count() > 1)
+            {
+                var attacker = armiesInProvince.First();
+                var defender = armiesInProvince.FirstOrDefault(a => a.CountryId != attacker.CountryId);
+
+                if(defender == null)
+                {
+                    break;
+                }
+
+                var battleResult = _StartBattle(_ToModel(attacker), _ToModel(defender));
+
+                log.AppendLine($"Провинция {attacker.Province.Name}: {attacker.Name} vs {defender.Name}");
+                log.AppendLine(battleResult.BattleLog.ToString());
+
+                armiesInProvince = _repository.GetAllInProvince(attacker.ProvinceId);
+                if (armiesInProvince.Count < 2)
+                {
+                    break;
+                }
+            }
+        }
+
+        return log.ToString();
+    }
+
+    private ArmyModel _ToModel(ArmyEntity entity)
+    {
+        return new ArmyModel
+        {
+            OwnerId = entity.OwnerId,
+            Name = entity.Name,
+            CurrentTurnCount = entity.CurrentTurnCount,
+            Country = new CountryModel
+            {
+                Name = entity.Country.Name,
+                Description = entity.Country.Description,
+                OwnerId = entity.Country.OwnerId
+            },
+            Province = new ProvinceModel
+            {
+                Name = entity.Province.Name,
+                Description = entity.Province.Description,
+                OwnerId = entity.Province.OwnerId,
+                Neighbours = entity.Province.Neighbours.Select(n => new ProvinceModel
+                {
+                    Name = n.Name,
+                    Description = n.Description,
+                    OwnerId = n.OwnerId
+                }).ToList()
+            },
+            Units = entity.Units.Select(u => new UnitModel
+            {
+                Name = u.Name,
+                OwnerId = u.OwnerId,
+                Weapon = u.Weapon,
+                Health = u.Health
+            }).ToList(),
+            SubArmies = new List<ArmyModel>()
+        };
+    }
+
+    private BattleResult _StartBattle(ArmyModel attacker, ArmyModel defender)
+    {
+        var mapper = new ArmyMapper();
+        var firstArmy = mapper.ToDomain(attacker);
+        var secondArmy = mapper.ToDomain(defender);
+
+        var battleResult = new Battle(firstArmy, secondArmy).StartBattle();
+
+        _PersistBattleResults(battleResult.FirstArmyResult, attacker.Name);
+        _PersistBattleResults(battleResult.SecondArmyResult, defender.Name);
+
+        return battleResult;
+    }
+
+    private void _PersistBattleResults(WebBattler.DAL.Basis.Army armyResult, string armyName)
+    {
+        foreach (var unit in armyResult.GetAllUnits())
+        {
+            _unitService.Update(new UnitDTO
+            {
+                Name = unit.Name,
+                Health = unit.Health,
+                Weapon = unit.Weapon,
+                ArmyName = armyName
+            });
+        }
     }
 
     private Dictionary<int, ArmyModel> _GetSubArmies(List<ArmyEntity> entity)
@@ -152,7 +280,8 @@ public class ArmyService : IArmyService
                     Weapon = u.Weapon,
                     Health = u.Health
                 }).ToList(),
-                SubArmies = new List<ArmyModel>()
+                SubArmies = new List<ArmyModel>(),
+                CurrentTurnCount = e.CurrentTurnCount
             }
         );
 

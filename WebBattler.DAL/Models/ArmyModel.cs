@@ -9,4 +9,5 @@ public class ArmyModel
     public CityModel? City { get; set; }
     public List<ArmyModel> SubArmies { get; set; }
     public List<UnitModel> Units { get; set; }
+    public int CurrentTurnCount { get; set; }
 }

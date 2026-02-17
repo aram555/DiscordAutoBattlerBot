@@ -42,16 +42,31 @@ public class ArmyRepository : IArmyRepository
         throw new NotImplementedException();
     }
 
-    public void MoveToProvince(string armyName, string provinceName)
+    public bool TryMoveToProvince(string armyName, string provinceName)
     {
         var army = _context.Armies.FirstOrDefault(a => a.Name == armyName);
-        if (army == null) return;
+
+        if(army != null )
+        {
+            return false;
+        }
+
+        if(army.CurrentTurnCount <= 0)
+        {
+            return false;
+        }
 
         var province = _context.Provinces.FirstOrDefault(p => p.Name == provinceName);
-        if (province == null) return;
+        if (province == null)
+        {
+            return false;
+        }
 
         army.ProvinceId = province.Id;
+        army.CurrentTurnCount -= 1;
         _context.SaveChanges();
+
+        return true;
     }
 
     public int? GetIdByName(string name)
@@ -84,5 +99,27 @@ public class ArmyRepository : IArmyRepository
             .Include(a => a.Units)
             .Include(a => a.Country)
             .ToList();
+    }
+
+    public List<ArmyEntity> GetAll()
+    {
+        return _context.Armies
+            .Include(p => p.Province)
+                .ThenInclude(n => n.Neighbours)
+            .Include(a => a.Units)
+            .Include(a => a.Country)
+            .ToList();
+    }
+
+    public void ResetMovementPointsForAllArmies()
+    {
+        var armies = _context.Armies.ToList();
+
+        foreach (var army in armies)
+        {
+            army.CurrentTurnCount = ArmyEntity.MaxTurnCount;
+        }
+
+        _context.SaveChanges();
     }
 }

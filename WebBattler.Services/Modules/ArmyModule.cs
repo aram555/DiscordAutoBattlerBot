@@ -63,7 +63,7 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
         var result = new Move(_service, _unitService).MoveToProvince(army, provinceName);
 
         await FollowupAsync(result.Message);
-        await FollowupAsync(result.BattleResult?.ToString() ?? "");
+        await FollowupAsync(result.BattleResult?.ToString());
     }
 
     [SlashCommand("show_army", "информация о войсках и юнитах")]
@@ -99,7 +99,7 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
     {
         string indent = new string(' ', depth * 3);
 
-        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count}) | {army.Province.Name} | {army.Country.Name}");
+        sb.AppendLine($"{indent}▶ {army.Name} (юнитов: {army.Units.Count}) | {army.Province.Name} | {army.Country.Name} | {army.CurrentTurnCount}");
 
         if (army.Units.Any())
         {

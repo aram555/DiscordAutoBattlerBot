@@ -20,12 +20,12 @@ public class Move
 
     public MoveResult MoveToProvince(ArmyModel army, string provinceName)
     {
-        var province = army.Province.Neighbours.FirstOrDefault(n => n.Name == provinceName);
-
         if (army == null)
         {
             return new MoveResult(false, "Армия не найдена");
         }
+
+        var province = army.Province.Neighbours.FirstOrDefault(n => n.Name == provinceName);
 
         if (province == null)
         {
@@ -39,13 +39,16 @@ public class Move
             return new MoveResult(false, "Провинция армии не найдена");
         }
 
-        _service.MoveToProvince(army.Name, provinceName);
+        if(!_service.TryMoveToProvince(army.Name, provinceName))
+        {
+            return new MoveResult(false, "Не удалось переместить армию");
+        }
 
         if (army.SubArmies.Count > 0)
         {
             foreach (var subArmy in army.SubArmies)
             {
-                _service.MoveToProvince(subArmy.Name, provinceName);
+                _service.TryMoveToProvince(subArmy.Name, provinceName);
             }
         }
 
@@ -65,7 +68,10 @@ public class Move
             return new MoveResult(true, "Армия успешно перемещена и вступила в бой", battleResults);
         }
 
-        return new MoveResult(true, "Армия успешно перемещена");
+        var updatedArmy = _service.GetAll(army.OwnerId).FirstOrDefault(a => a.Name == army.Name);
+        var remainingMovementPoitns = updatedArmy.CurrentTurnCount;
+
+        return new MoveResult(true, $"Армия успешно перемещена, очков передвижения осталось - {remainingMovementPoitns}");
     }
 
     private BattleResult _StartBattle(ArmyModel attacker, ArmyModel defender)
