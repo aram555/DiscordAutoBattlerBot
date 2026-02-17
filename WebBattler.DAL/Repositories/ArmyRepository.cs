@@ -46,7 +46,7 @@ public class ArmyRepository : IArmyRepository
     {
         var army = _context.Armies.FirstOrDefault(a => a.Name == armyName);
 
-        if(army != null )
+        if(army == null )
         {
             return false;
         }

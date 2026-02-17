@@ -41,9 +41,11 @@ public class GameSessionModule : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("end_turn", "Завершить текущий ход и начать следующий")]
     public async Task EndTurnAsync()
     {
+        await DeferAsync();
+
         if(Context.Guild == null)
         {
-            await RespondAsync("Эту команду можно использовать только на сервере.");
+            await FollowupAsync("Эту команду можно использовать только на сервере.");
             return;
         }
 
@@ -51,7 +53,7 @@ public class GameSessionModule : InteractionModuleBase<SocketInteractionContext>
 
         if(session == null)
         {
-            await RespondAsync("На этом сервере нет активной игровой сессии.");
+            await FollowupAsync("На этом сервере нет активной игровой сессии.");
             return;
         }
 
@@ -66,17 +68,29 @@ public class GameSessionModule : InteractionModuleBase<SocketInteractionContext>
         var response = new StringBuilder();
         response.AppendLine($"Новый ход: {updated.CurrentTurn}");
 
-        if(string.IsNullOrWhiteSpace(battleLogs))
+        if(!string.IsNullOrWhiteSpace(battleLogs))
         {
             response.AppendLine($"Битвы в провинциях");
             response.AppendLine(battleLogs);
         }
-        if(string.IsNullOrWhiteSpace(productionLog))
+        if(!string.IsNullOrWhiteSpace(productionLog))
         {
             response.AppendLine($"Производство");
             response.AppendLine(productionLog);
         }
 
-        await RespondAsync(response.ToString().TrimEnd());
+        foreach(var chank in SplitMessage(response.ToString(), 1900))
+        {
+            await FollowupAsync(chank);
+        }
     }
+
+    private List<string> SplitMessage(string text, int chunkSize)
+    {
+        var chunks = new List<string>();
+        for (int i = 0; i < text.Length; i += chunkSize)
+            chunks.Add(text.Substring(i, Math.Min(chunkSize, text.Length - i)));
+        return chunks;
+    }
+
 }

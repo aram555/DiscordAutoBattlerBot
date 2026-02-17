@@ -63,7 +63,10 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
         var result = new Move(_service, _unitService).MoveToProvince(army, provinceName);
 
         await FollowupAsync(result.Message);
-        await FollowupAsync(result.BattleResult?.ToString());
+        if(result.Message != null)
+        {
+            await FollowupAsync(result.BattleResult?.ToString());
+        }
     }
 
     [SlashCommand("show_army", "информация о войсках и юнитах")]

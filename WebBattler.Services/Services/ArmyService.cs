@@ -156,11 +156,12 @@ public class ArmyService : IArmyService
         foreach(var provinceGroup in allArmies.GroupBy(a => a.ProvinceId))
         {
             var armiesInProvince = provinceGroup.ToList();
+            var activeArmies = armiesInProvince.Where(a => a.Units.Any(u => u.Health > 0)).ToList();
 
-            while(armiesInProvince.Select(a => a.CountryId).Distinct().Count() > 1)
+            while (armiesInProvince.Select(a => a.CountryId).Distinct().Count() > 1)
             {
-                var attacker = armiesInProvince.First();
-                var defender = armiesInProvince.FirstOrDefault(a => a.CountryId != attacker.CountryId);
+                var attacker = activeArmies.First();
+                var defender = activeArmies.FirstOrDefault(a => a.CountryId != attacker.CountryId);
 
                 if(defender == null)
                 {
@@ -173,7 +174,8 @@ public class ArmyService : IArmyService
                 log.AppendLine(battleResult.BattleLog.ToString());
 
                 armiesInProvince = _repository.GetAllInProvince(attacker.ProvinceId);
-                if (armiesInProvince.Count < 2)
+                activeArmies = armiesInProvince.Where(a => a.Units.Any(u => u.Health > 0)).ToList();
+                if (activeArmies.Count < 2)
                 {
                     break;
                 }
