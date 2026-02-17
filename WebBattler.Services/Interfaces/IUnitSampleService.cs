@@ -8,7 +8,7 @@ public interface IUnitSampleService
 {
     public void Create(UnitSampleDTO unitSample);
     public void Update(UnitSampleDTO unitSample);
-    public void Delete(UnitSampleDTO unitSample);
+    public void Delete(string unitSampleName);
     public int GetIdByName(string name);
     public UnitSampleModel GetById(int id);
     public List<UnitSampleModel> GetAll(ulong ownerId);

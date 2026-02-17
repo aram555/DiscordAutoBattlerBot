@@ -8,7 +8,7 @@ public interface IBuildingSampleService
 {
     public void Create(BuildingSampleDTO buildingSample);
     public void Update(BuildingSampleDTO buildingSample);
-    public void Delete(BuildingSampleDTO buildingSample);
+    public void Delete(string buildingSampleName);
     public int GetIdByName(string name);
     public BuildingSampleModel GetById(int id);
     public List<BuildingSampleModel> GetAll(ulong ownerId);

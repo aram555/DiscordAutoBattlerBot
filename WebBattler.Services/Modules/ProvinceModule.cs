@@ -1,4 +1,5 @@
-﻿using Discord.Interactions;
+﻿using Discord;
+using Discord.Interactions;
 using WebBattler.DAL.DTO;
 using WebBattler.Services.Interfaces;
 
@@ -32,6 +33,7 @@ public class ProvinceModule : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("add_neighbour", "Добавление соседней провинции")]
+    [DefaultMemberPermissions(GuildPermission.Administrator)]
     public async Task AddNeighbourAsync(string provinceName, string neighbourName)
     {
         await DeferAsync();

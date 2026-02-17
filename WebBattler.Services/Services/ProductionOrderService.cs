@@ -13,7 +13,7 @@ public class ProductionOrderService : IProductionOrderService
     private readonly IUnitSampleRepository _unitSampleRepository;
     private readonly IGameSessionRepository _gameSessionRepository;
     private readonly IArmyRepository _armyRepository;
-    public readonly ICityRepository _cityRepository;
+    private readonly ICityRepository _cityRepository;
 
     private readonly IUnitService _unitService;
     private readonly IBuildingService _buildingService;

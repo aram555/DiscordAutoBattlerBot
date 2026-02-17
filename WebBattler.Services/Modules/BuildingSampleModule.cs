@@ -1,6 +1,7 @@
 ﻿using Discord.Interactions;
-using WebBattler.DAL.DTO;
 using WebBattler.Services.Interfaces;
+using WebBattler.DAL.DTO;
+using Discord;
 
 namespace WebBattler.Services.Modules;
 
@@ -14,6 +15,7 @@ public class BuildingSampleModule : InteractionModuleBase<SocketInteractionConte
     }
 
     [SlashCommand("building_sample_create", "Создание шаблона строения")]
+    [DefaultMemberPermissions(GuildPermission.Administrator)]
     public async Task BuildingSampleCreateAsync(string name, string desc, int level, int cost, int buildTurns, string countryName)
     {
         _service.Create(new BuildingSampleDTO

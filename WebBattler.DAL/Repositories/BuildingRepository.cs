@@ -1,4 +1,5 @@
-﻿using WebBattler.DAL.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
 using WebBattler.DAL.Models;
 
@@ -19,9 +20,22 @@ public class BuildingRepository : IBuildingRepository
         _dbContext.SaveChanges();
     }
 
-    public void Delete(BuildingEntity building)
+    public void Delete(string buildingName)
     {
+        if (string.IsNullOrEmpty(buildingName))
+        {
+            return;
+        }
+
+        var building = _dbContext.Buildings.FirstOrDefault(b => b.Name == buildingName);
+
+        if (building != null)
+        {
+            return;
+        }
+
         _dbContext.Buildings.Remove(building);
+        _dbContext.SaveChanges();
     }
 
     public void Update(BuildingEntity building)

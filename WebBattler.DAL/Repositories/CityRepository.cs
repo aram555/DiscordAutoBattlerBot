@@ -20,9 +20,22 @@ public class CityRepository : ICityRepository
         _context.SaveChanges();
     }
 
-    public void Delete(CityEntity city)
+    public void Delete(string cityName)
     {
-        _context.Cities.Remove(city);
+        if (string.IsNullOrEmpty(cityName))
+        {
+            return;
+        }
+
+        var entity = _context.Cities.FirstOrDefault(c => c.Name == cityName);
+
+        if (entity != null)
+        {
+            return;
+        }
+
+        _context.Cities.Remove(entity);
+        _context.SaveChanges();
     }
     public void Update(CityEntity city)
     {

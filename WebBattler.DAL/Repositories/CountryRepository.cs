@@ -20,9 +20,22 @@ public class CountryRepository : ICountryRepository
         _context.SaveChanges();
     }
 
-    public void Delete(CountryEntity country)
+    public void Delete(string countryName)
     {
-        _context.Countries.Remove(country);
+        if (string.IsNullOrEmpty(countryName))
+        {
+            return;
+        }
+
+        var entity = _context.Countries.FirstOrDefault(c => c.Name == countryName);
+
+        if (entity != null)
+        {
+            return;
+        }
+
+        _context.Countries.Remove(entity);
+        _context.SaveChanges();
     }
 
     public void Update(CountryEntity country)

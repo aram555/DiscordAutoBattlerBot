@@ -1,4 +1,5 @@
-﻿using Discord.Interactions;
+﻿using Discord;
+using Discord.Interactions;
 using WebBattler.DAL.DTO;
 using WebBattler.Services.Interfaces;
 using WebBattler.Services.Services;
@@ -15,6 +16,7 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
     }
 
     [SlashCommand("unit_sample_create", "Создание шаблона юнита для дальнешйего найма.")]
+    [DefaultMemberPermissions(GuildPermission.Administrator)]
     public async Task UnitSampleCreateAsync(string unitName, string weapon, int Health, int buildTurns, string countryName)
     {
         UnitSampleDTO dto = new UnitSampleDTO()

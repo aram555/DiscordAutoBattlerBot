@@ -32,9 +32,9 @@ public class BuildingService : IBuildingService
         });
     }
 
-    public void Delete(BuildingDTO building)
+    public void Delete(string buildingName)
     {
-        
+        _repository.Delete(buildingName);
     }
 
     public void Update(BuildingDTO building)

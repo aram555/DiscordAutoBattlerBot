@@ -32,12 +32,9 @@ public class CountryService : ICountryService
         _repository.Create(countryEntity);
     }
 
-    public void Delete(CountryDTO country)
+    public void Delete(string countryName)
     {
-        _repository.Delete(new CountryEntity
-        {
-            Name = country.Name
-        });
+        _repository.Delete(countryName);
     }
 
     public void Update(CountryDTO country)

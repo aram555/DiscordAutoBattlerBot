@@ -26,6 +26,12 @@ public class BuildingModule : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("create_building", "Запустить строительство по шаблону")]
     public async Task CreateBuildingAsync(string sampleName, string cityName)
     {
+        if(string.IsNullOrWhiteSpace(cityName))
+        {
+            await RespondAsync("Название города не может быть пустым.");
+            return;
+        }
+
         if (Context.Guild == null)
         {
             await RespondAsync("Команда доступна только на сервере.");
@@ -46,6 +52,17 @@ public class BuildingModule : InteractionModuleBase<SocketInteractionContext>
             return;
         }
 
+        int cityId;
+        try
+        {
+            cityId = _cities.GetIdByName(cityName);
+        }
+        catch
+        {
+            await RespondAsync("Город не найден.");
+            return;
+        }
+
         _orders.Queue(new ProductionOrderDTO
         {
             OwnerId = Context.User.Id,
@@ -53,7 +70,7 @@ public class BuildingModule : InteractionModuleBase<SocketInteractionContext>
             OrderType = "Building",
             Quantity = 1,
             BuildingSampleId = _sampleService.GetIdByName(sampleName),
-            CityId = _cities.GetIdByName(cityName),
+            CityId = cityId,
             BuildTurns = sample.BuildTurns
         });
 

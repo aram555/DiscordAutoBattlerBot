@@ -19,9 +19,22 @@ public class ArmyRepository : IArmyRepository
         _context.SaveChanges();
     }
 
-    public void Delete(ArmyEntity army)
+    public void Delete(string armyName)
     {
+        if(string.IsNullOrEmpty(armyName))
+        {
+            return;
+        }
+
+        var army = _context.Armies.FirstOrDefault(ar => ar.Name == armyName);
+
+        if(army != null)
+        {
+            return;
+        }
+
         _context.Armies.Remove(army);
+        _context.SaveChanges();
     }
 
     public void Update(ArmyEntity army)

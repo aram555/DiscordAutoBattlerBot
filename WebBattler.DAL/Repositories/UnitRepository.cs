@@ -22,17 +22,20 @@ public class UnitRepository : IUnitRepository
 
     public void Delete(string name)
     {
-        var soldier = _context.Units.FirstOrDefault(x => x.Name == name);
+        if (string.IsNullOrEmpty(name))
+        {
+            return;
+        }
 
-        if (soldier != null)
+        var entity = _context.Units.FirstOrDefault(u => u.Name == name);
+
+        if (entity != null)
         {
-            _context.Units.Remove(soldier);
-            _context.SaveChanges();
+            return;
         }
-        else
-        {
-            Console.WriteLine("There is no soldier with this name");
-        }
+
+        _context.Units.Remove(entity);
+        _context.SaveChanges();
     }
 
     public void Update(UnitEntity unit)

@@ -7,7 +7,7 @@ public interface ICityService
 {
     public void Create(CityDTO city);
     public void Update(CityDTO city);
-    public void Delete(CityDTO city);
+    public void Delete(string cityName);
     public int GetIdByName(string name);
     public CityModel GetById(int id);
     public List<CityModel> GetAll(ulong ownerId);

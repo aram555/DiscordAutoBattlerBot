@@ -7,7 +7,7 @@ public interface IProvinceService
 {
     public void Create(ProvinceDTO province);
     public void Update(ProvinceDTO province);
-    public void Delete(ProvinceDTO province);
+    public void Delete(string provinceName);
     public string AddNeightbour(string provinceName, string neightbourName);
     public int GetIdByName(string name);
     public ProvinceModel GetById(int id);

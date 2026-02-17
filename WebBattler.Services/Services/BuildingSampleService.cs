@@ -33,14 +33,9 @@ public class BuildingSampleService : IBuildingSampleService
         _repository.Create(entity);
     }
 
-    public void Delete(BuildingSampleDTO buildingSample)
+    public void Delete(string buildingSampleName)
     {
-        var entity = new BuildingSampleEntity()
-        {
-            Name = buildingSample.Name,
-        };
-
-        _repository.Delete(entity);
+        _repository.Delete(buildingSampleName);
     }
 
     public void Update(BuildingSampleDTO buildingSample)

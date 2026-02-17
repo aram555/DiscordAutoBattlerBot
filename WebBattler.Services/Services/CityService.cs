@@ -39,14 +39,9 @@ public class CityService : ICityService
         _repository.Create(cityEntity);
     }
 
-    public void Delete(CityDTO city)
+    public void Delete(string cityName)
     {
-        _repository.Delete(new CityEntity
-        {
-            Name = city.Name,
-            Population = city.Population,
-            Level = city.Level
-        });
+        _repository.Delete(cityName);
     }
 
     public void Update(CityDTO city)

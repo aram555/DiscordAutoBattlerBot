@@ -20,12 +20,25 @@ public class ProvinceRepository : IProvinceRepository
         _dbContext.SaveChanges();
     }
 
-    public void Delete(ProvinceEntity city)
+    public void Delete(string provinceName)
     {
-        _dbContext.Provinces.Remove(city);
+        if (string.IsNullOrEmpty(provinceName))
+        {
+            return;
+        }
+
+        var entity = _dbContext.Provinces.FirstOrDefault(p => p.Name == provinceName);
+
+        if (entity != null)
+        {
+            return;
+        }
+
+        _dbContext.Provinces.Remove(entity);
+        _dbContext.SaveChanges();
     }
 
-    public void Update(ProvinceEntity city)
+    public void Update(ProvinceEntity province)
     {
         throw new NotImplementedException();
     }
@@ -35,13 +48,25 @@ public class ProvinceRepository : IProvinceRepository
         var province = _dbContext.Provinces
             .Include(p => p.Neighbours)
             .FirstOrDefault(p => p.Name == provinceName);
-            
+
         var neighbour = _dbContext.Provinces
             .Include(p => p.Neighbours)
             .FirstOrDefault(p => p.Name == neightbourName);
-            
-        province.Neighbours.Add(neighbour);
-        neighbour.Neighbours.Add(province);
+
+        if (province == null || neighbour == null || province.Id == neighbour.Id)
+        {
+            return;
+        }
+
+        if(!province.Neighbours.Any(n => n.Id == neighbour.Id))
+        {
+            province.Neighbours.Add(neighbour);
+        }
+        if(!neighbour.Neighbours.All(n => n.Id == province.Id))
+        {
+            neighbour.Neighbours.Add(province);
+        }
+
         _dbContext.SaveChanges();
     }
 

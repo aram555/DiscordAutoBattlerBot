@@ -57,6 +57,7 @@ public class ArmyModule : InteractionModuleBase<SocketInteractionContext>
         if (army == null)
         {
             await FollowupAsync("Армия не найдена. Убедитесь, что вы указали правильное имя армии.");
+            return;
         }
 
         var result = new Move(_service, _unitService).MoveToProvince(army, provinceName);

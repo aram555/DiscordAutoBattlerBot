@@ -32,12 +32,9 @@ public class UnitSampleService : IUnitSampleService
         _repository.Create(entity);
     }
 
-    public void Delete(UnitSampleDTO unitSample)
+    public void Delete(string unitSampleName)
     {
-        _repository.Delete(new UnitSampleEntity()
-        {
-            Name = unitSample.Name
-        });
+        _repository.Delete(unitSampleName);
     }
 
     public void Update(UnitSampleDTO unitSample)

@@ -42,12 +42,9 @@ public class ProvinceService : IProvinceService
         _repository.Create(provinceEntity);
     }
 
-    public void Delete(ProvinceDTO province)
+    public void Delete(string provinceName)
     {
-        _repository.Delete(new ProvinceEntity
-        {
-            Name = province.Name
-        });
+        _repository.Delete(provinceName);
     }
 
     public void Update(ProvinceDTO province)

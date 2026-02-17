@@ -40,12 +40,12 @@ public class ArmyService : IArmyService
             SubArmies = new List<ArmyEntity>(),
         };
 
-        if(army.ParentName != null || army.ParentName.Length <= 0)
+        if(!string.IsNullOrWhiteSpace(army.ParentName))
         {
             entity.ParentId = _repository.GetIdByName(army.ParentName);
         }
 
-        if(army.CityName != null)
+        if(!string.IsNullOrWhiteSpace(army.CityName))
         {
             entity.CityId = _cityRepository.GetIdByName(army?.CityName);
         }
@@ -53,12 +53,9 @@ public class ArmyService : IArmyService
         _repository.Create(entity);
     }
 
-    public void Delete(ArmyDTO army)
+    public void Delete(string armyName)
     {
-        _repository.Delete(new ArmyEntity
-        {
-            Name = army.Name
-        });
+        _repository.Delete(armyName);
     }
 
     public void Update(ArmyDTO army)

@@ -23,6 +23,12 @@ public class UnitModule : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("create_unit", "Начать подготовку юнитов")]
     public async Task CreateUnitAsync(string sampleName, int quantity, string armyName)
     {
+        if(quantity <= 0)
+        {
+            await RespondAsync("Количество должно быть положительным числом.");
+            return;
+        }
+
         if (Context.Guild == null)
         {
             await RespondAsync("Команда доступна только на сервере.");
@@ -33,12 +39,20 @@ public class UnitModule : InteractionModuleBase<SocketInteractionContext>
         if(session == null)
         {
             await RespondAsync("На этом сервере нет активной игровой сессии. Попросите администраторов создать её");
+            return;
         }
 
         var sample = _sampleService.GetAll(Context.User.Id).FirstOrDefault(s => s.Name == sampleName);
         if(sample == null)
         {
             await RespondAsync("Шаблон юнита не найден.");
+            return;
+        }
+
+        var armyId = _armyService.GetIdByName(armyName);
+        if(armyId == null)
+        {
+            await RespondAsync("Армия не найдена.");
             return;
         }
 

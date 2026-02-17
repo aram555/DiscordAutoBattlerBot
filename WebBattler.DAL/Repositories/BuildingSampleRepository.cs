@@ -20,15 +20,22 @@ public class BuildingSampleRepository : IBuildingSampleRepository
         _context.SaveChanges();
     }
 
-    public void Delete(BuildingSampleEntity buildingSample)
+    public void Delete(string buildingSampleName)
     {
-        var entity = _context.BuildingSamples.FirstOrDefault(b => b.Name == buildingSample.Name);
+        if (string.IsNullOrEmpty(buildingSampleName))
+        {
+            return;
+        }
+
+        var entity = _context.BuildingSamples.FirstOrDefault(b => b.Name == buildingSampleName);
 
         if (entity != null)
         {
-            _context.BuildingSamples.Remove(buildingSample);
-            _context.SaveChanges();
+            return;
         }
+
+        _context.BuildingSamples.Remove(entity);
+        _context.SaveChanges();
     }
 
     public void Update(BuildingSampleEntity buildingSample)

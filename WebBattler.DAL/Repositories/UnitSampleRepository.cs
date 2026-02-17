@@ -1,4 +1,5 @@
-﻿using WebBattler.DAL.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
 using WebBattler.DAL.Models;
 
@@ -19,15 +20,22 @@ public class UnitSampleRepository : IUnitSampleRepository
         _dbContext.SaveChanges();
     }
 
-    public void Delete(UnitSampleEntity unitSample)
+    public void Delete(string unitSampleName)
     {
-        var entity = _dbContext.UnitSamples.FirstOrDefault(u => u.Name == unitSample.Name);
+        if (string.IsNullOrEmpty(unitSampleName))
+        {
+            return;
+        }
+
+        var entity = _dbContext.UnitSamples.FirstOrDefault(u => u.Name == unitSampleName);
 
         if (entity != null)
         {
-            _dbContext.UnitSamples.Remove(entity);
-            _dbContext.SaveChanges();
+            return;
         }
+
+        _dbContext.UnitSamples.Remove(entity);
+        _dbContext.SaveChanges();
     }
 
     public void Update(UnitSampleEntity unitSample)
