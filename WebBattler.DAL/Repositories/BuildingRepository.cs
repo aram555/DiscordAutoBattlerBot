@@ -59,4 +59,9 @@ public class BuildingRepository : IBuildingRepository
             .Where(a => a.OwnerId == ownerId)
             .ToList();
     }
+
+    public List<BuildingEntity> GetAll()
+    {
+        return _dbContext.Buildings.ToList();
+    }
 }

@@ -10,4 +10,6 @@ public interface ICountryRepository
     public int GetIdByName(string name);
     public CountryEntity GetById(int id);
     public List<CountryEntity> GetAll(ulong ownerId);
+    public List<CountryEntity> GetAllBySessionId(int sessionId);
+    public Dictionary<int, int> GetIncomebySessionId(int sessionId);
 }

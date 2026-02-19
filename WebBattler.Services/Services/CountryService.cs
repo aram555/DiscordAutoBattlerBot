@@ -3,6 +3,7 @@ using WebBattler.DAL.Models;
 using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
 using WebBattler.Services.Interfaces;
+using System.Text;
 
 namespace WebBattler.Services.Services;
 
@@ -22,6 +23,7 @@ public class CountryService : ICountryService
             Name = country.Name,
             OwnerId = country.OwnerId,
             Description = country.Description,
+            Money = country.Money,
             GameSessionId = country.GameSessionId,
             Provinces = new List<ProvinceEntity>(),
             Armies = new List<ArmyEntity>(),
@@ -55,6 +57,7 @@ public class CountryService : ICountryService
         {
             Name = entity.Name,
             Description = entity.Description,
+            Money= entity.Money,
             OwnerId = entity.OwnerId,
             Provinces = entity.Provinces.Select(p => new ProvinceModel()
             {
@@ -91,6 +94,7 @@ public class CountryService : ICountryService
             {
                 Name = entity.Name,
                 Description = entity.Description,
+                Money = entity.Money,
                 OwnerId = entity.OwnerId,
                 Provinces = entity.Provinces.Select(p => new ProvinceModel()
                 {
@@ -124,5 +128,24 @@ public class CountryService : ICountryService
         }
 
         return list;
+    }
+
+    public string ApplyIncomeForTurn(int sessionId)
+    {
+        var incomeByCountryId = _repository.GetIncomebySessionId(sessionId);
+        var countries = _repository.GetAllBySessionId(sessionId);
+
+        var sb = new StringBuilder();
+
+        foreach (var country in countries)
+        {
+            var income = incomeByCountryId.GetValueOrDefault(country.Id, 0);
+            country.Money += income;
+            _repository.Update(country);
+
+            sb.AppendLine($"{country.Name}: +{income} монет (всего: {country.Money})");
+        }
+
+        return sb.ToString();
     }
 }

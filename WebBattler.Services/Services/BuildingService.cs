@@ -1,4 +1,5 @@
 ﻿using WebBattler.DAL.DTO;
+using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
 using WebBattler.DAL.Models;
 using WebBattler.Services.Interfaces;
@@ -9,11 +10,16 @@ public class BuildingService : IBuildingService
 {
     private readonly IBuildingRepository _repository;
     private readonly ICityRepository _cityRepository;
+    private readonly ICountryRepository _countryRepository;
 
-    public BuildingService(IBuildingRepository buildingRepository, ICityRepository cityRepository)
+    public BuildingService(
+        IBuildingRepository buildingRepository,
+        ICityRepository cityRepository,
+        ICountryRepository countryRepository)
     {
         _repository = buildingRepository;
         _cityRepository = cityRepository;
+        _countryRepository = countryRepository;
     }
 
     public void Create(BuildingDTO building)
@@ -39,7 +45,28 @@ public class BuildingService : IBuildingService
 
     public void Update(BuildingDTO building)
     {
-        throw new NotImplementedException();
+        var entity = new BuildingEntity()
+        {
+            Name = building.Name,
+            Description = building.Description,
+            Level = building.Level,
+            Cost = building.Cost,
+            Profit = building.Profit,
+            OwnerId = building.OwnerId
+        };
+
+        _repository.Update(entity);
+    }
+
+    public void AddMoney(string buildingName, ulong ownerId)
+    {
+        var country = _countryRepository.GetAll(ownerId);
+        var building = _repository.GetAll(ownerId).FirstOrDefault(b => b.Name == buildingName);
+
+        if (building == null)
+        {
+            return;
+        }
     }
 
     public int GetIdByName(string name)
@@ -76,6 +103,26 @@ public class BuildingService : IBuildingService
                 Level = entity.Level,
                 Profit = entity.Profit,
                 OwnerId = ownerId
+            });
+        }
+
+        return list;
+    }
+
+    public List<BuildingModel> GetAll()
+    {
+        var list = new List<BuildingModel>();
+
+        foreach(var entity in _repository.GetAll())
+        {
+            list.Add(new BuildingModel()
+            {
+                Name = entity.Name,
+                Description = entity.Description,
+                Cost = entity.Cost,
+                Level = entity.Level,
+                Profit = entity.Profit,
+                OwnerId = entity.OwnerId
             });
         }
 

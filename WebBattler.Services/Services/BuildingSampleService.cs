@@ -25,6 +25,7 @@ public class BuildingSampleService : IBuildingSampleService
             Name = buildingSample.Name,
             Description = buildingSample.Description,
             Cost = buildingSample.Cost,
+            Profit = buildingSample.Income,
             Level = buildingSample.Level,
             BuildTurns = buildingSample.BuildTurns,
             CountryId = _countryRepository.GetIdByName(buildingSample.CountryName),

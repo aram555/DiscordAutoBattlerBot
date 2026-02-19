@@ -18,6 +18,7 @@ public class CountryMapper : EntityMapperBase<CountryModel, Country>
     {
         model.Name = domain.Name;
         model.Description = domain.Description;
+        model.Money = domain.Money;
         model.OwnerId = domain.OwnerId;
     }
 }

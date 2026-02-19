@@ -6,6 +6,7 @@ public class ProductionOrderDTO
     public int GameSessionId { get; set; }
     public string OrderType { get; set; } = null!;
     public int Quantity { get; set; }
+    public int Cost { get; set; }
     public int? UnitSampleId { get; set; }
     public int? BuildingSampleId { get; set; }
     public int? ArmyId { get; set; }

@@ -6,5 +6,6 @@ public class CountryDTO
     public string Name { get; set; }
     public string Description { get; set; }
     public int GameSessionId { get; set; }
+    public int Money { get; set; }
     public List<ProvinceDTO> Provinces { get; set; }
 }

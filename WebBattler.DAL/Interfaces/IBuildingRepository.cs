@@ -10,4 +10,5 @@ public interface IBuildingRepository
     public int GetIdByName(string name);
     public BuildingEntity GetById(int id);
     public List<BuildingEntity> GetAll(ulong ownerId);
+    public List<BuildingEntity> GetAll();
 }

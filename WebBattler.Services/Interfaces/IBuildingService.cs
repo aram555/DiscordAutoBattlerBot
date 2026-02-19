@@ -12,4 +12,5 @@ public interface IBuildingService
     public int GetIdByName(string name);
     public BuildingModel GetById(int id);
     public List<BuildingModel> GetAll(ulong ownerId);
+    public List<BuildingModel> GetAll();
 }

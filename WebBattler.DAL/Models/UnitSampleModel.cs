@@ -7,5 +7,6 @@ public class UnitSampleModel
     public float Health { get; set; }
     public string Weapon { get; set; }
     public int BuildTurns { get; set; }
+    public int Cost { get; set; }
     public CountryModel Country { get; set; }
 }

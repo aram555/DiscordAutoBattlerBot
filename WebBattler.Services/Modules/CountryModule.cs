@@ -18,7 +18,7 @@ public class CountryModule : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("create_country", "Создание страны")]
-    public async Task CreateCountryAsync(string name, string desc)
+    public async Task CreateCountryAsync(string name, string desc, int startMoney)
     {
         if(Context.Guild == null)
         {
@@ -39,6 +39,7 @@ public class CountryModule : InteractionModuleBase<SocketInteractionContext>
             Name = name,
             Description = desc,
             GameSessionId = gameSession.Id,
+            Money = startMoney,
             Provinces = new List<ProvinceDTO>()
         };
 
@@ -60,7 +61,7 @@ public class CountryModule : InteractionModuleBase<SocketInteractionContext>
         {
             embed = new EmbedBuilder()
                 .WithColor(Color.DarkGreen)
-                .WithTitle(country.Name)
+                .WithTitle($"{country.Name} | {country.Money}")
                 .WithDescription(country.Description);
 
             foreach(var province in country.Provinces)

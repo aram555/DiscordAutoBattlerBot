@@ -62,6 +62,7 @@ public class UnitModule : InteractionModuleBase<SocketInteractionContext>
             GameSessionId = session.Id,
             OrderType = "Unit",
             Quantity = quantity,
+            Cost = sample.Cost * quantity,
             UnitSampleId = _sampleService.GetIdByName(sampleName),
             ArmyId = _armyService.GetIdByName(armyName),
             BuildTurns = sample.BuildTurns

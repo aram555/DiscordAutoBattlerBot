@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebBattler.DAL;
 
@@ -11,9 +12,11 @@ using WebBattler.DAL;
 namespace WebBattler.DAL.Migrations
 {
     [DbContext(typeof(AutobattlerDbContext))]
-    partial class AutobattlerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260218083335_Added Money")]
+    partial class AddedMoney
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,9 +281,6 @@ namespace WebBattler.DAL.Migrations
                     b.Property<int?>("CityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Cost")
-                        .HasColumnType("int");
-
                     b.Property<int>("GameSessionId")
                         .HasColumnType("int");
 
@@ -392,9 +392,6 @@ namespace WebBattler.DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BuildTurns")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Cost")
                         .HasColumnType("int");
 
                     b.Property<int>("CountryId")

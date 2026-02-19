@@ -11,4 +11,5 @@ public interface ICountryService
     public int GetIdByName(string name);
     public CountryModel GetById(int id);
     public List<CountryModel> GetAll(ulong ownerId);
+    public string ApplyIncomeForTurn(int sessionId);
 }

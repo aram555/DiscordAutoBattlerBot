@@ -11,6 +11,7 @@ public class ProductionOrderEntity
     public string OrderType { get; set; } = null!;
     public string Status { get; set; } = "Queued";
     public int Quantity { get; set; }
+    public int Cost { get; set; }
 
     public int? UnitSampleId { get; set; }
     public UnitSampleEntity? UnitSample { get; set; }

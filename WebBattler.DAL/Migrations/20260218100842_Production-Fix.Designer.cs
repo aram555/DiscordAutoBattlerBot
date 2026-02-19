@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebBattler.DAL;
 
@@ -11,9 +12,11 @@ using WebBattler.DAL;
 namespace WebBattler.DAL.Migrations
 {
     [DbContext(typeof(AutobattlerDbContext))]
-    partial class AutobattlerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260218100842_Production-Fix")]
+    partial class ProductionFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

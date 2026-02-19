@@ -24,7 +24,7 @@ public class BuildingModule : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("create_building", "Запустить строительство по шаблону")]
-    public async Task CreateBuildingAsync(string sampleName, string cityName)
+    public async Task CreateBuildingAsync(string sampleName, int quantity, string cityName)
     {
         if(string.IsNullOrWhiteSpace(cityName))
         {
@@ -63,17 +63,18 @@ public class BuildingModule : InteractionModuleBase<SocketInteractionContext>
             return;
         }
 
-        _orders.Queue(new ProductionOrderDTO
+        var dto = new ProductionOrderDTO
         {
             OwnerId = Context.User.Id,
             GameSessionId = session.Id,
             OrderType = "Building",
-            Quantity = 1,
+            Quantity = quantity,
+            Cost = sample.Cost * quantity,
             BuildingSampleId = _sampleService.GetIdByName(sampleName),
             CityId = cityId,
             BuildTurns = sample.BuildTurns
-        });
+        };
 
-        await RespondAsync($"Строительство {sampleName} начато. Готово через {sample.BuildTurns} ход(а/ов).");
+        await RespondAsync(_orders.Queue(dto));
     }
 }

@@ -10,14 +10,17 @@ public class GameSessionModule : InteractionModuleBase<SocketInteractionContext>
     private readonly IGameSessionService _service;
     private readonly IProductionOrderService _productionOrderService;
     private readonly IArmyService _armyService;
+    private readonly ICountryService _countryService;
 
     public GameSessionModule(IGameSessionService service,
         IProductionOrderService productionOrderService,
-        IArmyService armyService)
+        IArmyService armyService,
+        ICountryService countryService)
     {
         _service = service;
         _productionOrderService = productionOrderService;
         _armyService = armyService;
+        _countryService = countryService;
     }
 
     [SlashCommand("create_session", "Создать игровую сессию для текущего сервера")]
@@ -64,6 +67,7 @@ public class GameSessionModule : InteractionModuleBase<SocketInteractionContext>
 
         var updated = _service.GetById(session.Id);
         var productionLog = _productionOrderService.ProcessTurn(session.Id, updated.CurrentTurn);
+        var incomeLog = _countryService.ApplyIncomeForTurn(session.Id);
 
         var response = new StringBuilder();
         response.AppendLine($"Новый ход: {updated.CurrentTurn}");
@@ -77,6 +81,11 @@ public class GameSessionModule : InteractionModuleBase<SocketInteractionContext>
         {
             response.AppendLine($"Производство");
             response.AppendLine(productionLog);
+        }
+        if(!string.IsNullOrWhiteSpace(incomeLog))
+        {
+            response.AppendLine($"Доходы");
+            response.AppendLine(incomeLog);
         }
 
         foreach(var chank in SplitMessage(response.ToString(), 1900))

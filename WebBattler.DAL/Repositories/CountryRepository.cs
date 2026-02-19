@@ -64,4 +64,20 @@ public class CountryRepository : ICountryRepository
                     .ThenInclude(b => b.Buildings)
             .ToList();
     }
+
+    public List<CountryEntity> GetAllBySessionId(int sessionId)
+    {
+        return _context.Countries
+            .Where(c => c.GameSessionId == sessionId)
+            .ToList();
+    }
+
+    public Dictionary<int, int> GetIncomebySessionId(int sessionId)
+    {
+        return _context.Buildings
+            .Where(b => b.City.Province.Country.GameSessionId == sessionId)
+            .GroupBy(b => b.City.Province.CountryId)
+            .Select(g => new { CountryId = g.Key, Income = g.Sum(b => b.Profit) })
+            .ToDictionary(x => x.CountryId, x => x.Income);
+    }
 }
