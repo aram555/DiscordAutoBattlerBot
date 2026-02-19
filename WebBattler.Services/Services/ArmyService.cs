@@ -37,6 +37,7 @@ public class ArmyService : IArmyService
         {
             OwnerId = army.OwnerId,
             Name = army.Name,
+            Status = "Waiting",
             CountryId = _countryRepository.GetIdByName(army.CountryName),
             ProvinceId = _provinceRepository.GetIdByName(army.ProvinceName),
             Units = army.Units.Select(u => new UnitEntity
@@ -90,6 +91,7 @@ public class ArmyService : IArmyService
         {
             Name = entity.Name,
             OwnerId = entity.OwnerId,
+            Status = entity.Status,
             Units = entity.Units.Select(u => new UnitModel()
             {
                 Name = u.Name,
@@ -177,6 +179,12 @@ public class ArmyService : IArmyService
                 activeArmies = armiesInProvince.Where(a => a.Units.Any(u => u.Health > 0)).ToList();
                 if (activeArmies.Count < 2)
                 {
+                    foreach (var army in activeArmies)
+                    {
+                        army.Status = "Waiting";
+                        _repository.Update(army);
+                    }
+
                     break;
                 }
             }

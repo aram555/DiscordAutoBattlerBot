@@ -25,6 +25,11 @@ public class Move
             return new MoveResult(false, "Армия не найдена");
         }
 
+        if (army.Status == "In Battle")
+        {
+            return new MoveResult(false, "Армия находится в бою и не может перемещаться");
+        }
+
         var province = army.Province.Neighbours.FirstOrDefault(n => n.Name == provinceName);
 
         if (province == null)
@@ -56,10 +61,16 @@ public class Move
 
         if (enemyArmies.Count > 0)
         {
+            var armyEntity = _service.GetById(_service.GetIdByName(army.Name)!.Value);
+            armyEntity.Status = "In Battle";
+
             StringBuilder battleResults = new StringBuilder();
 
             foreach (var enemyArmy in enemyArmies)
             {
+                var entity = _service.GetById(_service.GetIdByName(enemyArmy.Name)!.Value);
+                entity.Status = "In Battle";
+
                 var result = _StartBattle(army, enemyArmy);
 
                 battleResults.Append(result.BattleLog.ToString());
