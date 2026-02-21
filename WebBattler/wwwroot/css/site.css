@@ -20,3 +20,12 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.admin-page .admin-hero {
+    border: none;
+    background: linear-gradient(130deg, #f7f9ff 0%, #ffffff 65%);
+}
+
+.admin-page .table th {
+    white-space: nowrap;
+}

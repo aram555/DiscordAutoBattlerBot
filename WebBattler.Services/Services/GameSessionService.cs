@@ -17,9 +17,16 @@ public class GameSessionService : IGameSessionService
 
     public GameSessionModel Create(GameSessionDTO dto)
     {
-        var existing = _repository.GetByGuildId(dto.GuildId);
+        var existing = _repository
+            .GetAll()
+            .FirstOrDefault(sesssion => sesssion.GuildId == dto.GuildId);
+
         if (existing != null)
         {
+            existing.Name = dto.Name;
+            existing.IsActive = true;
+
+            _repository.Update(existing);
             return _Map(existing);
         }
 
@@ -49,10 +56,18 @@ public class GameSessionService : IGameSessionService
         return entity == null ? null : _Map(entity);
     }
 
+    public IReadOnlyCollection<GameSessionModel> GetAll()
+    {
+        return _repository
+            .GetAll()
+            .Select(_Map)
+            .ToList();
+    }
+
     public void AdvanceTurn(int gameSessionId)
     {
         var entity = _repository.GetById(gameSessionId);
-        if (entity == null)
+        if (entity == null || !entity.IsActive)
         {
             return;
         }
@@ -60,6 +75,19 @@ public class GameSessionService : IGameSessionService
         entity.CurrentTurn++;
         entity.CurrentYear = entity.CurrentTurn;
         _repository.Update(entity);
+    }
+
+    public bool SetActive(int gameSessionId, bool isActive)
+    {
+        var entity = _repository.GetById(gameSessionId);
+        if(entity == null)
+        {
+            return false;
+        }
+
+        entity.IsActive = isActive;
+        _repository.Update(entity);
+        return true;
     }
 
     private static GameSessionModel _Map(GameSessionEntity e) => new()

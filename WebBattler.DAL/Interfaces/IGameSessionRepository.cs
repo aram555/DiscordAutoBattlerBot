@@ -7,5 +7,6 @@ public interface IGameSessionRepository
     void Create(GameSessionEntity session);
     GameSessionEntity? GetByGuildId(ulong guildId);
     GameSessionEntity? GetById(int id);
+    IReadOnlyCollection<GameSessionEntity> GetAll();
     void Update(GameSessionEntity session);
 }

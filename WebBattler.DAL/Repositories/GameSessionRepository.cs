@@ -28,6 +28,14 @@ public class GameSessionRepository : IGameSessionRepository
         return _context.GameSessions.FirstOrDefault(s => s.Id == id);
     }
 
+    public IReadOnlyCollection<GameSessionEntity> GetAll()
+    {
+        return _context.GameSessions
+            .OrderByDescending(s => s.IsActive)
+            .ThenBy(s => s.Name)
+            .ToList();
+    }
+
     public void Update(GameSessionEntity session)
     {
         _context.SaveChanges();

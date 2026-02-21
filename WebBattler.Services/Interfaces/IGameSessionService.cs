@@ -8,5 +8,7 @@ public interface IGameSessionService
     GameSessionModel Create(GameSessionDTO dto);
     GameSessionModel? GetByGuildId(ulong guildId);
     GameSessionModel? GetById(int id);
+    IReadOnlyCollection<GameSessionModel> GetAll();
     void AdvanceTurn(int gameSessionId);
+    bool SetActive(int gameSessionId, bool isActive);
 }
