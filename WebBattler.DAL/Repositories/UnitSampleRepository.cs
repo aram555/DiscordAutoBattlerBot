@@ -40,7 +40,8 @@ public class UnitSampleRepository : IUnitSampleRepository
 
     public void Update(UnitSampleEntity unitSample)
     {
-        throw new NotImplementedException();
+        _dbContext.UnitSamples.Update(unitSample);
+        _dbContext.SaveChanges();
     }
 
     public int GetIdByName(string name)

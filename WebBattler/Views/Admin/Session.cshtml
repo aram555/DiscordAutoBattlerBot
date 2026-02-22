@@ -1,0 +1,172 @@
+﻿@model WebBattler.Models.Admin.SessionManagementViewModel
+@{
+    ViewData["Title"] = "Управление сессией";
+}
+
+<div class="admin-page">
+    <section class="admin-hero card shadow-sm mb-4">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 mb-1">Сессия: @Model.SessionName</h1>
+                <p class="text-muted mb-0">Настройка стран, карты, шаблонов и армий для ВПИ.</p>
+            </div>
+            <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+        </div>
+    </section>
+
+    @if (TempData["StatusMessage"] is string status)
+    {
+        <div class="alert alert-info">@status</div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4"><div class="card-body">
+                <h2 class="h5">Страна</h2>
+                <form asp-action="CreateCountry" asp-route-sessionId="@Model.SessionId" method="post">
+                    @Html.AntiForgeryToken()
+                    <input class="form-control mb-2" name="Name" placeholder="Название" required />
+                    <input class="form-control mb-2" name="OwnerId" placeholder="OwnerId" type="number" required />
+                    <input class="form-control mb-2" name="Money" placeholder="Стартовые деньги" type="number" />
+                    <textarea class="form-control mb-2" name="Description" placeholder="Описание"></textarea>
+                    <button class="btn btn-primary w-100" type="submit">Создать страну</button>
+                </form>
+            </div></div>
+
+            <div class="card shadow-sm mb-4"><div class="card-body">
+                <h2 class="h5">Провинция и соседи</h2>
+                <form asp-action="CreateProvince" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
+                    @Html.AntiForgeryToken()
+                    <input class="form-control mb-2" name="Name" placeholder="Название провинции" required />
+                    <input class="form-control mb-2" name="OwnerId" placeholder="OwnerId" type="number" required />
+                    <select class="form-select mb-2" name="CountryName" required>
+                        <option value="">Страна</option>
+                        @foreach (var country in Model.Countries) { <option value="@country.Name">@country.Name</option> }
+                    </select>
+                    <textarea class="form-control mb-2" name="Description" placeholder="Описание"></textarea>
+                    <button class="btn btn-primary w-100" type="submit">Создать провинцию</button>
+                </form>
+
+                <form asp-action="AddNeighbour" asp-route-sessionId="@Model.SessionId" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-2">
+                        <div class="col">
+                            <select class="form-select" name="ProvinceName" required>
+                                <option value="">Провинция</option>
+                                @foreach (var province in Model.Provinces) { <option value="@province.Name">@province.Name</option> }
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" name="NeighbourName" required>
+                                <option value="">Сосед</option>
+                                @foreach (var province in Model.Provinces) { <option value="@province.Name">@province.Name</option> }
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary w-100 mt-2" type="submit">Связать соседей</button>
+                </form>
+            </div></div>
+
+            <div class="card shadow-sm"><div class="card-body">
+                <h2 class="h5">Город</h2>
+                <form asp-action="CreateCity" asp-route-sessionId="@Model.SessionId" method="post">
+                    @Html.AntiForgeryToken()
+                    <input class="form-control mb-2" name="Name" placeholder="Название" required />
+                    <input class="form-control mb-2" name="OwnerId" placeholder="OwnerId" type="number" required />
+                    <select class="form-select mb-2" name="ProvinceName" required>
+                        <option value="">Провинция</option>
+                        @foreach (var province in Model.Provinces) { <option value="@province.Name">@province.Name</option> }
+                    </select>
+                    <div class="row g-2 mb-2">
+                        <div class="col"><input class="form-control" name="Population" type="number" placeholder="Население" required /></div>
+                        <div class="col"><input class="form-control" name="Level" type="number" placeholder="Уровень" required /></div>
+                    </div>
+                    <textarea class="form-control mb-2" name="Description" placeholder="Описание"></textarea>
+                    <div class="form-check mb-2"><input class="form-check-input" type="checkbox" name="IsCapital" value="true" /><label class="form-check-label">Столица</label></div>
+                    <button class="btn btn-primary w-100" type="submit">Создать город</button>
+                </form>
+            </div></div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4"><div class="card-body">
+                <h2 class="h5">Шаблоны</h2>
+                <form asp-action="CreateUnitSample" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
+                    @Html.AntiForgeryToken()
+                    <input class="form-control mb-2" name="Name" placeholder="Шаблон юнита" required />
+                    <input class="form-control mb-2" name="OwnerId" type="number" placeholder="OwnerId" required />
+                    <select class="form-select mb-2" name="CountryName" required>
+                        <option value="">Страна</option>
+                        @foreach (var country in Model.Countries) { <option value="@country.Name">@country.Name</option> }
+                    </select>
+                    <div class="row g-2 mb-2">
+                        <div class="col"><input class="form-control" name="Health" type="number" step="0.1" placeholder="HP" required /></div>
+                        <div class="col"><input class="form-control" name="Cost" type="number" placeholder="Стоимость" required /></div>
+                    </div>
+                    <input class="form-control mb-2" name="Weapon" placeholder="Оружие" required />
+                    <input class="form-control mb-2" name="BuildTurns" type="number" placeholder="Ходы строительства" required />
+                    <button class="btn btn-outline-primary w-100" type="submit">Создать шаблон юнита</button>
+                </form>
+
+                <form asp-action="CreateBuildingSample" asp-route-sessionId="@Model.SessionId" method="post">
+                    @Html.AntiForgeryToken()
+                    <input class="form-control mb-2" name="Name" placeholder="Шаблон здания" required />
+                    <input class="form-control mb-2" name="OwnerId" type="number" placeholder="OwnerId" required />
+                    <select class="form-select mb-2" name="CountryName" required>
+                        <option value="">Страна</option>
+                        @foreach (var country in Model.Countries) { <option value="@country.Name">@country.Name</option> }
+                    </select>
+                    <div class="row g-2 mb-2">
+                        <div class="col"><input class="form-control" name="Level" type="number" placeholder="Уровень" required /></div>
+                        <div class="col"><input class="form-control" name="Cost" type="number" placeholder="Стоимость" required /></div>
+                    </div>
+                    <div class="row g-2 mb-2">
+                        <div class="col"><input class="form-control" name="Income" type="number" placeholder="Доход" required /></div>
+                        <div class="col"><input class="form-control" name="BuildTurns" type="number" placeholder="Ходы" required /></div>
+                    </div>
+                    <textarea class="form-control mb-2" name="Description" placeholder="Описание"></textarea>
+                    <button class="btn btn-outline-primary w-100" type="submit">Создать шаблон здания</button>
+                </form>
+            </div></div>
+
+            <div class="card shadow-sm mb-4"><div class="card-body">
+                <h2 class="h5">Армии и юниты</h2>
+                <form asp-action="CreateArmy" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
+                    @Html.AntiForgeryToken()
+                    <input class="form-control mb-2" name="Name" placeholder="Название армии" required />
+                    <input class="form-control mb-2" name="OwnerId" type="number" placeholder="OwnerId" required />
+                    <select class="form-select mb-2" name="CountryName" required>
+                        <option value="">Страна</option>
+                        @foreach (var country in Model.Countries) { <option value="@country.Name">@country.Name</option> }
+                    </select>
+                    <select class="form-select mb-2" name="ProvinceName" required>
+                        <option value="">Провинция</option>
+                        @foreach (var province in Model.Provinces) { <option value="@province.Name">@province.Name</option> }
+                    </select>
+                    <select class="form-select mb-2" name="CityName">
+                        <option value="">(опционально) Город</option>
+                        @foreach (var city in Model.Cities) { <option value="@city.Name">@city.Name</option> }
+                    </select>
+                    <select class="form-select mb-2" name="ParentName">
+                        <option value="">(опционально) Родительская армия</option>
+                        @foreach (var army in Model.Armies) { <option value="@army.Name">@army.Name</option> }
+                    </select>
+                    <button class="btn btn-primary w-100" type="submit">Создать армию</button>
+                </form>
+
+                <form asp-action="CreateUnit" asp-route-sessionId="@Model.SessionId" method="post">
+                    @Html.AntiForgeryToken()
+                    <input class="form-control mb-2" name="Name" placeholder="Имя юнита" required />
+                    <input class="form-control mb-2" name="OwnerId" type="number" placeholder="OwnerId" required />
+                    <select class="form-select mb-2" name="ArmyName" required>
+                        <option value="">Армия</option>
+                        @foreach (var army in Model.Armies) { <option value="@army.Name">@army.Name</option> }
+                    </select>
+                    <input class="form-control mb-2" name="Weapon" placeholder="Оружие" required />
+                    <input class="form-control mb-2" name="Health" type="number" step="0.1" placeholder="HP" required />
+                    <button class="btn btn-primary w-100" type="submit">Создать юнит</button>
+                </form>
+            </div></div>
+        </div>
+    </div>
+</div>

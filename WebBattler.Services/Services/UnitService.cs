@@ -37,13 +37,32 @@ public class UnitService : IUnitService
 
     public void Update(UnitDTO unit)
     {
-        UnitEntity entity = new()
+        var entity = _unitRepository.GetById(_unitRepository.GetIdByName(unit.Name));
+        
+        if(entity == null)
         {
-            Name = unit.Name,
-            Health = unit.Health,
-            Weapon = unit.Weapon,
-            ArmyId = _armyRepository.GetIdByName(unit.ArmyName) ?? 0,
-        };
+            return;
+        }
+
+        if (unit.Health > 0)
+        {
+            entity.Health = unit.Health;
+        }
+
+        if (!string.IsNullOrWhiteSpace(unit.Weapon))
+        {
+            entity.Weapon = unit.Weapon;
+        }
+
+        if (!string.IsNullOrWhiteSpace(unit.ArmyName))
+        {
+            entity.ArmyId = _armyRepository.GetIdByName(unit.ArmyName) ?? entity.ArmyId;
+        }
+
+        if (unit.OwnerId != default)
+        {
+            entity.OwnerId = unit.OwnerId;
+        }
 
         _unitRepository.Update(entity);
     }

@@ -39,7 +39,8 @@ public class CityRepository : ICityRepository
     }
     public void Update(CityEntity city)
     {
-        throw new NotImplementedException();
+        _context.Cities.Update(city);
+        _context.SaveChanges();
     }
 
     public CityEntity GetById(int id)

@@ -81,6 +81,7 @@
                                         </td>
                                         <td>
                                             <div class="d-flex gap-2 justify-content-end">
+                                                <a asp-controller="Admin" asp-action="Session" asp-route-id="@session.Id" class="btn btn-sm btn-outline-secondary">Управление</a>
                                                 <form asp-controller="Admin" asp-action="AdvanceTurn" method="post">
                                                     @Html.AntiForgeryToken()
                                                     <input type="hidden" name="id" value="@session.Id" />

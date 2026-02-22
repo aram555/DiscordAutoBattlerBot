@@ -41,7 +41,45 @@ public class BuildingSampleService : IBuildingSampleService
 
     public void Update(BuildingSampleDTO buildingSample)
     {
-        throw new NotImplementedException();
+        var entity = _repository.GetById(_repository.GetIdByName(buildingSample.Name));
+        if (entity == null)
+        {
+            return;
+        }
+
+        if (buildingSample.OwnerId != default)
+        {
+            entity.OwnerId = buildingSample.OwnerId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(buildingSample.Description))
+        {
+            entity.Description = buildingSample.Description;
+        }
+
+        if (buildingSample.Level > 0)
+        {
+            entity.Level = buildingSample.Level;
+        }
+
+        if (buildingSample.Cost > 0)
+        {
+            entity.Cost = buildingSample.Cost;
+        }
+
+        if (buildingSample.BuildTurns > 0)
+        {
+            entity.BuildTurns = buildingSample.BuildTurns;
+        }
+
+        if (!string.IsNullOrWhiteSpace(buildingSample.CountryName))
+        {
+            entity.CountryId = _countryRepository.GetIdByName(buildingSample.CountryName);
+        }
+
+        entity.Profit = buildingSample.Income;
+
+        _repository.Update(entity);
     }
 
     public int GetIdByName(string name)

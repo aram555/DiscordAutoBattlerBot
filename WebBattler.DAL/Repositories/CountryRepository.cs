@@ -40,6 +40,7 @@ public class CountryRepository : ICountryRepository
 
     public void Update(CountryEntity country)
     {
+        _context.Countries.Update(country);
         _context.SaveChanges();
     }
 
@@ -69,6 +70,13 @@ public class CountryRepository : ICountryRepository
     {
         return _context.Countries
             .Where(c => c.GameSessionId == sessionId)
+            .Include(c => c.Provinces)
+                .ThenInclude(p => p.Neighbours)
+            .Include(c => c.Provinces)
+                .ThenInclude(p => p.Cities)
+                    .ThenInclude(city => city.Buildings)
+            .Include(c => c.Armies)
+                .ThenInclude(a => a.Units)
             .ToList();
     }
 

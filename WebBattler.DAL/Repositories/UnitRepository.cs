@@ -40,16 +40,7 @@ public class UnitRepository : IUnitRepository
 
     public void Update(UnitEntity unit)
     {
-        var entity = _context.Units.FirstOrDefault(u => u.Name == unit.Name);
-
-        if (entity == null)
-        {
-            return;
-        }
-
-        entity.Health = unit.Health;
-        entity.Weapon = unit.Weapon;
-
+        _context.Units.Update(unit);
         _context.SaveChanges();
     }
 

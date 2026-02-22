@@ -40,7 +40,8 @@ public class BuildingSampleRepository : IBuildingSampleRepository
 
     public void Update(BuildingSampleEntity buildingSample)
     {
-        throw new NotImplementedException();
+        _context.BuildingSamples.Update(buildingSample);
+        _context.SaveChanges();
     }
 
     public BuildingSampleEntity GetById(int id)

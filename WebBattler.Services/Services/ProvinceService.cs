@@ -49,7 +49,33 @@ public class ProvinceService : IProvinceService
 
     public void Update(ProvinceDTO province)
     {
-        throw new NotImplementedException();
+        var entity = _repository.GetById(_repository.GetIdByName(province.Name));
+        if (entity == null)
+        {
+            return;
+        }
+
+        if(!string.IsNullOrWhiteSpace(province.Name))
+        {
+            entity.Name = province.Name;
+        }
+
+        if (!string.IsNullOrWhiteSpace(province.Description))
+        {
+            entity.Description = province.Description;
+        }
+
+        if (province.OwnerId != default)
+        {
+            entity.OwnerId = province.OwnerId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(province.CountryName))
+        {
+            entity.CountryId = _countryRepository.GetIdByName(province.CountryName);
+        }
+
+        _repository.Update(entity);
     }
 
     public string AddNeightbour(string provinceName, string neighbourName)

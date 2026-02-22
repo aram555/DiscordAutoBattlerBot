@@ -39,7 +39,8 @@ public class ArmyRepository : IArmyRepository
 
     public void Update(ArmyEntity army)
     {
-        throw new NotImplementedException();
+        _context.Armies.Update(army);
+        _context.SaveChanges();
     }
 
     public bool TryMoveToProvince(string armyName, string provinceName)

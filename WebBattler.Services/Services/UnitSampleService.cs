@@ -40,7 +40,48 @@ public class UnitSampleService : IUnitSampleService
 
     public void Update(UnitSampleDTO unitSample)
     {
-        throw new NotImplementedException();
+        var entity = _repository.GetById(_repository.GetIdByName(unitSample.Name));
+        if (entity == null)
+        {
+            return;
+        }
+
+        if(!string.IsNullOrWhiteSpace(unitSample.Name))
+        {
+            entity.Name = unitSample.Name;
+        }
+
+        if (unitSample.OwnerId != default)
+        {
+            entity.OwnerId = unitSample.OwnerId;
+        }
+
+        if (unitSample.Health > 0)
+        {
+            entity.Health = unitSample.Health;
+        }
+
+        if (!string.IsNullOrWhiteSpace(unitSample.Weapon))
+        {
+            entity.Weapon = unitSample.Weapon;
+        }
+
+        if (unitSample.BuildTurns > 0)
+        {
+            entity.BuildTurns = unitSample.BuildTurns;
+        }
+
+        if (unitSample.Cost > 0)
+        {
+            entity.Cost = unitSample.Cost;
+        }
+
+        if (!string.IsNullOrWhiteSpace(unitSample.Countryname))
+        {
+            entity.CountryId = _countryRepository.GetIdByName(unitSample.Countryname);
+        }
+
+        _repository.Update(entity);
     }
 
     public int GetIdByName(string name)

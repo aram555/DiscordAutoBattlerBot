@@ -45,15 +45,30 @@ public class BuildingService : IBuildingService
 
     public void Update(BuildingDTO building)
     {
-        var entity = new BuildingEntity()
+        var entity = _repository.GetById(_repository.GetIdByName(building.Name));
+
+        if (!string.IsNullOrWhiteSpace(building.Description))
         {
-            Name = building.Name,
-            Description = building.Description,
-            Level = building.Level,
-            Cost = building.Cost,
-            Profit = building.Profit,
-            OwnerId = building.OwnerId
-        };
+            entity.Description = building.Description;
+        }
+        if (building.Level > 0)
+        {
+            entity.Level = building.Level;
+        }
+        if (building.Cost > 0)
+        {
+            entity.Cost = building.Cost;
+        }
+        if (building.OwnerId != default)
+        {
+            entity.OwnerId = building.OwnerId;
+        }
+        if (!string.IsNullOrWhiteSpace(building.CityName))
+        {
+            entity.CityId = _cityRepository.GetIdByName(building.CityName);
+        }
+
+        entity.Profit = building.Profit;
 
         _repository.Update(entity);
     }

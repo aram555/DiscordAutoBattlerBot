@@ -70,7 +70,37 @@ public class ArmyService : IArmyService
 
     public void Update(ArmyDTO army)
     {
-        throw new NotImplementedException();
+        var armyId = _repository.GetIdByName(army.Name);
+        if (armyId == null)
+        {
+            return;
+        }
+
+        var entity = _repository.GetById(armyId.Value);
+        if (entity == null)
+        {
+            return;
+        }
+
+        if (army.OwnerId != default)
+        {
+            entity.OwnerId = army.OwnerId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(army.CountryName))
+        {
+            entity.CountryId = _countryRepository.GetIdByName(army.CountryName);
+        }
+
+        if (!string.IsNullOrWhiteSpace(army.ProvinceName))
+        {
+            entity.ProvinceId = _provinceRepository.GetIdByName(army.ProvinceName);
+        }
+
+        entity.ParentId = string.IsNullOrWhiteSpace(army.ParentName) ? null : _repository.GetIdByName(army.ParentName);
+        entity.CityId = string.IsNullOrWhiteSpace(army.CityName) ? null : _cityRepository.GetIdByName(army.CityName);
+
+        _repository.Update(entity);
     }
 
     public bool TryMoveToProvince(string armyName, string provinceName)

@@ -46,7 +46,36 @@ public class CityService : ICityService
 
     public void Update(CityDTO city)
     {
-        throw new NotImplementedException();
+        var entity = _repository.GetById(_repository.GetIdByName(city.Name));
+        if (entity == null)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(city.Description))
+        {
+            entity.Description = city.Description;
+        }
+        if (city.OwnerId != default)
+        {
+            entity.OwnerId = city.OwnerId;
+        }
+        if (city.Population > 0)
+        {
+            entity.Population = city.Population;
+        }
+        if (city.Level > 0)
+        {
+            entity.Level = city.Level;
+        }
+        if (!string.IsNullOrWhiteSpace(city.ProvinceName))
+        {
+            entity.ProvinceId = _provinceRepository.GetIdByName(city.ProvinceName);
+        }
+
+        entity.IsCapital = city.IsCapital;
+
+        _repository.Update(entity);
     }
 
     public int GetIdByName(string name)

@@ -40,7 +40,8 @@ public class ProvinceRepository : IProvinceRepository
 
     public void Update(ProvinceEntity province)
     {
-        throw new NotImplementedException();
+        _dbContext.Provinces.Update(province);
+        _dbContext.SaveChanges();
     }
 
     public void AddNeightbour(string provinceName, string neightbourName)

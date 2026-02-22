@@ -41,7 +41,35 @@ public class CountryService : ICountryService
 
     public void Update(CountryDTO country)
     {
-        throw new NotImplementedException();
+        var entity = _repository.GetById(_repository.GetIdByName(country.Name));
+        if (entity == null)
+        {
+            return;
+        }
+
+        if(!string.IsNullOrWhiteSpace(country.Name))
+        {
+            entity.Name = country.Name;
+        }
+
+        if (!string.IsNullOrWhiteSpace(country.Description))
+        {
+            entity.Description = country.Description;
+        }
+
+        if (country.OwnerId != default)
+        {
+            entity.OwnerId = country.OwnerId;
+        }
+
+        if (country.GameSessionId > 0)
+        {
+            entity.GameSessionId = country.GameSessionId;
+        }
+
+        entity.Money = country.Money;
+
+        _repository.Update(entity);
     }
 
     public int GetIdByName(string name)
@@ -128,6 +156,49 @@ public class CountryService : ICountryService
         }
 
         return list;
+    }
+
+    public List<CountryModel> GetAllBySessionId(int sessionId)
+    {
+        return _repository.GetAllBySessionId(sessionId)
+            .Select(entity => new CountryModel
+            {
+                Name = entity.Name,
+                Description = entity.Description,
+                Money = entity.Money,
+                OwnerId = entity.OwnerId,
+                Provinces = entity.Provinces.Select(p => new ProvinceModel()
+                {
+                    Name = p.Name,
+                    Description = p.Description,
+                    OwnerId = p.OwnerId,
+                    Neighbours = p.Neighbours.Select(n => new ProvinceModel()
+                    {
+                        Name = n.Name,
+                        Description = n.Description,
+                        OwnerId = n.OwnerId
+                    }).ToList(),
+                    Cities = p.Cities.Select(c => new CityModel()
+                    {
+                        Name = c.Name,
+                        Description = c.Description,
+                        Population = c.Population,
+                        Level = c.Level,
+                        IsCapital = c.IsCapital,
+                        OwnerId = c.OwnerId,
+                        Buildings = c.Buildings.Select(b => new BuildingModel()
+                        {
+                            Name = b.Name,
+                            Description = b.Description,
+                            Cost = b.Cost,
+                            Level = b.Level,
+                            Profit = b.Profit,
+                            OwnerId = b.OwnerId
+                        }).ToList()
+                    }).ToList()
+                }).ToList()
+            })
+            .ToList();
     }
 
     public string ApplyIncomeForTurn(int sessionId)

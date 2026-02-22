@@ -40,7 +40,8 @@ public class BuildingRepository : IBuildingRepository
 
     public void Update(BuildingEntity building)
     {
-        throw new NotImplementedException();
+        _dbContext.Buildings.Update(building);
+        _dbContext.SaveChanges();
     }
 
     public int GetIdByName(string name)
