@@ -20,6 +20,7 @@ public class AdminController : Controller
     private readonly IUnitService _unitService;
     private readonly IUnitSampleService _unitSampleService;
     private readonly IBuildingSampleService _buildingSampleService;
+    private readonly IProductionOrderService _productionOrderService;
 
     public AdminController(
         IGameSessionService gameSessionService,
@@ -30,7 +31,7 @@ public class AdminController : Controller
         IUnitService unitService,
         IUnitSampleService unitSampleService,
         IBuildingSampleService buildingSampleService,
-        AutobattlerDbContext dbContext)
+        IProductionOrderService productionOrderService)
     {
         _gameSessionService = gameSessionService;
         _countryService = countryService;
@@ -40,6 +41,7 @@ public class AdminController : Controller
         _unitService = unitService;
         _unitSampleService = unitSampleService;
         _buildingSampleService = buildingSampleService;
+        _productionOrderService = productionOrderService;
     }
 
     [HttpGet("")]
@@ -99,7 +101,7 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult AdvanceTurn(int id)
     {
-        _gameSessionService.AdvanceTurn(id);
+        _gameSessionService.EndTurn(id);
         TempData["StatusMessage"] = "Ход обновлён.";
         return RedirectToAction(nameof(Index));
     }
@@ -143,6 +145,8 @@ public class AdminController : Controller
         var armies = _armyService.GetAll()
             .Where(a => a.Country != null && countryNames.Contains(a.Country.Name))
             .ToList();
+        var unitSamples = _unitSampleService.GetAllBySessionId(id).ToList();
+        var buildingSamples = _buildingSampleService.GetAllBySessionId(id).ToList();
 
         var model = new SessionManagementViewModel
         {
@@ -151,7 +155,9 @@ public class AdminController : Controller
             Countries = countries,
             Provinces = provinces,
             Cities = cities,
-            Armies = armies
+            Armies = armies,
+            UnitSamples = unitSamples,
+            BuildingSamples = buildingSamples,
         };
 
         return View(model);
@@ -244,16 +250,73 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult CreateUnit(int sessionId, CreateUnitRequest request)
     {
-        _unitService.Create(new UnitDTO
+        var sampleId = _unitSampleService.GetIdByName(request.SampleName);
+        if (sampleId == 0)
         {
-            Name = request.Name.Trim(),
-            OwnerId = request.OwnerId,
-            Health = request.Health,
-            Weapon = request.Weapon.Trim(),
-            ArmyName = request.ArmyName
+            TempData["StatusMessage"] = "Шаблон юнита не найден.";
+            return RedirectToAction(nameof(Session), new { id = sessionId });
+        }
+
+        var armyId = _armyService.GetIdByName(request.ArmyName);
+        if (armyId == null)
+        {
+            TempData["StatusMessage"] = "Армия не найдена.";
+            return RedirectToAction(nameof(Session), new { id = sessionId });
+        }
+
+        var sample = _unitSampleService.GetById(sampleId);
+
+        var result = _productionOrderService.Queue(new ProductionOrderDTO
+        {
+            GameSessionId = sessionId,
+            OrderType = "Unit",
+            Quantity = request.Quantity,
+            Cost = sample.Cost * request.Quantity,
+            UnitSampleId = sampleId,
+            ArmyId = armyId,
+            BuildTurns = sample.BuildTurns
         });
 
-        TempData["StatusMessage"] = "Юнит создан.";
+        TempData["StatusMessage"] = result;
+        return RedirectToAction(nameof(Session), new { id = sessionId });
+    }
+
+    [HttpPost("Session/{sessionId:int}/Building")]
+    [ValidateAntiForgeryToken]
+    public IActionResult CreateBuilding(int sessionId, CreateBuildingRequest request)
+    {
+        var sampleId = _buildingSampleService.GetIdByName(request.SampleName);
+        if (sampleId == 0)
+        {
+            TempData["StatusMessage"] = "Шаблон здания не найден.";
+            return RedirectToAction(nameof(Session), new { id = sessionId });
+        }
+
+        int cityId;
+        try
+        {
+            cityId = _cityService.GetIdByName(request.CityName);
+        }
+        catch
+        {
+            TempData["StatusMessage"] = "Город не найден.";
+            return RedirectToAction(nameof(Session), new { id = sessionId });
+        }
+
+        var sample = _buildingSampleService.GetById(sampleId);
+        var result = _productionOrderService.Queue(new ProductionOrderDTO
+        {
+            OwnerId = request.OwnerId,
+            GameSessionId = sessionId,
+            OrderType = "Building",
+            Quantity = request.Quantity,
+            Cost = sample.Cost * request.Quantity,
+            BuildingSampleId = sampleId,
+            CityId = cityId,
+            BuildTurns = sample.BuildTurns
+        });
+
+        TempData["StatusMessage"] = result;
         return RedirectToAction(nameof(Session), new { id = sessionId });
     }
 

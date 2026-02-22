@@ -10,4 +10,5 @@ public interface IBuildingSampleRepository
     public int GetIdByName(string name);
     public BuildingSampleEntity GetById(int id);
     public List<BuildingSampleEntity> GetAll(ulong ownerId);
+    public List<BuildingSampleEntity> GetAllBySessionId(int sessionId);
 }

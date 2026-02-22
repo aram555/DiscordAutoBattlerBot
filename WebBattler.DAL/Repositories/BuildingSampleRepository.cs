@@ -60,4 +60,12 @@ public class BuildingSampleRepository : IBuildingSampleRepository
             .Where(a => a.OwnerId == ownerId)
             .ToList();
     }
+
+    public List<BuildingSampleEntity> GetAllBySessionId(int sessionId)
+    {
+        return _context.BuildingSamples
+            .Include(a => a.Country)
+            .Where(c => c.Country.GameSessionId == sessionId)
+            .ToList();
+    }
 }

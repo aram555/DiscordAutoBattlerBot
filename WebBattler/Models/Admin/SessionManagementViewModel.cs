@@ -11,4 +11,6 @@ public class SessionManagementViewModel
     public IReadOnlyCollection<ProvinceModel> Provinces { get; set; } = Array.Empty<ProvinceModel>();
     public IReadOnlyCollection<CityModel> Cities { get; set; } = Array.Empty<CityModel>();
     public IReadOnlyCollection<ArmyModel> Armies { get; set; } = Array.Empty<ArmyModel>();
+    public IReadOnlyCollection<UnitSampleModel> UnitSamples { get; set; } = Array.Empty<UnitSampleModel>();
+    public IReadOnlyCollection<BuildingSampleModel> BuildingSamples { get; set; } = Array.Empty<BuildingSampleModel>();
 }

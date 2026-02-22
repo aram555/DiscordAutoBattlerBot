@@ -121,4 +121,26 @@ public class BuildingSampleService : IBuildingSampleService
 
         return list;
     }
+
+    public List<BuildingSampleModel> GetAllBySessionId(int sessionId)
+    {
+        var list = new List<BuildingSampleModel>();
+
+        foreach(var entity in _repository.GetAllBySessionId(sessionId))
+        {
+            list.Add(new BuildingSampleModel()
+            {
+                Name = entity.Name,
+                Description = entity.Description,
+                Cost = entity.Cost,
+                Level = entity.Level,
+                BuildTurns = entity.BuildTurns,
+                OwnerId = entity.OwnerId
+            });
+        }
+
+        return list;
+    }
+
+
 }

@@ -60,4 +60,12 @@ public class UnitSampleRepository : IUnitSampleRepository
             .Where(a => a.OwnerId == ownerId)
             .ToList();
     }
+
+    public List<UnitSampleEntity> GetAllBySessionId(int sessionId)
+    {
+        return _dbContext.UnitSamples
+            .Include(c => c.Country)
+            .Where(a => a.Country.GameSessionId == sessionId)
+            .ToList();
+    }
 }

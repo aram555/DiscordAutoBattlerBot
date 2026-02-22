@@ -12,4 +12,5 @@ public interface IUnitSampleService
     public int GetIdByName(string name);
     public UnitSampleModel GetById(int id);
     public List<UnitSampleModel> GetAll(ulong ownerId);
+    public List<UnitSampleModel> GetAllBySessionId(int sessionId);
 }

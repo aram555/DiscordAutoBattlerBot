@@ -123,4 +123,24 @@ public class UnitSampleService : IUnitSampleService
 
         return list;
     }
+
+    public List<UnitSampleModel> GetAllBySessionId(int sessionId)
+    {
+        var list = new List<UnitSampleModel>();
+
+        foreach (var entity in _repository.GetAllBySessionId(sessionId))
+        {
+            list.Add(new UnitSampleModel()
+            {
+                Name = entity.Name,
+                Health = entity.Health,
+                Weapon = entity.Weapon,
+                BuildTurns = entity.BuildTurns,
+                Cost = entity.Cost,
+                OwnerId = entity.OwnerId
+            });
+        }
+
+        return list;
+    }
 }

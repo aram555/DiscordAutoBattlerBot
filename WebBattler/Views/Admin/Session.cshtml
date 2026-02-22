@@ -154,17 +154,34 @@
                     <button class="btn btn-primary w-100" type="submit">Создать армию</button>
                 </form>
 
-                <form asp-action="CreateUnit" asp-route-sessionId="@Model.SessionId" method="post">
+                    <form asp-action="CreateUnit" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
                     @Html.AntiForgeryToken()
-                    <input class="form-control mb-2" name="Name" placeholder="Имя юнита" required />
                     <input class="form-control mb-2" name="OwnerId" type="number" placeholder="OwnerId" required />
+                    <select class="form-select mb-2" name="SampleName" required>
+                        <option value="">Шаблон юнита</option>
+                        @foreach (var sample in Model.UnitSamples) { <option value="@sample.Name">@sample.Name</option> }
+                    </select>
                     <select class="form-select mb-2" name="ArmyName" required>
                         <option value="">Армия</option>
                         @foreach (var army in Model.Armies) { <option value="@army.Name">@army.Name</option> }
                     </select>
-                    <input class="form-control mb-2" name="Weapon" placeholder="Оружие" required />
-                    <input class="form-control mb-2" name="Health" type="number" step="0.1" placeholder="HP" required />
-                    <button class="btn btn-primary w-100" type="submit">Создать юнит</button>
+                    <input class="form-control mb-2" name="Quantity" type="number" min="1" value="1" placeholder="Количество" required />
+                    <button class="btn btn-primary w-100" type="submit">Запустить подготовку юнитов</button>
+                </form>
+
+                <form asp-action="CreateBuilding" asp-route-sessionId="@Model.SessionId" method="post">
+                    @Html.AntiForgeryToken()
+                    <input class="form-control mb-2" name="OwnerId" type="number" placeholder="OwnerId" required />
+                    <select class="form-select mb-2" name="SampleName" required>
+                        <option value="">Шаблон здания</option>
+                        @foreach (var sample in Model.BuildingSamples) { <option value="@sample.Name">@sample.Name</option> }
+                    </select>
+                    <select class="form-select mb-2" name="CityName" required>
+                        <option value="">Город</option>
+                        @foreach (var city in Model.Cities) { <option value="@city.Name">@city.Name</option> }
+                    </select>
+                    <input class="form-control mb-2" name="Quantity" type="number" min="1" value="1" placeholder="Количество" required />
+                    <button class="btn btn-outline-primary w-100" type="submit">Запустить строительство</button>
                 </form>
             </div></div>
         </div>

@@ -10,4 +10,5 @@ public interface IUnitSampleRepository
     public int GetIdByName(string name);
     public UnitSampleEntity GetById(int id);
     public List<UnitSampleEntity> GetAll(ulong ownerId);
+    public List<UnitSampleEntity> GetAllBySessionId(int sessionId);
 }

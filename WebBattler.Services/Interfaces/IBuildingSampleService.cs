@@ -12,4 +12,5 @@ public interface IBuildingSampleService
     public int GetIdByName(string name);
     public BuildingSampleModel GetById(int id);
     public List<BuildingSampleModel> GetAll(ulong ownerId);
+    public List<BuildingSampleModel> GetAllBySessionId(int sessionId);
 }

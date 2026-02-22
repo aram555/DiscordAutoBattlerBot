@@ -2,7 +2,7 @@
 
 namespace WebBattler.Models.Admin.Requests;
 
-public class CreateUnitRequest
+public class CreateBuildingRequest
 {
     [Required]
     public string SampleName { get; set; } = string.Empty;
@@ -14,5 +14,5 @@ public class CreateUnitRequest
     public int Quantity { get; set; }
 
     [Required]
-    public string ArmyName { get; set; } = string.Empty;
+    public string CityName { get; set; } = string.Empty;
 }

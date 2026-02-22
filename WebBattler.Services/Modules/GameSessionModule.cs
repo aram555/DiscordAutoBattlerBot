@@ -60,35 +60,9 @@ public class GameSessionModule : InteractionModuleBase<SocketInteractionContext>
             return;
         }
 
-        var battleLogs = _armyService.ResolveAutomaticBattlesForAllProvinces();
+        var response = _service.EndTurn(session.Id);
 
-        _service.AdvanceTurn(session.Id);
-        _armyService.ResetMovementPointsForAllArmies();
-
-        var updated = _service.GetById(session.Id);
-        var productionLog = _productionOrderService.ProcessTurn(session.Id, updated.CurrentTurn);
-        var incomeLog = _countryService.ApplyIncomeForTurn(session.Id);
-
-        var response = new StringBuilder();
-        response.AppendLine($"Новый ход: {updated.CurrentTurn}");
-
-        if(!string.IsNullOrWhiteSpace(battleLogs))
-        {
-            response.AppendLine($"Битвы в провинциях");
-            response.AppendLine(battleLogs);
-        }
-        if(!string.IsNullOrWhiteSpace(productionLog))
-        {
-            response.AppendLine($"Производство");
-            response.AppendLine(productionLog);
-        }
-        if(!string.IsNullOrWhiteSpace(incomeLog))
-        {
-            response.AppendLine($"Доходы");
-            response.AppendLine(incomeLog);
-        }
-
-        foreach(var chank in SplitMessage(response.ToString(), 1900))
+        foreach (var chank in SplitMessage(response.ToString(), 1900))
         {
             await FollowupAsync(chank);
         }
