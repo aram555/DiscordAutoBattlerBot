@@ -19,8 +19,41 @@
         <div class="alert alert-info">@status</div>
     }
 
-    <div class="row g-4">
-        <div class="col-lg-6">
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-5">
+            <section class="card shadow-sm mb-4 sticky-lg-top country-panel">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h5 mb-0">Страны в сессии</h2>
+                        <span class="badge text-bg-primary">@Model.Countries.Count()</span>
+                    </div>
+
+                    @if (Model.Countries.Any())
+                    {
+                        <div class="country-list d-grid gap-2">
+                            @foreach (var country in Model.Countries)
+                            {
+                                var provinces = country.Provinces;
+								var cities = provinces.SelectMany(p => p.Cities).ToList();
+                                <button type="button"
+                                        class="btn btn-outline-dark text-start country-card"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#countryModal-@country.Name.Replace(" ", "-")">
+                                    <div class="fw-semibold">@country.Name</div>
+                                    <div class="small text-muted">Провинций: @provinces.Count • Городов: @cities.Count • Казна: @country.Money</div>
+                                </button>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">В этой сессии пока нет стран.</p>
+                    }
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-7">
             <div class="card shadow-sm mb-4"><div class="card-body">
                 <h2 class="h5">Страна</h2>
                 <form asp-action="CreateCountry" asp-route-sessionId="@Model.SessionId" method="post">
@@ -67,7 +100,7 @@
                 </form>
             </div></div>
 
-            <div class="card shadow-sm"><div class="card-body">
+           <div class="card shadow-sm mb-4"><div class="card-body">
                 <h2 class="h5">Город</h2>
                 <form asp-action="CreateCity" asp-route-sessionId="@Model.SessionId" method="post">
                     @Html.AntiForgeryToken()
@@ -86,9 +119,7 @@
                     <button class="btn btn-primary w-100" type="submit">Создать город</button>
                 </form>
             </div></div>
-        </div>
 
-        <div class="col-lg-6">
             <div class="card shadow-sm mb-4"><div class="card-body">
                 <h2 class="h5">Шаблоны</h2>
                 <form asp-action="CreateUnitSample" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
@@ -154,7 +185,7 @@
                     <button class="btn btn-primary w-100" type="submit">Создать армию</button>
                 </form>
 
-                    <form asp-action="CreateUnit" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
+                 <form asp-action="CreateUnit" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
                     @Html.AntiForgeryToken()
                     <input class="form-control mb-2" name="OwnerId" type="number" placeholder="OwnerId" required />
                     <select class="form-select mb-2" name="SampleName" required>
@@ -187,3 +218,95 @@
         </div>
     </div>
 </div>
+
+@foreach (var country in Model.Countries)
+{
+    var provinces = country.Provinces;
+    var countryArmies = Model.Armies.Where(a => string.Equals(a.Name, country.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+    var countryUnitSamples = Model.UnitSamples.Where(s => string.Equals(s.Name, country.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+    var countryBuildingSamples = Model.BuildingSamples.Where(s => string.Equals(s.Name, country.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+
+    <div class="modal fade" id="countryModal-@country.Name.Replace(" ", "-")" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title h5 mb-0">@country.Name</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2 mb-3 country-meta">
+                        <div class="col-sm-4"><div class="border rounded p-2"><div class="text-muted small">OwnerId</div><div class="fw-semibold">@country.OwnerId</div></div></div>
+                        <div class="col-sm-4"><div class="border rounded p-2"><div class="text-muted small">Казна</div><div class="fw-semibold">@country.Money</div></div></div>
+                        <div class="col-sm-4"><div class="border rounded p-2"><div class="text-muted small">Провинций</div><div class="fw-semibold">@provinces.Count</div></div></div>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(country.Description))
+                    {
+                        <p class="mb-3"><strong>Описание:</strong> @country.Description</p>
+                    }
+
+                    <h4 class="h6">Провинции и города</h4>
+                    @if (provinces.Any())
+                    {
+                        <div class="accordion" id="provinceAccordion-@country.Name.Replace(" ", "-")">
+                            @for (var i = 0; i < provinces.Count; i++)
+                            {
+                                var province = provinces[i];
+                                var cities = province.Cities;
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading-@country.Name.Replace(" ", "-")-@i">
+                                        <button class="accordion-button @(i == 0 ? string.Empty : "collapsed")" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@country.Name.Replace(" ", "-")-@i">
+                                            @province.Name
+                                        </button>
+                                    </h2>
+                                    <div id="collapse-@country.Name.Replace(" ", "-")-@i" class="accordion-collapse collapse @(i == 0 ? "show" : string.Empty)" data-bs-parent="#provinceAccordion-@country.Name.Replace(" ", "-")">
+                                        <div class="accordion-body">
+                                            @if (!string.IsNullOrWhiteSpace(province.Description))
+                                            {
+                                                <p class="mb-2"><strong>Описание:</strong> @province.Description</p>
+                                            }
+                                            <p class="mb-2 small text-muted">Соседи: @(province.Neighbours != null && province.Neighbours.Any() ? string.Join(", ", province.Neighbours.Select(n => n.Name)) : "не заданы")</p>
+                                            @if (cities.Any())
+                                            {
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach (var city in cities)
+                                                    {
+                                                        <li class="list-group-item px-0">
+                                                            <div class="fw-semibold">@city.Name @(city.IsCapital ? "(Столица)" : string.Empty)</div>
+                                                            <div class="small text-muted">Население: @city.Population • Уровень: @city.Level</div>
+                                                            @if (!string.IsNullOrWhiteSpace(city.Description))
+                                                            {
+                                                                <div class="small">@city.Description</div>
+                                                            }
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
+                                            else
+                                            {
+                                                <p class="text-muted mb-0">Города отсутствуют.</p>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Провинции отсутствуют.</p>
+                    }
+
+                    <h4 class="h6 mt-4">Армии</h4>
+                    <p class="mb-2">@((countryArmies.Any()) ? string.Join(", ", countryArmies.Select(a => a.Name)) : "Нет армий")</p>
+
+                    <h4 class="h6 mt-3">Шаблоны юнитов</h4>
+                    <p class="mb-2">@((countryUnitSamples.Any()) ? string.Join(", ", countryUnitSamples.Select(s => s.Name)) : "Нет шаблонов")</p>
+
+                    <h4 class="h6 mt-3">Шаблоны зданий</h4>
+                    <p class="mb-0">@((countryBuildingSamples.Any()) ? string.Join(", ", countryBuildingSamples.Select(s => s.Name)) : "Нет шаблонов")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
