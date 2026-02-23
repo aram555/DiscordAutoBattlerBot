@@ -4,7 +4,6 @@ using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
 using WebBattler.DAL.Models;
 using WebBattler.Services.Interfaces;
-using static System.Collections.Specialized.BitVector32;
 
 namespace WebBattler.Services.Services;
 
@@ -31,7 +30,7 @@ public class GameSessionService : IGameSessionService
     {
         var existing = _repository
             .GetAll()
-            .FirstOrDefault(sesssion => sesssion.GuildId == dto.GuildId);
+            .FirstOrDefault(sesssion => sesssion.GuildId == dto.GuildId && sesssion.AdminUserId == dto.AdminUserId);
 
         if (existing != null)
         {
@@ -44,6 +43,7 @@ public class GameSessionService : IGameSessionService
 
         var entity = new GameSessionEntity
         {
+            AdminUserId = dto.AdminUserId,
             GuildId = dto.GuildId,
             Name = dto.Name,
             CurrentTurn = 1,
@@ -72,6 +72,14 @@ public class GameSessionService : IGameSessionService
     {
         return _repository
             .GetAll()
+            .Select(_Map)
+            .ToList();
+    }
+
+    public IReadOnlyCollection<GameSessionModel> GetAllByAdminUserId(ulong adminUserId)
+    {
+        return _repository
+            .GetAllByAdminUserId(adminUserId)
             .Select(_Map)
             .ToList();
     }
@@ -144,6 +152,7 @@ public class GameSessionService : IGameSessionService
     private static GameSessionModel _Map(GameSessionEntity e) => new()
     {
         Id = e.Id,
+        AdminUserId = e.AdminUserId,
         GuildId = e.GuildId,
         Name = e.Name,
         CurrentTurn = e.CurrentTurn,

@@ -16,6 +16,7 @@ public class AutobattlerDbContext : DbContext
     public DbSet<BuildingSampleEntity> BuildingSamples { get; set; }
     public DbSet<GameSessionEntity> GameSessions { get; set; }
     public DbSet<ProductionOrderEntity> ProductionOrders { get; set; }
+    public DbSet<AdminAccountEntity> AdminAccounts { get; set; }
 
     public AutobattlerDbContext(DbContextOptions<AutobattlerDbContext> options) : base(options)
     {
@@ -36,6 +37,10 @@ public class AutobattlerDbContext : DbContext
     {
         modelBuilder.Entity<GameSessionEntity>()
             .HasIndex(g => g.GuildId)
+            .IsUnique();
+
+        modelBuilder.Entity<AdminAccountEntity>()
+            .HasIndex(a => a.DiscordUserId)
             .IsUnique();
 
         modelBuilder.Entity<CountryEntity>()

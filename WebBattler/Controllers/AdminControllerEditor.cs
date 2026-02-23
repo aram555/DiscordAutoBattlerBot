@@ -49,6 +49,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult UpdateCountry(int sessionId, string originalName, string name, string? description, ulong ownerId, int money, int gameSessionId)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _countryService.Update(new CountryDTO
         {
             OriginalName = originalName,
@@ -68,6 +73,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult UpdateProvince(int sessionId, string originalName, string name, string? description, ulong ownerId, string countryName, List<string>? neighbourNames)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         var neighbours = (neighbourNames ?? new List<string>())
             .Where(n => !string.IsNullOrWhiteSpace(n))
             .Select(n => new ProvinceDTO { Name = n })
@@ -92,6 +102,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult UpdateCity(int sessionId, string originalName, string name, string? description, ulong ownerId, int population, int level, bool isCapital, string provinceName)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _cityService.Update(new CityDTO
         {
             OriginalName = originalName,
@@ -113,6 +128,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult UpdateArmy(int sessionId, string originalName, string name, string status, ulong ownerId, string countryName, string provinceName, string? cityName, string? parentName, int currentTurnCount)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _armyService.Update(new ArmyDTO
         {
             OriginalName = originalName,
@@ -135,6 +155,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult UpdateUnit(int sessionId, string originalName, string name, ulong ownerId, float health, string weapon, string armyName)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _unitService.Update(new UnitDTO
         {
             OriginalName = originalName,
@@ -153,6 +178,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult UpdateUnitSample(int sessionId, string originalName, string name, ulong ownerId, float health, string weapon, int buildTurns, int cost, string countryName)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _unitSampleService.Update(new UnitSampleDTO
         {
             OriginalName = originalName,
@@ -173,6 +203,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult UpdateBuilding(int sessionId, string originalName, string name, string? description, ulong ownerId, int level, int cost, int profit, string cityName)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _buildingService.Update(new BuildingDTO
         {
             OriginalName = originalName,
@@ -193,6 +228,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult UpdateBuildingSample(int sessionId, string originalName, string name, string? description, ulong ownerId, int level, int cost, int profit, int buildTurns, string countryName)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _buildingSampleService.Update(new BuildingSampleDTO
         {
             OriginalName = originalName,

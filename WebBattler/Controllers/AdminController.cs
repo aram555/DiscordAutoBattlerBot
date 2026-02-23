@@ -1,11 +1,14 @@
-﻿using WebBattler.DAL.DTO;
-using WebBattler.Models.Admin;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebBattler.Services.Interfaces;
+using WebBattler.DAL.DTO;
+using WebBattler.Models.Admin;
 using WebBattler.Models.Admin.Requests;
+using WebBattler.Services.Interfaces;
 
 namespace WebBattler.Controllers;
 
+[Authorize]
 [Controller]
 [Route("[controller]")]
 public partial class AdminController : Controller
@@ -50,7 +53,7 @@ public partial class AdminController : Controller
     {
         var model = new AdminDashboardViewModel
         {
-            Sessions = _gameSessionService.GetAll()
+            Sessions = _gameSessionService.GetAllByAdminUserId(GetCurrentUserId())
         };
 
         return View(model);
@@ -72,7 +75,7 @@ public partial class AdminController : Controller
         {
             var model = new AdminDashboardViewModel
             {
-                Sessions = _gameSessionService.GetAll(),
+                Sessions = _gameSessionService.GetAllByAdminUserId(GetCurrentUserId()),
                 CreateForm = request
             };
 
@@ -81,6 +84,7 @@ public partial class AdminController : Controller
 
         _gameSessionService.Create(new GameSessionDTO
         {
+            AdminUserId = GetCurrentUserId(),
             GuildId = request.GuildId,
             Name = request.Name.Trim()
         });
@@ -102,6 +106,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult AdvanceTurn(int id)
     {
+        if (!IsSessionOwnedByCurrentUser(id))
+        {
+            return Forbid();
+        }
+
         _gameSessionService.EndTurn(id);
         TempData["StatusMessage"] = "Ход обновлён.";
         return RedirectToAction(nameof(Index));
@@ -120,6 +129,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult ToggleSession(int id, bool isActive)
     {
+        if (!IsSessionOwnedByCurrentUser(id))
+        {
+            return Forbid();
+        }
+
         var success = _gameSessionService.SetActive(id, isActive);
         TempData["StatusMessage"] = success
             ? (isActive ? "Сессия активирована." : "Сессия остановлена.")
@@ -131,6 +145,11 @@ public partial class AdminController : Controller
     [HttpGet("Session/{id:int}")]
     public IActionResult Session(int id)
     {
+        if (!IsSessionOwnedByCurrentUser(id))
+        {
+            return Forbid();
+        }
+
         var session = _gameSessionService.GetById(id);
         if (session == null)
         {
@@ -168,6 +187,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult CreateCountry(int sessionId, CreateCountryRequest request)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _countryService.Create(new CountryDTO
         {
             Name = request.Name.Trim(),
@@ -186,6 +210,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult CreateProvince(int sessionId, CreateProvinceRequest request)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _provinceService.Create(new ProvinceDTO
         {
             Name = request.Name.Trim(),
@@ -204,6 +233,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult CreateCity(int sessionId, CreateCityRequest request)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _cityService.Create(new CityDTO
         {
             Name = request.Name.Trim(),
@@ -224,6 +258,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult AddNeighbour(int sessionId, AddNeighbourRequest request)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         TempData["StatusMessage"] = _provinceService.AddNeightbour(request.ProvinceName, request.NeighbourName);
         return RedirectToAction(nameof(Session), new { id = sessionId });
     }
@@ -232,6 +271,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult CreateArmy(int sessionId, CreateArmyRequest request)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _armyService.Create(new ArmyDTO
         {
             Name = request.Name.Trim(),
@@ -251,6 +295,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult CreateUnit(int sessionId, CreateUnitRequest request)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         var sampleId = _unitSampleService.GetIdByName(request.SampleName);
         if (sampleId == 0)
         {
@@ -286,6 +335,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult CreateBuilding(int sessionId, CreateBuildingRequest request)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         var sampleId = _buildingSampleService.GetIdByName(request.SampleName);
         if (sampleId == 0)
         {
@@ -325,6 +379,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult CreateUnitSample(int sessionId, CreateUnitSampleRequest request)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _unitSampleService.Create(new UnitSampleDTO
         {
             Name = request.Name.Trim(),
@@ -344,6 +403,11 @@ public partial class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult CreateBuildingSample(int sessionId, CreateBuildingSampleRequest request)
     {
+        if (!IsSessionOwnedByCurrentUser(sessionId))
+        {
+            return Forbid();
+        }
+
         _buildingSampleService.Create(new BuildingSampleDTO
         {
             Name = request.Name.Trim(),
@@ -358,5 +422,17 @@ public partial class AdminController : Controller
 
         TempData["StatusMessage"] = "Шаблон здания создан.";
         return RedirectToAction(nameof(Session), new { id = sessionId });
+    }
+
+    private ulong GetCurrentUserId()
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return ulong.TryParse(userIdClaim, out var userId) ? userId : 0UL;
+    }
+
+    private bool IsSessionOwnedByCurrentUser(int sessionId)
+    {
+        var session = _gameSessionService.GetById(sessionId);
+        return session != null && session.AdminUserId == GetCurrentUserId();
     }
 }

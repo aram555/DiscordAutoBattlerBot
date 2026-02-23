@@ -36,6 +36,15 @@ public class GameSessionRepository : IGameSessionRepository
             .ToList();
     }
 
+    public IReadOnlyCollection<GameSessionEntity> GetAllByAdminUserId(ulong adminUserId)
+    {
+        return _context.GameSessions
+            .Where(s => s.AdminUserId == adminUserId)
+            .OrderByDescending(s => s.IsActive)
+            .ThenBy(s => s.Name)
+            .ToList();
+    }
+
     public void Update(GameSessionEntity session)
     {
         _context.SaveChanges();

@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using WebBattler.DAL;
 using WebBattler.DAL.Interfaces;
 using WebBattler.DAL.Repositories;
@@ -18,6 +19,14 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Auth/Login";
+                options.AccessDeniedPath = "/Auth/Login";
+            });
+
         builder.Services.AddDbContext<AutobattlerDbContext>();
         builder.Services.AddTransient<IArmyRepository, ArmyRepository>();
         builder.Services.AddTransient<IUnitRepository, UnitRepository>();
@@ -29,6 +38,7 @@ public class Program
         builder.Services.AddTransient<IUnitSampleRepository, UnitSampleRepository>();
         builder.Services.AddTransient<IGameSessionRepository, GameSessionRepository>();
         builder.Services.AddTransient<IProductionOrderRepository, ProductionOrderRepository>();
+        builder.Services.AddTransient<IAdminAccountRepository, AdminAccountRepository>();
 
         builder.Services.AddScoped<IArmyService, ArmyService>();
         builder.Services.AddScoped<IBuildingSampleService, BuildingSampleService>();
@@ -40,6 +50,7 @@ public class Program
         builder.Services.AddScoped<IUnitService, UnitService>();
         builder.Services.AddScoped<IGameSessionService, GameSessionService>();
         builder.Services.AddScoped<IProductionOrderService, ProductionOrderService>();
+        builder.Services.AddScoped<IAdminAccountService, AdminAccountService>();
 
         //Addint discord bot service
         builder.Services.AddSingleton(sp =>
@@ -82,6 +93,7 @@ public class Program
 
         app.UseRouting();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllerRoute(

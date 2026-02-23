@@ -3,6 +3,7 @@
 public class GameSessionEntity
 {
     public int Id { get; set; }
+    public ulong AdminUserId { get; set; }
     public ulong GuildId { get; set; }
     public string Name { get; set; } = null!;
     public int CurrentTurn { get; set; }

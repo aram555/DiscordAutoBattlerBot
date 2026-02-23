@@ -1,0 +1,41 @@
+﻿@model WebBattler.Models.Auth.RegisterViewModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<h1 class="h3 mb-3">Регистрация</h1>
+
+<form asp-action="Register" method="post" class="card card-body shadow-sm" style="max-width: 420px;">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="DiscordUserId" class="form-label"></label>
+        <input asp-for="DiscordUserId" class="form-control" />
+        <span asp-validation-for="DiscordUserId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DisplayName" class="form-label"></label>
+        <input asp-for="DisplayName" class="form-control" />
+        <span asp-validation-for="DisplayName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ConfirmPassword" class="form-label"></label>
+        <input asp-for="ConfirmPassword" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+    <button type="submit" class="btn btn-success">Зарегистрироваться</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
