@@ -41,7 +41,7 @@ public class CountryService : ICountryService
 
     public void Update(CountryDTO country)
     {
-        var entity = _repository.GetById(_repository.GetIdByName(country.Name));
+        var entity = _repository.GetById(_repository.GetIdByName(country.OriginalName ?? country.Name));
         if (entity == null)
         {
             return;
@@ -62,7 +62,7 @@ public class CountryService : ICountryService
             entity.OwnerId = country.OwnerId;
         }
 
-        if (country.GameSessionId > 0)
+        if (country.GameSessionId >= 0)
         {
             entity.GameSessionId = country.GameSessionId;
         }

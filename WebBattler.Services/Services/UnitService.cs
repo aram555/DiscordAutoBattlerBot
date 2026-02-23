@@ -37,9 +37,14 @@ public class UnitService : IUnitService
 
     public void Update(UnitDTO unit)
     {
-        var entity = _unitRepository.GetById(_unitRepository.GetIdByName(unit.Name));
-        
-        if(entity == null)
+        var entity = _unitRepository.GetById(_unitRepository.GetIdByName(unit.OriginalName ?? unit.Name));
+
+        if (!string.IsNullOrWhiteSpace(unit.Name))
+        {
+            entity.Name = unit.Name;
+        }
+
+        if (entity == null)
         {
             return;
         }

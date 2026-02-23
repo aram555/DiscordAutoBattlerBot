@@ -46,7 +46,7 @@ public class BuildingRepository : IBuildingRepository
 
     public int GetIdByName(string name)
     {
-        return _dbContext.Provinces.FirstOrDefault(b => b.Name == name).Id;
+        return _dbContext.Buildings.FirstOrDefault(b => b.Name == name).Id;
     }
 
     public BuildingEntity GetById(int id)

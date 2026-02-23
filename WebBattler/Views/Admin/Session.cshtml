@@ -10,7 +10,10 @@
                 <h1 class="h3 mb-1">Сессия: @Model.SessionName</h1>
                 <p class="text-muted mb-0">Настройка стран, карты, шаблонов и армий для ВПИ.</p>
             </div>
-            <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+            <div class="d-flex gap-2">
+                <a asp-action="EditSession" asp-route-id="@Model.SessionId" class="btn btn-primary">Полное редактирование</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+            </div>
         </div>
     </section>
 

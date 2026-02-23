@@ -49,7 +49,7 @@ public class ProvinceService : IProvinceService
 
     public void Update(ProvinceDTO province)
     {
-        var entity = _repository.GetById(_repository.GetIdByName(province.Name));
+        var entity = _repository.GetById(_repository.GetIdByName(province.OriginalName ?? province.Name));
         if (entity == null)
         {
             return;
@@ -75,6 +75,15 @@ public class ProvinceService : IProvinceService
             entity.CountryId = _countryRepository.GetIdByName(province.CountryName);
         }
 
+        if (province.Neighbours != null)
+        {
+            entity.Neighbours = province.Neighbours
+                .Where(n => !string.IsNullOrWhiteSpace(n.Name) && !string.Equals(n.Name, entity.Name, StringComparison.OrdinalIgnoreCase))
+                .Select(n => _repository.GetById(_repository.GetIdByName(n.Name)))
+                .Where(n => n != null)
+                .ToList();
+        }
+
         _repository.Update(entity);
     }
 
@@ -83,14 +92,14 @@ public class ProvinceService : IProvinceService
         var province = _repository.GetById(_repository.GetIdByName(provinceName));
         var neighbour = _repository.GetById(_repository.GetIdByName(neighbourName));
 
+        if (province == null || neighbour == null)
+        {
+            return "Одна из указанных провинций не найдена.";
+        }
+
         if (province.Id == neighbour.Id)
         {
             return "Провинция не может быть соседом сама для себя.";
-        }
-
-        if(province == null || neighbour == null)
-        {
-            return "Одна из указанных провинций не найдена.";
         }
 
         _repository.AddNeightbour(provinceName, neighbourName);

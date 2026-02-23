@@ -2,6 +2,7 @@
 
 public class CountryDTO
 {
+    public string? OriginalName { get; set; }
     public ulong OwnerId { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }

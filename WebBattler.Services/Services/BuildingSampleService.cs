@@ -41,7 +41,7 @@ public class BuildingSampleService : IBuildingSampleService
 
     public void Update(BuildingSampleDTO buildingSample)
     {
-        var entity = _repository.GetById(_repository.GetIdByName(buildingSample.Name));
+        var entity = _repository.GetById(_repository.GetIdByName(buildingSample.OriginalName ?? buildingSample.Name));
         if (entity == null)
         {
             return;
@@ -52,22 +52,27 @@ public class BuildingSampleService : IBuildingSampleService
             entity.OwnerId = buildingSample.OwnerId;
         }
 
+        if (!string.IsNullOrWhiteSpace(buildingSample.Name))
+        {
+            entity.Name = buildingSample.Name;
+        }
+
         if (!string.IsNullOrWhiteSpace(buildingSample.Description))
         {
             entity.Description = buildingSample.Description;
         }
 
-        if (buildingSample.Level > 0)
+        if (buildingSample.Level >= 0)
         {
             entity.Level = buildingSample.Level;
         }
 
-        if (buildingSample.Cost > 0)
+        if (buildingSample.Cost >= 0)
         {
             entity.Cost = buildingSample.Cost;
         }
 
-        if (buildingSample.BuildTurns > 0)
+        if (buildingSample.BuildTurns >= 0)
         {
             entity.BuildTurns = buildingSample.BuildTurns;
         }
@@ -98,6 +103,7 @@ public class BuildingSampleService : IBuildingSampleService
             Cost = entity.Cost,
             Level = entity.Level,
             BuildTurns = entity.BuildTurns,
+            Profit = entity.Profit,
             OwnerId = entity.OwnerId
         };
     }
@@ -115,6 +121,7 @@ public class BuildingSampleService : IBuildingSampleService
                 Cost = entity.Cost,
                 Level = entity.Level,
                 BuildTurns = entity.BuildTurns,
+                Profit = entity.Profit,
                 OwnerId = entity.OwnerId
             });
         }
@@ -135,6 +142,7 @@ public class BuildingSampleService : IBuildingSampleService
                 Cost = entity.Cost,
                 Level = entity.Level,
                 BuildTurns = entity.BuildTurns,
+                Profit = entity.Profit,
                 OwnerId = entity.OwnerId,
                 Country = entity.Country == null
                     ? new CountryModel { Name = string.Empty, Description = string.Empty, Provinces = new List<ProvinceModel>() }

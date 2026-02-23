@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebBattler.DAL;
-using WebBattler.DAL.DTO;
+﻿using WebBattler.DAL.DTO;
 using WebBattler.Models.Admin;
-using WebBattler.Models.Admin.Requests;
+using Microsoft.AspNetCore.Mvc;
 using WebBattler.Services.Interfaces;
+using WebBattler.Models.Admin.Requests;
 
 namespace WebBattler.Controllers;
 
 [Controller]
 [Route("[controller]")]
-public class AdminController : Controller
+public partial class AdminController : Controller
 {
     private readonly IGameSessionService _gameSessionService;
     private readonly ICountryService _countryService;
@@ -21,6 +19,7 @@ public class AdminController : Controller
     private readonly IUnitSampleService _unitSampleService;
     private readonly IBuildingSampleService _buildingSampleService;
     private readonly IProductionOrderService _productionOrderService;
+    private readonly IBuildingService _buildingService;
 
     public AdminController(
         IGameSessionService gameSessionService,
@@ -31,7 +30,8 @@ public class AdminController : Controller
         IUnitService unitService,
         IUnitSampleService unitSampleService,
         IBuildingSampleService buildingSampleService,
-        IProductionOrderService productionOrderService)
+        IProductionOrderService productionOrderService,
+        IBuildingService buildingService)
     {
         _gameSessionService = gameSessionService;
         _countryService = countryService;
@@ -42,6 +42,7 @@ public class AdminController : Controller
         _unitSampleService = unitSampleService;
         _buildingSampleService = buildingSampleService;
         _productionOrderService = productionOrderService;
+        _buildingService = buildingService;
     }
 
     [HttpGet("")]

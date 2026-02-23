@@ -40,7 +40,7 @@ public class UnitSampleService : IUnitSampleService
 
     public void Update(UnitSampleDTO unitSample)
     {
-        var entity = _repository.GetById(_repository.GetIdByName(unitSample.Name));
+        var entity = _repository.GetById(_repository.GetIdByName(unitSample.OriginalName ?? unitSample.Name));
         if (entity == null)
         {
             return;
@@ -56,7 +56,7 @@ public class UnitSampleService : IUnitSampleService
             entity.OwnerId = unitSample.OwnerId;
         }
 
-        if (unitSample.Health > 0)
+        if (unitSample.Health >= 0)
         {
             entity.Health = unitSample.Health;
         }
@@ -66,12 +66,12 @@ public class UnitSampleService : IUnitSampleService
             entity.Weapon = unitSample.Weapon;
         }
 
-        if (unitSample.BuildTurns > 0)
+        if (unitSample.BuildTurns >= 0)
         {
             entity.BuildTurns = unitSample.BuildTurns;
         }
 
-        if (unitSample.Cost > 0)
+        if (unitSample.Cost >= 0)
         {
             entity.Cost = unitSample.Cost;
         }

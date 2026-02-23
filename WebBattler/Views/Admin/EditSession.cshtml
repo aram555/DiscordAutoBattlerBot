@@ -1,0 +1,199 @@
+﻿@model WebBattler.Models.Admin.AdminSessionEditorViewModel
+@{
+    ViewData["Title"] = "Полное редактирование сессии";
+}
+
+<div class="admin-page">
+    <section class="admin-hero card shadow-sm mb-4">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 mb-1">Полное редактирование: @Model.SessionName</h1>
+                <p class="text-muted mb-0">Изменение всех сущностей в сессии через сервисы.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-action="Session" asp-route-id="@Model.SessionId" class="btn btn-outline-secondary">К управлению</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">К сессиям</a>
+            </div>
+        </div>
+    </section>
+
+    @if (TempData["StatusMessage"] is string status)
+    {
+        <div class="alert alert-info">@status</div>
+    }
+
+    <div class="accordion" id="editorAccordion">
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#countries">Страны (@Model.Countries.Count)</button></h2>
+            <div id="countries" class="accordion-collapse collapse show" data-bs-parent="#editorAccordion"><div class="accordion-body">
+                @foreach (var item in Model.Countries)
+                {
+                    <form asp-action="UpdateCountry" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="originalName" value="@item.Name" />
+                        <div class="row g-2">
+                            <div class="col-md-4"><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="money" type="number" value="@item.Money" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="gameSessionId" type="number" value="@Model.SessionId" required /></div>
+                            <div class="col-md-12"><textarea class="form-control" name="description">@item.Description</textarea></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Сохранить страну</button>
+                    </form>
+                }
+            </div></div>
+        </div>
+
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#provinces">Провинции (@Model.Provinces.Count)</button></h2>
+            <div id="provinces" class="accordion-collapse collapse" data-bs-parent="#editorAccordion"><div class="accordion-body">
+                @foreach (var item in Model.Provinces)
+                {
+                    <form asp-action="UpdateProvince" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="originalName" value="@item.Name" />
+                        <div class="row g-2">
+                            <div class="col-md-4"><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-3"><select class="form-select" name="countryName" required>@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
+                            <div class="col-md-12"><textarea class="form-control" name="description">@item.Description</textarea></div>
+                            <div class="col-md-12"><label class="form-label">Соседи</label><select class="form-select" name="neighbourNames" multiple size="6">@foreach (var p in Model.Provinces.Where(p=>p.Name!=item.Name)){<option value="@p.Name" selected="@(item.Neighbours.Any(n=>n.Name==p.Name))">@p.Name</option>}</select></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Сохранить провинцию</button>
+                    </form>
+                }
+            </div></div>
+        </div>
+
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cities">Города (@Model.Cities.Count)</button></h2>
+            <div id="cities" class="accordion-collapse collapse" data-bs-parent="#editorAccordion"><div class="accordion-body">
+                @foreach (var item in Model.Cities)
+                {
+                    <form asp-action="UpdateCity" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="originalName" value="@item.Name" />
+                        <div class="row g-2">
+                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="population" type="number" value="@item.Population" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
+                            <div class="col-md-3"><select class="form-select" name="provinceName" required>@foreach (var p in Model.Provinces){<option value="@p.Name" selected="@(p.Name==item.Province?.Name)">@p.Name</option>}</select></div>
+                            <div class="col-md-12"><textarea class="form-control" name="description">@item.Description</textarea></div>
+                            <input name="isCapital" type="hidden" value="false" />
+                            <div class="col-md-3 form-check ms-2 mt-2"><input class="form-check-input" name="isCapital" type="checkbox" value="true" checked="@item.IsCapital" /><label class="form-check-label">Столица</label></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Сохранить город</button>
+                    </form>
+                }
+            </div></div>
+        </div>
+
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#armies">Армии (@Model.Armies.Count)</button></h2>
+            <div id="armies" class="accordion-collapse collapse" data-bs-parent="#editorAccordion"><div class="accordion-body">
+                @foreach (var item in Model.Armies)
+                {
+                    <form asp-action="UpdateArmy" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="originalName" value="@item.Name" />
+                        <div class="row g-2">
+                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="currentTurnCount" type="number" value="@item.CurrentTurnCount" required /></div>
+                            <div class="col-md-5"><input class="form-control" name="status" value="@item.Status" required /></div>
+                            <div class="col-md-3"><select class="form-select" name="countryName">@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
+                            <div class="col-md-3"><select class="form-select" name="provinceName">@foreach (var p in Model.Provinces){<option value="@p.Name" selected="@(p.Name==item.Province?.Name)">@p.Name</option>}</select></div>
+                            <div class="col-md-3"><select class="form-select" name="cityName"><option value="">(нет)</option>@foreach (var c in Model.Cities){<option value="@c.Name" selected="@(c.Name==item.City?.Name)">@c.Name</option>}</select></div>
+                            <div class="col-md-3"><select class="form-select" name="parentName"><option value="">(нет)</option>@foreach (var a in Model.Armies.Where(a=>a.Name!=item.Name)){<option value="@a.Name">@a.Name</option>}</select></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Сохранить армию</button>
+                    </form>
+                }
+            </div></div>
+        </div>
+
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#units">Юниты (@Model.Units.Count)</button></h2>
+            <div id="units" class="accordion-collapse collapse" data-bs-parent="#editorAccordion"><div class="accordion-body">
+                @foreach (var item in Model.Units)
+                {
+                    <form asp-action="UpdateUnit" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="originalName" value="@item.Name" />
+                        <div class="row g-2">
+                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="health" type="number" step="0.1" value="@item.Health" required /></div>
+                            <div class="col-md-3"><input class="form-control" name="weapon" value="@item.Weapon" required /></div>
+                            <div class="col-md-2"><select class="form-select" name="armyName">@foreach (var a in Model.Armies){<option value="@a.Name" selected="@(a.Name==item.Army?.Name)">@a.Name</option>}</select></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Сохранить юнит</button>
+                    </form>
+                }
+            </div></div>
+        </div>
+
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#unitSamples">Шаблоны юнитов (@Model.UnitSamples.Count)</button></h2>
+            <div id="unitSamples" class="accordion-collapse collapse" data-bs-parent="#editorAccordion"><div class="accordion-body">
+                @foreach (var item in Model.UnitSamples)
+                {
+                    <form asp-action="UpdateUnitSample" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="originalName" value="@item.Name" />
+                        <div class="row g-2">
+                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="health" type="number" step="0.1" value="@item.Health" required /></div>
+                            <div class="col-md-3"><input class="form-control" name="weapon" value="@item.Weapon" required /></div>
+                            <div class="col-md-1"><input class="form-control" name="buildTurns" type="number" value="@item.BuildTurns" required /></div>
+                            <div class="col-md-1"><input class="form-control" name="cost" type="number" value="@item.Cost" required /></div>
+                            <div class="col-md-3"><select class="form-select" name="countryName">@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Сохранить шаблон юнита</button>
+                    </form>
+                }
+            </div></div>
+        </div>
+
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#buildings">Здания (@Model.Buildings.Count)</button></h2>
+            <div id="buildings" class="accordion-collapse collapse" data-bs-parent="#editorAccordion"><div class="accordion-body">
+                @foreach (var item in Model.Buildings)
+                {
+                    <form asp-action="UpdateBuilding" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="originalName" value="@item.Name" />
+                        <div class="row g-2">
+                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-1"><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="cost" type="number" value="@item.Cost" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="profit" type="number" value="@item.Profit" required /></div>
+                            <div class="col-md-2"><select class="form-select" name="cityName">@foreach (var c in Model.Cities){<option value="@c.Name">@c.Name</option>}</select></div>
+                            <div class="col-md-12"><textarea class="form-control" name="description">@item.Description</textarea></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Сохранить здание</button>
+                    </form>
+                }
+            </div></div>
+        </div>
+
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#buildingSamples">Шаблоны зданий (@Model.BuildingSamples.Count)</button></h2>
+            <div id="buildingSamples" class="accordion-collapse collapse" data-bs-parent="#editorAccordion"><div class="accordion-body">
+                @foreach (var item in Model.BuildingSamples)
+                {
+                    <form asp-action="UpdateBuildingSample" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="originalName" value="@item.Name" />
+                        <div class="row g-2">
+                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-1"><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="cost" type="number" value="@item.Cost" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="profit" type="number" value="@item.Profit" required /></div>
+                            <div class="col-md-2"><input class="form-control" name="buildTurns" type="number" value="@item.BuildTurns" required /></div>
+                            <div class="col-md-3"><select class="form-select" name="countryName">@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
+                            <div class="col-md-12"><textarea class="form-control" name="description">@item.Description</textarea></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Сохранить шаблон здания</button>
+                    </form>
+                }
+            </div></div>
+        </div>
+    </div>
+</div>

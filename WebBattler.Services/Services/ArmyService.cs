@@ -70,7 +70,7 @@ public class ArmyService : IArmyService
 
     public void Update(ArmyDTO army)
     {
-        var armyId = _repository.GetIdByName(army.Name);
+        var armyId = _repository.GetIdByName(army.OriginalName ?? army.Name);
         if (armyId == null)
         {
             return;
@@ -86,6 +86,22 @@ public class ArmyService : IArmyService
         {
             entity.OwnerId = army.OwnerId;
         }
+
+        if (!string.IsNullOrWhiteSpace(army.Name))
+        {
+            entity.Name = army.Name;
+        }
+
+        if (!string.IsNullOrWhiteSpace(army.Status))
+        {
+            entity.Status = army.Status;
+        }
+
+        if (army.CurrentTurnCount >= 0)
+        {
+            entity.CurrentTurnCount = army.CurrentTurnCount;
+        }
+
 
         if (!string.IsNullOrWhiteSpace(army.CountryName))
         {

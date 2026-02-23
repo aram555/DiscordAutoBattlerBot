@@ -46,10 +46,15 @@ public class CityService : ICityService
 
     public void Update(CityDTO city)
     {
-        var entity = _repository.GetById(_repository.GetIdByName(city.Name));
+        var entity = _repository.GetById(_repository.GetIdByName(city.OriginalName ?? city.Name));
         if (entity == null)
         {
             return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(city.Name))
+        {
+            entity.Name = city.Name;
         }
 
         if (!string.IsNullOrWhiteSpace(city.Description))
@@ -60,11 +65,11 @@ public class CityService : ICityService
         {
             entity.OwnerId = city.OwnerId;
         }
-        if (city.Population > 0)
+        if (city.Population >= 0)
         {
             entity.Population = city.Population;
         }
-        if (city.Level > 0)
+        if (city.Level >= 0)
         {
             entity.Level = city.Level;
         }

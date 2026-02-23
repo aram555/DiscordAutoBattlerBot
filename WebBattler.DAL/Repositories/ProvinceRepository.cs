@@ -40,7 +40,39 @@ public class ProvinceRepository : IProvinceRepository
 
     public void Update(ProvinceEntity province)
     {
-        _dbContext.Provinces.Update(province);
+        var current = _dbContext.Provinces
+            .Include(p => p.Neighbours)
+            .FirstOrDefault(p => p.Id == province.Id);
+
+        if (current == null)
+        {
+            return;
+        }
+
+        current.Name = province.Name;
+        current.Description = province.Description;
+        current.OwnerId = province.OwnerId;
+        current.CountryId = province.CountryId;
+
+        if (province.Neighbours != null)
+        {
+            var neighbourIds = province.Neighbours
+                .Select(n => n.Id)
+                .Where(id => id != current.Id)
+                .Distinct()
+                .ToList();
+
+            var neighbours = _dbContext.Provinces
+                .Where(p => neighbourIds.Contains(p.Id))
+                .ToList();
+
+            current.Neighbours.Clear();
+            foreach (var neighbour in neighbours)
+            {
+                current.Neighbours.Add(neighbour);
+            }
+        }
+
         _dbContext.SaveChanges();
     }
 
