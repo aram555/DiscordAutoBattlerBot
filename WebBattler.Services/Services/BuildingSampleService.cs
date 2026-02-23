@@ -135,7 +135,17 @@ public class BuildingSampleService : IBuildingSampleService
                 Cost = entity.Cost,
                 Level = entity.Level,
                 BuildTurns = entity.BuildTurns,
-                OwnerId = entity.OwnerId
+                OwnerId = entity.OwnerId,
+                Country = entity.Country == null
+                    ? new CountryModel { Name = string.Empty, Description = string.Empty, Provinces = new List<ProvinceModel>() }
+                    : new CountryModel
+                    {
+                        Name = entity.Country.Name,
+                        Description = entity.Country.Description,
+                        OwnerId = entity.Country.OwnerId,
+                        Money = entity.Country.Money,
+                        Provinces = new List<ProvinceModel>()
+                    }
             });
         }
 

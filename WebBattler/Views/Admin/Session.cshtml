@@ -122,6 +122,7 @@
 
             <div class="card shadow-sm mb-4"><div class="card-body">
                 <h2 class="h5">Шаблоны</h2>
+                <h3 class="h6 text-muted form-section-title">Создание шаблона юнита</h3>
                 <form asp-action="CreateUnitSample" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
                     @Html.AntiForgeryToken()
                     <input class="form-control mb-2" name="Name" placeholder="Шаблон юнита" required />
@@ -139,6 +140,7 @@
                     <button class="btn btn-outline-primary w-100" type="submit">Создать шаблон юнита</button>
                 </form>
 
+                <h3 class="h6 text-muted form-section-title">Создание шаблона здания</h3>
                 <form asp-action="CreateBuildingSample" asp-route-sessionId="@Model.SessionId" method="post">
                     @Html.AntiForgeryToken()
                     <input class="form-control mb-2" name="Name" placeholder="Шаблон здания" required />
@@ -162,6 +164,7 @@
 
             <div class="card shadow-sm mb-4"><div class="card-body">
                 <h2 class="h5">Армии и юниты</h2>
+                <h3 class="h6 text-muted form-section-title">Создание армии</h3>
                 <form asp-action="CreateArmy" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
                     @Html.AntiForgeryToken()
                     <input class="form-control mb-2" name="Name" placeholder="Название армии" required />
@@ -185,7 +188,8 @@
                     <button class="btn btn-primary w-100" type="submit">Создать армию</button>
                 </form>
 
-                 <form asp-action="CreateUnit" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
+                <h3 class="h6 text-muted form-section-title">Подготовка юнитов</h3>
+                <form asp-action="CreateUnit" asp-route-sessionId="@Model.SessionId" method="post" class="mb-3">
                     @Html.AntiForgeryToken()
                     <input class="form-control mb-2" name="OwnerId" type="number" placeholder="OwnerId" required />
                     <select class="form-select mb-2" name="SampleName" required>
@@ -200,6 +204,7 @@
                     <button class="btn btn-primary w-100" type="submit">Запустить подготовку юнитов</button>
                 </form>
 
+                <h3 class="h6 text-muted form-section-title">Строительство зданий</h3>
                 <form asp-action="CreateBuilding" asp-route-sessionId="@Model.SessionId" method="post">
                     @Html.AntiForgeryToken()
                     <input class="form-control mb-2" name="OwnerId" type="number" placeholder="OwnerId" required />
@@ -222,9 +227,9 @@
 @foreach (var country in Model.Countries)
 {
     var provinces = country.Provinces;
-    var countryArmies = Model.Armies.Where(a => string.Equals(a.Name, country.Name, StringComparison.OrdinalIgnoreCase)).ToList();
-    var countryUnitSamples = Model.UnitSamples.Where(s => string.Equals(s.Name, country.Name, StringComparison.OrdinalIgnoreCase)).ToList();
-    var countryBuildingSamples = Model.BuildingSamples.Where(s => string.Equals(s.Name, country.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+    var countryArmies = Model.Armies.Where(a => string.Equals(a.Country?.Name, country.Name, StringComparison.OrdinalIgnoreCase) || a.OwnerId == country.OwnerId && a.Country == country).ToList();
+    var countryUnitSamples = Model.UnitSamples.Where(s => string.Equals(s.Country?.Name, country.Name, StringComparison.OrdinalIgnoreCase) || s.OwnerId == country.OwnerId && s.Country == country).ToList();
+    var countryBuildingSamples = Model.BuildingSamples.Where(s => string.Equals(s.Country?.Name, country.Name, StringComparison.OrdinalIgnoreCase) || s.OwnerId == country.OwnerId && s.Country == country).ToList();
 
     <div class="modal fade" id="countryModal-@country.Name.Replace(" ", "-")" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -268,19 +273,50 @@
                                             <p class="mb-2 small text-muted">Соседи: @(province.Neighbours != null && province.Neighbours.Any() ? string.Join(", ", province.Neighbours.Select(n => n.Name)) : "не заданы")</p>
                                             @if (cities.Any())
                                             {
-                                                <ul class="list-group list-group-flush">
-                                                    @foreach (var city in cities)
+                                                <div class="accordion" id="cityAccordion-@country.Name.Replace(" ", "-")-@i">
+                                                    @for (var cityIndex = 0; cityIndex < cities.Count; cityIndex++)
                                                     {
-                                                        <li class="list-group-item px-0">
-                                                            <div class="fw-semibold">@city.Name @(city.IsCapital ? "(Столица)" : string.Empty)</div>
-                                                            <div class="small text-muted">Население: @city.Population • Уровень: @city.Level</div>
-                                                            @if (!string.IsNullOrWhiteSpace(city.Description))
-                                                            {
-                                                                <div class="small">@city.Description</div>
-                                                            }
-                                                        </li>
+                                                        var city = cities[cityIndex];
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="city-heading-@country.Name.Replace(" ", "-")-@i-@cityIndex">
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#city-collapse-@country.Name.Replace(" ", "-")-@i-@cityIndex">
+                                                                    @city.Name @(city.IsCapital ? "(Столица)" : string.Empty)
+                                                                </button>
+                                                            </h2>
+                                                            <div id="city-collapse-@country.Name.Replace(" ", "-")-@i-@cityIndex" class="accordion-collapse collapse" data-bs-parent="#cityAccordion-@country.Name.Replace(" ", "-")-@i">
+                                                                <div class="accordion-body">
+                                                                    <div class="small text-muted mb-2">Население: @city.Population • Уровень: @city.Level</div>
+                                                                    @if (!string.IsNullOrWhiteSpace(city.Description))
+                                                                    {
+                                                                        <p class="small mb-2">@city.Description</p>
+                                                                    }
+
+                                                                    <div class="small fw-semibold mb-1">Строения в городе</div>
+                                                                    @if (city.Buildings != null && city.Buildings.Any())
+                                                                    {
+                                                                        <ul class="list-group list-group-flush">
+                                                                            @foreach (var building in city.Buildings)
+                                                                            {
+                                                                                <li class="list-group-item px-0">
+                                                                                    <div class="fw-semibold">@building.Name</div>
+                                                                                    <div class="small text-muted">Уровень: @building.Level • Доход: @building.Profit</div>
+                                                                                    @if (!string.IsNullOrWhiteSpace(building.Description))
+                                                                                    {
+                                                                                        <div class="small">@building.Description</div>
+                                                                                    }
+                                                                                </li>
+                                                                            }
+                                                                        </ul>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <p class="text-muted mb-0">В городе пока нет строений.</p>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     }
-                                                </ul>
+                                                </div>
                                             }
                                             else
                                             {
@@ -298,7 +334,47 @@
                     }
 
                     <h4 class="h6 mt-4">Армии</h4>
-                    <p class="mb-2">@((countryArmies.Any()) ? string.Join(", ", countryArmies.Select(a => a.Name)) : "Нет армий")</p>
+                    @if (countryArmies.Any())
+                    {
+                        <div class="accordion" id="armyAccordion-@country.Name.Replace(" ", "-")">
+                            @for (var i = 0; i < countryArmies.Count; i++)
+                            {
+                                var army = countryArmies[i];
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="army-heading-@country.Name.Replace(" ", "-")-@i">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#army-collapse-@country.Name.Replace(" ", "-")-@i">
+                                            @army.Name
+                                        </button>
+                                    </h2>
+                                    <div id="army-collapse-@country.Name.Replace(" ", "-")-@i" class="accordion-collapse collapse" data-bs-parent="#armyAccordion-@country.Name.Replace(" ", "-")">
+                                        <div class="accordion-body">
+                                            <p class="small text-muted mb-2">Юнитов: @army.Units.Count • Провинция: @army.Province.Name</p>
+                                            @if (army.Units.Any())
+                                            {
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach (var unit in army.Units)
+                                                    {
+                                                        <li class="list-group-item px-0">
+                                                            <div class="fw-semibold">@unit.Name</div>
+                                                            <div class="small text-muted">HP: @unit.Health • Оружие: @unit.Weapon</div>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
+                                            else
+                                            {
+                                                <p class="text-muted mb-0">В армии пока нет юнитов.</p>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="mb-2">Нет армий</p>
+                    }
 
                     <h4 class="h6 mt-3">Шаблоны юнитов</h4>
                     <p class="mb-2">@((countryUnitSamples.Any()) ? string.Join(", ", countryUnitSamples.Select(s => s.Name)) : "Нет шаблонов")</p>

@@ -44,10 +44,25 @@ body {
     border-width: 1px;
 }
 
-    .country-card:hover {
-        border-color: #0d6efd;
-        background-color: #f8fbff;
-    }
+.country-card .fw-semibold {
+        color: #212529;
+        transition: color 0.2s ease;
+}
+
+.country-card:hover .fw-semibold,
+.country-card:focus-visible .fw-semibold,
+.country-card:active .fw-semibold {
+    color: #212529;
+}
+
+.form-section-title {
+    margin-bottom: 0.5rem;
+}
+
+.country-card:hover {
+    border-color: #0d6efd;
+    background-color: #f8fbff;
+}
 
 .country-meta .border {
     background: #fafbff;
