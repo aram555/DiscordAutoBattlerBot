@@ -98,6 +98,8 @@ public class UnitService : IUnitService
             Name = entity.Name,
             Health = entity.Health,
             Weapon = entity.Weapon,
+            Damage = entity.Damage,
+            Armor = entity.Armor,
             OwnerId = entity.OwnerId
         };
     }
@@ -114,6 +116,8 @@ public class UnitService : IUnitService
                     Name = entity.Name,
                     Health = entity.Health,
                     Weapon = entity.Weapon,
+                    Damage = entity.Damage,
+                    Armor = entity.Armor,
                     OwnerId = entity.OwnerId
                 });
         }

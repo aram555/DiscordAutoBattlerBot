@@ -22,6 +22,17 @@
         <div class="alert alert-info">@status</div>
     }
 
+    <div class="alert alert-secondary" role="alert">
+        <h2 class="h6 mb-2">Как читать формы редактирования</h2>
+        <ul class="mb-2">
+            <li><strong>Название</strong> — отображаемое имя сущности.</li>
+            <li><strong>OwnerId</strong> — ID владельца (игрока/админа).</li>
+            <li><strong>Характеристики</strong> — числовые параметры (уровень, здоровье, цена, урон и т.д.).</li>
+            <li><strong>Привязка</strong> — к чему относится сущность (страна, провинция, город, армия).</li>
+        </ul>
+        <div class="small text-muted">Все поля теперь подписаны; можно редактировать прямо по названиям колонок.</div>
+    </div>
+
     <div class="accordion" id="editorAccordion">
         <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#countries">Страны (@Model.Countries.Count)</button></h2>
             <div id="countries" class="accordion-collapse collapse show" data-bs-parent="#editorAccordion"><div class="accordion-body">
@@ -31,11 +42,12 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
                         <div class="row g-2">
-                            <div class="col-md-4"><input class="form-control" name="name" value="@item.Name" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="money" type="number" value="@item.Money" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="gameSessionId" type="number" value="@Model.SessionId" required /></div>
-                            <div class="col-md-12"><textarea class="form-control" name="description">@item.Description</textarea></div>
+                            <div class="row g-3 align-items-end">
+                            <div class="col-md-4"><label class="form-label">Название страны</label><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-2"><label class="form-label">Казна</label><input class="form-control" name="money" type="number" value="@item.Money" required /></div>
+                            <div class="col-md-2"><label class="form-label">ID сессии</label><input class="form-control" name="gameSessionId" type="number" value="@Model.SessionId" required /></div>
+                            <div class="col-md-12"><label class="form-label">Описание</label><textarea class="form-control" name="description" rows="2">@item.Description</textarea></div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Сохранить страну</button>
                     </form>
@@ -51,11 +63,12 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
                         <div class="row g-2">
-                            <div class="col-md-4"><input class="form-control" name="name" value="@item.Name" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
-                            <div class="col-md-3"><select class="form-select" name="countryName" required>@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
-                            <div class="col-md-12"><textarea class="form-control" name="description">@item.Description</textarea></div>
-                            <div class="col-md-12"><label class="form-label">Соседи</label><select class="form-select" name="neighbourNames" multiple size="6">@foreach (var p in Model.Provinces.Where(p=>p.Name!=item.Name)){<option value="@p.Name" selected="@(item.Neighbours.Any(n=>n.Name==p.Name))">@p.Name</option>}</select></div>
+                            <div class="row g-3 align-items-end">
+                            <div class="col-md-4"><label class="form-label">Название провинции</label><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-3"><label class="form-label">Страна</label><select class="form-select" name="countryName" required>@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
+                            <div class="col-md-12"><label class="form-label">Описание</label><textarea class="form-control" name="description" rows="2">@item.Description</textarea></div>
+                            <div class="col-md-12"><label class="form-label">Соседние провинции</label><select class="form-select" name="neighbourNames" multiple size="6">@foreach (var p in Model.Provinces.Where(p=>p.Name!=item.Name)){<option value="@p.Name" selected="@(item.Neighbours.Any(n=>n.Name==p.Name))">@p.Name</option>}</select><div class="form-text">Зажмите Ctrl/Cmd для выбора нескольких соседей.</div></div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Сохранить провинцию</button>
                     </form>
@@ -71,14 +84,15 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
                         <div class="row g-2">
-                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="population" type="number" value="@item.Population" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
-                            <div class="col-md-3"><select class="form-select" name="provinceName" required>@foreach (var p in Model.Provinces){<option value="@p.Name" selected="@(p.Name==item.Province?.Name)">@p.Name</option>}</select></div>
-                            <div class="col-md-12"><textarea class="form-control" name="description">@item.Description</textarea></div>
+                            <div class="row g-3 align-items-end">
+                            <div class="col-md-3"><label class="form-label">Название города</label><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-2"><label class="form-label">Население</label><input class="form-control" name="population" type="number" value="@item.Population" required /></div>
+                            <div class="col-md-2"><label class="form-label">Уровень</label><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
+                            <div class="col-md-3"><label class="form-label">Провинция</label><select class="form-select" name="provinceName" required>@foreach (var p in Model.Provinces){<option value="@p.Name" selected="@(p.Name==item.Province?.Name)">@p.Name</option>}</select></div>
+                            <div class="col-md-12"><label class="form-label">Описание</label><textarea class="form-control" name="description" rows="2">@item.Description</textarea></div>
                             <input name="isCapital" type="hidden" value="false" />
-                            <div class="col-md-3 form-check ms-2 mt-2"><input class="form-check-input" name="isCapital" type="checkbox" value="true" checked="@item.IsCapital" /><label class="form-check-label">Столица</label></div>
+                            <div class="col-md-3 form-check ms-2 mt-2"><input class="form-check-input" name="isCapital" type="checkbox" value="true" checked="@item.IsCapital" /><label class="form-check-label">Это столица страны</label></div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Сохранить город</button>
                     </form>
@@ -94,14 +108,15 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
                         <div class="row g-2">
-                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="currentTurnCount" type="number" value="@item.CurrentTurnCount" required /></div>
-                            <div class="col-md-5"><input class="form-control" name="status" value="@item.Status" required /></div>
-                            <div class="col-md-3"><select class="form-select" name="countryName">@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
-                            <div class="col-md-3"><select class="form-select" name="provinceName">@foreach (var p in Model.Provinces){<option value="@p.Name" selected="@(p.Name==item.Province?.Name)">@p.Name</option>}</select></div>
-                            <div class="col-md-3"><select class="form-select" name="cityName"><option value="">(нет)</option>@foreach (var c in Model.Cities){<option value="@c.Name" selected="@(c.Name==item.City?.Name)">@c.Name</option>}</select></div>
-                            <div class="col-md-3"><select class="form-select" name="parentName"><option value="">(нет)</option>@foreach (var a in Model.Armies.Where(a=>a.Name!=item.Name)){<option value="@a.Name">@a.Name</option>}</select></div>
+                            <div class="row g-3 align-items-end">
+                            <div class="col-md-3"><label class="form-label">Название армии</label><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-2"><label class="form-label">Ходы до готовности</label><input class="form-control" name="currentTurnCount" type="number" value="@item.CurrentTurnCount" required /></div>
+                            <div class="col-md-5"><label class="form-label">Статус</label><input class="form-control" name="status" value="@item.Status" required /></div>
+                            <div class="col-md-3"><label class="form-label">Страна</label><select class="form-select" name="countryName">@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
+                            <div class="col-md-3"><label class="form-label">Провинция</label><select class="form-select" name="provinceName">@foreach (var p in Model.Provinces){<option value="@p.Name" selected="@(p.Name==item.Province?.Name)">@p.Name</option>}</select></div>
+                            <div class="col-md-3"><label class="form-label">Город (опционально)</label><select class="form-select" name="cityName"><option value="">(нет)</option>@foreach (var c in Model.Cities){<option value="@c.Name" selected="@(c.Name==item.City?.Name)">@c.Name</option>}</select></div>
+                            <div class="col-md-3"><label class="form-label">Родительская армия</label><select class="form-select" name="parentName"><option value="">(нет)</option>@foreach (var a in Model.Armies.Where(a=>a.Name!=item.Name)){<option value="@a.Name">@a.Name</option>}</select></div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Сохранить армию</button>
                     </form>
@@ -117,13 +132,13 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
                         <div class="row g-2">
-                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="health" type="number" step="0.1" value="@item.Health" required /></div>
-                            <div class="col-md-3"><input class="form-control" name="weapon" value="@item.Weapon" required /></div>
-                            <div class="col-md-3"><input class="form-control" name="damage" value="@item.Damage" required /></div>
-                            <div class="col-md-3"><input class="form-control" name="armor" value="@item.Armor" required /></div>
-                            <div class="col-md-2"><select class="form-select" name="armyName">@foreach (var a in Model.Armies){<option value="@a.Name" selected="@(a.Name==item.Army?.Name)">@a.Name</option>}</select></div>
+                            <div class="col-md-3"><label class="form-label">Название юнита</label><input class="form-control" name="name" value="@item.Name" required title="Уникальное название юнита" /></div>
+                            <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required title="Discord/внутренний id владельца" /></div>
+                            <div class="col-md-2"><label class="form-label">Здоровье</label><input class="form-control" name="health" type="number" step="0.1" value="@item.Health" required title="Очки здоровья" /></div>
+                            <div class="col-md-3"><label class="form-label">Оружие</label><input class="form-control" name="weapon" value="@item.Weapon" required title="Тип оружия" /></div>
+                            <div class="col-md-3"><label class="form-label">Урон</label><input class="form-control" name="damage" type="number" step="0.1" value="@item.Damage" required title="Базовый урон за атаку" /></div>
+                            <div class="col-md-3"><label class="form-label">Броня</label><input class="form-control" name="armor" type="number" step="0.1" value="@item.Armor" required title="Поглощение/снижение урона" /></div>
+                            <div class="col-md-2"><label class="form-label">Армия</label><select class="form-select" name="armyName" title="Армия, в которой состоит юнит">@foreach (var a in Model.Armies){<option value="@a.Name" selected="@(a.Name==item.Army?.Name)">@a.Name</option>}</select></div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Сохранить юнит</button>
                     </form>
@@ -139,15 +154,15 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
                         <div class="row g-2">
-                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="health" type="number" step="0.1" value="@item.Health" required /></div>
-                            <div class="col-md-3"><input class="form-control" name="weapon" value="@item.Weapon" required /></div>
-                            <div class="col-md-3"><input class="form-control" name="damage" value="@item.Damage" required /></div>
-                            <div class="col-md-3"><input class="form-control" name="armor" value="@item.Armor" required /></div>
-                            <div class="col-md-1"><input class="form-control" name="buildTurns" type="number" value="@item.BuildTurns" required /></div>
-                            <div class="col-md-1"><input class="form-control" name="cost" type="number" value="@item.Cost" required /></div>
-                            <div class="col-md-3"><select class="form-select" name="countryName">@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
+                            <div class="col-md-3"><label class="form-label">Название шаблона</label><input class="form-control" name="name" value="@item.Name" required title="Название шаблона юнита" /></div>
+                            <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required title="Владелец шаблона" /></div>
+                            <div class="col-md-2"><label class="form-label">Здоровье</label><input class="form-control" name="health" type="number" step="0.1" value="@item.Health" required title="Базовое здоровье юнита" /></div>
+                            <div class="col-md-3"><label class="form-label">Оружие</label><input class="form-control" name="weapon" value="@item.Weapon" required title="Тип оружия" /></div>
+                            <div class="col-md-3"><label class="form-label">Урон</label><input class="form-control" name="damage" type="number" step="0.1" value="@item.Damage" required title="Базовый урон шаблона" /></div>
+                            <div class="col-md-3"><label class="form-label">Броня</label><input class="form-control" name="armor" type="number" step="0.1" value="@item.Armor" required title="Базовая броня шаблона" /></div>
+                            <div class="col-md-1"><label class="form-label">Ходов</label><input class="form-control" name="buildTurns" type="number" value="@item.BuildTurns" required title="Сколько ходов строится" /></div>
+                            <div class="col-md-1"><label class="form-label">Цена</label><input class="form-control" name="cost" type="number" value="@item.Cost" required title="Стоимость производства" /></div>
+                            <div class="col-md-3"><label class="form-label">Страна</label><select class="form-select" name="countryName" title="К какой стране относится шаблон">@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Сохранить шаблон юнита</button>
                     </form>
@@ -163,13 +178,14 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
                         <div class="row g-2">
-                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
-                            <div class="col-md-1"><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="cost" type="number" value="@item.Cost" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="profit" type="number" value="@item.Profit" required /></div>
-                            <div class="col-md-2"><select class="form-select" name="cityName">@foreach (var c in Model.Cities){<option value="@c.Name">@c.Name</option>}</select></div>
-                            <div class="col-md-12"><textarea class="form-control" name="description">@item.Description</textarea></div>
+                            <div class="row g-3 align-items-end">
+                            <div class="col-md-3"><label class="form-label">Название здания</label><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-1"><label class="form-label">Уровень</label><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
+                            <div class="col-md-2"><label class="form-label">Цена</label><input class="form-control" name="cost" type="number" value="@item.Cost" required /></div>
+                            <div class="col-md-2"><label class="form-label">Доход</label><input class="form-control" name="profit" type="number" value="@item.Profit" required /></div>
+                            <div class="col-md-2"><label class="form-label">Город</label><select class="form-select" name="cityName">@foreach (var c in Model.Cities){<option value="@c.Name">@c.Name</option>}</select></div>
+                            <div class="col-md-12"><label class="form-label">Описание</label><textarea class="form-control" name="description" rows="2">@item.Description</textarea></div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Сохранить здание</button>
                     </form>
@@ -185,14 +201,15 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
                         <div class="row g-2">
-                            <div class="col-md-3"><input class="form-control" name="name" value="@item.Name" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
-                            <div class="col-md-1"><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="cost" type="number" value="@item.Cost" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="profit" type="number" value="@item.Profit" required /></div>
-                            <div class="col-md-2"><input class="form-control" name="buildTurns" type="number" value="@item.BuildTurns" required /></div>
-                            <div class="col-md-3"><select class="form-select" name="countryName">@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
-                            <div class="col-md-12"><textarea class="form-control" name="description">@item.Description</textarea></div>
+                            <div class="row g-3 align-items-end">
+                            <div class="col-md-3"><label class="form-label">Название шаблона</label><input class="form-control" name="name" value="@item.Name" required /></div>
+                            <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                            <div class="col-md-1"><label class="form-label">Уровень</label><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
+                            <div class="col-md-2"><label class="form-label">Цена</label><input class="form-control" name="cost" type="number" value="@item.Cost" required /></div>
+                            <div class="col-md-2"><label class="form-label">Доход</label><input class="form-control" name="profit" type="number" value="@item.Profit" required /></div>
+                            <div class="col-md-2"><label class="form-label">Ходов строительства</label><input class="form-control" name="buildTurns" type="number" value="@item.BuildTurns" required /></div>
+                            <div class="col-md-3"><label class="form-label">Страна</label><select class="form-select" name="countryName">@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
+                            <div class="col-md-12"><label class="form-label">Описание</label><textarea class="form-control" name="description" rows="2">@item.Description</textarea></div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Сохранить шаблон здания</button>
                     </form>

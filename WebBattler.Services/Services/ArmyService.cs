@@ -45,6 +45,8 @@ public class ArmyService : IArmyService
                 Name = u.Name,
                 Health = u.Health,
                 Weapon = u.Weapon,
+                Damage = u.Damage,
+                Armor = u.Armor,
                 OwnerId = army.OwnerId,
             }).ToList(),
             SubArmies = new List<ArmyEntity>(),
@@ -142,8 +144,10 @@ public class ArmyService : IArmyService
             {
                 Name = u.Name,
                 OwnerId = u.OwnerId,
+                Health = u.Health,
                 Weapon = u.Weapon,
-                Health = u.Health
+                Damage = u.Damage,
+                Armor = u.Armor
             }).ToList(),
             CurrentTurnCount = entity.CurrentTurnCount
         };
@@ -268,8 +272,10 @@ public class ArmyService : IArmyService
             {
                 Name = u.Name,
                 OwnerId = u.OwnerId,
+                Health = u.Health,
                 Weapon = u.Weapon,
-                Health = u.Health
+                Damage = u.Damage,
+                Armor = u.Armor
             }).ToList(),
             SubArmies = new List<ArmyModel>()
         };
@@ -334,7 +340,9 @@ public class ArmyService : IArmyService
                     Name = u.Name,
                     OwnerId = u.OwnerId,
                     Weapon = u.Weapon,
-                    Health = u.Health
+                    Health = u.Health,
+                    Damage = u.Damage,
+                    Armor = u.Armor
                 }).ToList(),
                 SubArmies = new List<ArmyModel>(),
                 CurrentTurnCount = e.CurrentTurnCount
