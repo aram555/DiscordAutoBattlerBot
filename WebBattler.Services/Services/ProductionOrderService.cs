@@ -131,6 +131,8 @@ public class ProductionOrderService : IProductionOrderService
                             Name = sample.Name,
                             Health = sample.Health,
                             Weapon = sample.Weapon,
+                            Damage = sample.Damage,
+                            Armor = sample.Armor,
                             OwnerId = sample.OwnerId,
                             ArmyName = army.Name
                         });

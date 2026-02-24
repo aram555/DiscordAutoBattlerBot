@@ -17,14 +17,16 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
 
     [SlashCommand("unit_sample_create", "Создание шаблона юнита для дальнешйего найма.")]
     [DefaultMemberPermissions(GuildPermission.Administrator)]
-    public async Task UnitSampleCreateAsync(string unitName, string weapon, int Health, int buildTurns, int cost, string countryName)
+    public async Task UnitSampleCreateAsync(string unitName, string weapon, float health, float damage, float armor, int buildTurns, int cost, string countryName)
     {
         UnitSampleDTO dto = new UnitSampleDTO()
         {
             OwnerId = Context.User.Id,
             Name = unitName,
             Weapon = weapon,
-            Health = Health,
+            Health = health,
+            Damage = damage,
+            Armor = armor,
             BuildTurns = buildTurns,
             Cost = cost,
             Countryname = countryName
@@ -47,7 +49,7 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
 
         foreach (var item in list)
         {
-            embed.AddField($"{item.Name}", $"{item.BuildTurns} ходов | Цена{item.Cost}");
+            embed.AddField($"{item.Name}", $"Оружие {item.Weapon} | Броня {item.Armor} | Урон {item.Damage} | {item.BuildTurns} ходов | Цена{item.Cost}");
         }
 
         await FollowupAsync(embed: embed.Build());

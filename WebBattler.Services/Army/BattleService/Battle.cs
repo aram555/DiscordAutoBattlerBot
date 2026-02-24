@@ -61,9 +61,9 @@ public class Battle
 
     private void _BattleStage(DAL.Basis.Unit attacker, DAL.Basis.Unit enemy, StringBuilder sb)
     {
-        var damage = new Random().Next(15, 50); // Example random damage between 5 and 15
+        var damage = enemy.Armor / attacker.Damage;
 
-        enemy.TakeDamage(damage); // Example damage value
+        enemy.TakeDamage(damage);
         sb.AppendLine($"{attacker.Name} атакавал {attacker.Name} и нанёс {damage} урон.");
     }
 }

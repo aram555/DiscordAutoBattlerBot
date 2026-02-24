@@ -23,6 +23,8 @@ public class UnitService : IUnitService
             Name = _GetUniqueName(unitDBO.OwnerId, unitDBO.Name),
             Health = unitDBO.Health,
             Weapon = unitDBO.Weapon,
+            Damage = unitDBO.Damage,
+            Armor = unitDBO.Armor,
             ArmyId = _armyRepository.GetIdByName(unitDBO.ArmyName) ?? 0,
             OwnerId = unitDBO.OwnerId
         };
@@ -57,6 +59,16 @@ public class UnitService : IUnitService
         if (!string.IsNullOrWhiteSpace(unit.Weapon))
         {
             entity.Weapon = unit.Weapon;
+        }
+
+        if(unit.Damage > 0)
+        {
+            entity.Damage = unit.Damage;
+        }
+
+        if (unit.Armor > 0)
+        {
+            entity.Armor = unit.Armor;
         }
 
         if (!string.IsNullOrWhiteSpace(unit.ArmyName))

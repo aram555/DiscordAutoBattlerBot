@@ -25,6 +25,8 @@ public class UnitSampleService : IUnitSampleService
             Name = unitSample.Name,
             Health = unitSample.Health,
             Weapon = unitSample.Weapon,
+            Damage = unitSample.Damage,
+            Armor = unitSample.Armor,
             BuildTurns = unitSample.BuildTurns,
             Cost = unitSample.Cost,
             CountryId = _countryRepository.GetIdByName(unitSample.Countryname)
@@ -64,6 +66,16 @@ public class UnitSampleService : IUnitSampleService
         if (!string.IsNullOrWhiteSpace(unitSample.Weapon))
         {
             entity.Weapon = unitSample.Weapon;
+        }
+
+        if(unitSample.Damage >= 0)
+        {
+            entity.Damage = unitSample.Damage;
+        }
+
+        if(unitSample.Armor >= 0)
+        {
+            entity.Armor = unitSample.Armor;
         }
 
         if (unitSample.BuildTurns >= 0)

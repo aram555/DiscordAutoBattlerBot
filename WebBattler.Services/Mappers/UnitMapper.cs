@@ -11,7 +11,9 @@ public class UnitMapper : EntityMapperBase<UnitModel, Unit>
         return new Unit(
             model.Name,
             model.Health,
-            model.Weapon
+            model.Weapon,
+            model.Damage,
+            model.Armor
         );
     }
 

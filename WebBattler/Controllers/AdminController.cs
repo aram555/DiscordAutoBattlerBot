@@ -390,6 +390,8 @@ public partial class AdminController : Controller
             OwnerId = request.OwnerId,
             Health = request.Health,
             Weapon = request.Weapon.Trim(),
+            Damage = request.Damage,
+            Armor = request.Armor,
             BuildTurns = request.BuildTurns,
             Cost = request.Cost,
             Countryname = request.CountryName

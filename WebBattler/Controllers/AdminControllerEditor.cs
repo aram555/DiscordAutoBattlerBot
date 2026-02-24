@@ -153,7 +153,7 @@ public partial class AdminController : Controller
 
     [HttpPost("Session/{sessionId:int}/Edit/Unit")]
     [ValidateAntiForgeryToken]
-    public IActionResult UpdateUnit(int sessionId, string originalName, string name, ulong ownerId, float health, string weapon, string armyName)
+    public IActionResult UpdateUnit(int sessionId, string originalName, string name, ulong ownerId, float health, float damage, float armor, string weapon, string armyName)
     {
         if (!IsSessionOwnedByCurrentUser(sessionId))
         {
@@ -166,6 +166,8 @@ public partial class AdminController : Controller
             Name = name.Trim(),
             OwnerId = ownerId,
             Health = health,
+            Damage = damage,
+            Armor = armor,
             Weapon = weapon.Trim(),
             ArmyName = armyName
         });
@@ -176,7 +178,7 @@ public partial class AdminController : Controller
 
     [HttpPost("Session/{sessionId:int}/Edit/UnitSample")]
     [ValidateAntiForgeryToken]
-    public IActionResult UpdateUnitSample(int sessionId, string originalName, string name, ulong ownerId, float health, string weapon, int buildTurns, int cost, string countryName)
+    public IActionResult UpdateUnitSample(int sessionId, string originalName, string name, ulong ownerId, float health, float damage, float armor, string weapon, int buildTurns, int cost, string countryName)
     {
         if (!IsSessionOwnedByCurrentUser(sessionId))
         {
@@ -190,6 +192,8 @@ public partial class AdminController : Controller
             OwnerId = ownerId,
             Health = health,
             Weapon = weapon.Trim(),
+            Damage = damage,
+            Armor = armor,
             BuildTurns = buildTurns,
             Cost = cost,
             Countryname = countryName

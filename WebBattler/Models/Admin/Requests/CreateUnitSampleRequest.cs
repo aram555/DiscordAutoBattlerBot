@@ -16,6 +16,12 @@ public class CreateUnitSampleRequest
     [Required]
     public string Weapon { get; set; } = string.Empty;
 
+    [Range(0.1, float.MaxValue)]
+    public float Damage { get; set; }
+
+    [Range(0.1, float.MaxValue)]
+    public float Armor { get; set; }
+
     [Range(1, int.MaxValue)]
     public int BuildTurns { get; set; }
 
