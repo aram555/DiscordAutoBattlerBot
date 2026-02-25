@@ -70,6 +70,7 @@ public class CountryRepository : ICountryRepository
     {
         return _context.Countries
             .Where(c => c.GameSessionId == sessionId)
+            .Include(c => c.UnitSamples)
             .Include(c => c.Provinces)
                 .ThenInclude(p => p.Neighbours)
             .Include(c => c.Provinces)

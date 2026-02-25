@@ -92,7 +92,7 @@ public class GameSessionService : IGameSessionService
             return "Сессия не найдена.";
         }
 
-        _armyService.ResolveAutomaticBattlesForAllProvinces();
+        var battleLog = _armyService.ResolveAutomaticBattlesForAllProvinces();
         AdvanceTurn(gameSessionId);
         _armyService.ResetMovementPointsForAllArmies();
 
@@ -108,6 +108,11 @@ public class GameSessionService : IGameSessionService
         var response = new StringBuilder();
         response.AppendLine($"Новый ход: {updated.CurrentTurn}");
 
+        if(!string.IsNullOrWhiteSpace(battleLog))
+        {
+            response.AppendLine("Битвы:");
+            response.AppendLine(battleLog);
+        }
         if (!string.IsNullOrWhiteSpace(productionLog))
         {
             response.AppendLine("Производство:");

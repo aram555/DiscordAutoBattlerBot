@@ -22,17 +22,6 @@
         <div class="alert alert-info">@status</div>
     }
 
-    <div class="alert alert-secondary" role="alert">
-        <h2 class="h6 mb-2">Как читать формы редактирования</h2>
-        <ul class="mb-2">
-            <li><strong>Название</strong> — отображаемое имя сущности.</li>
-            <li><strong>OwnerId</strong> — ID владельца (игрока/админа).</li>
-            <li><strong>Характеристики</strong> — числовые параметры (уровень, здоровье, цена, урон и т.д.).</li>
-            <li><strong>Привязка</strong> — к чему относится сущность (страна, провинция, город, армия).</li>
-        </ul>
-        <div class="small text-muted">Все поля теперь подписаны; можно редактировать прямо по названиям колонок.</div>
-    </div>
-
     <div class="accordion" id="editorAccordion">
         <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#countries">Страны (@Model.Countries.Count)</button></h2>
             <div id="countries" class="accordion-collapse collapse show" data-bs-parent="#editorAccordion"><div class="accordion-body">
@@ -41,8 +30,7 @@
                     <form asp-action="UpdateCountry" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
-                        <div class="row g-2">
-                            <div class="row g-3 align-items-end">
+                        <div class="row g-3 align-items-end">
                             <div class="col-md-4"><label class="form-label">Название страны</label><input class="form-control" name="name" value="@item.Name" required /></div>
                             <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
                             <div class="col-md-2"><label class="form-label">Казна</label><input class="form-control" name="money" type="number" value="@item.Money" required /></div>
@@ -62,8 +50,7 @@
                     <form asp-action="UpdateProvince" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
-                        <div class="row g-2">
-                            <div class="row g-3 align-items-end">
+                        <div class="row g-3 align-items-end">
                             <div class="col-md-4"><label class="form-label">Название провинции</label><input class="form-control" name="name" value="@item.Name" required /></div>
                             <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
                             <div class="col-md-3"><label class="form-label">Страна</label><select class="form-select" name="countryName" required>@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
@@ -83,15 +70,13 @@
                     <form asp-action="UpdateCity" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
-                        <div class="row g-2">
-                            <div class="row g-3 align-items-end">
+                        <div class="row g-3 align-items-end">
                             <div class="col-md-3"><label class="form-label">Название города</label><input class="form-control" name="name" value="@item.Name" required /></div>
                             <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
                             <div class="col-md-2"><label class="form-label">Население</label><input class="form-control" name="population" type="number" value="@item.Population" required /></div>
                             <div class="col-md-2"><label class="form-label">Уровень</label><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
                             <div class="col-md-3"><label class="form-label">Провинция</label><select class="form-select" name="provinceName" required>@foreach (var p in Model.Provinces){<option value="@p.Name" selected="@(p.Name==item.Province?.Name)">@p.Name</option>}</select></div>
                             <div class="col-md-12"><label class="form-label">Описание</label><textarea class="form-control" name="description" rows="2">@item.Description</textarea></div>
-                            <input name="isCapital" type="hidden" value="false" />
                             <div class="col-md-3 form-check ms-2 mt-2"><input class="form-check-input" name="isCapital" type="checkbox" value="true" checked="@item.IsCapital" /><label class="form-check-label">Это столица страны</label></div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Сохранить город</button>
@@ -107,8 +92,7 @@
                     <form asp-action="UpdateArmy" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
-                        <div class="row g-2">
-                            <div class="row g-3 align-items-end">
+                        <div class="row g-3 align-items-end">
                             <div class="col-md-3"><label class="form-label">Название армии</label><input class="form-control" name="name" value="@item.Name" required /></div>
                             <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
                             <div class="col-md-2"><label class="form-label">Ходы до готовности</label><input class="form-control" name="currentTurnCount" type="number" value="@item.CurrentTurnCount" required /></div>
@@ -177,8 +161,7 @@
                     <form asp-action="UpdateBuilding" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
-                        <div class="row g-2">
-                            <div class="row g-3 align-items-end">
+                        <div class="row g-3 align-items-end">
                             <div class="col-md-3"><label class="form-label">Название здания</label><input class="form-control" name="name" value="@item.Name" required /></div>
                             <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
                             <div class="col-md-1"><label class="form-label">Уровень</label><input class="form-control" name="level" type="number" value="@item.Level" required /></div>
@@ -200,8 +183,7 @@
                     <form asp-action="UpdateBuildingSample" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-3 mb-3">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="originalName" value="@item.Name" />
-                        <div class="row g-2">
-                            <div class="row g-3 align-items-end">
+                        <div class="row g-3 align-items-end">
                             <div class="col-md-3"><label class="form-label">Название шаблона</label><input class="form-control" name="name" value="@item.Name" required /></div>
                             <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control" name="ownerId" type="number" value="@item.OwnerId" required /></div>
                             <div class="col-md-1"><label class="form-label">Уровень</label><input class="form-control" name="level" type="number" value="@item.Level" required /></div>

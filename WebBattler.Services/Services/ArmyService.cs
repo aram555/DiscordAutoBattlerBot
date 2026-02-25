@@ -210,33 +210,35 @@ public class ArmyService : IArmyService
             var armiesInProvince = provinceGroup.ToList();
             var activeArmies = armiesInProvince.Where(a => a.Units.Any(u => u.Health > 0)).ToList();
 
-            while (armiesInProvince.Select(a => a.CountryId).Distinct().Count() > 1)
+            if(!activeArmies.Any())
             {
-                var attacker = activeArmies.First();
-                var defender = activeArmies.FirstOrDefault(a => a.CountryId != attacker.CountryId);
+                break;
+            }
 
-                if(defender == null)
+            var attacker = activeArmies.First();
+            var defender = activeArmies.FirstOrDefault(a => a.CountryId != attacker.CountryId);
+
+            if(defender == null)
+            {
+                break;
+            }
+
+            var battleResult = _StartBattle(_ToModel(attacker), _ToModel(defender));
+
+            log.AppendLine($"Провинция {attacker.Province.Name}: {attacker.Name} vs {defender.Name}");
+            log.AppendLine(battleResult.BattleLog.ToString());
+
+            armiesInProvince = _repository.GetAllInProvince(attacker.ProvinceId);
+            activeArmies = armiesInProvince.Where(a => a.Units.Any(u => u.Health > 0)).ToList();
+            if (activeArmies.Count < 2)
+            {
+                foreach (var army in activeArmies)
                 {
-                    break;
+                    army.Status = "Waiting";
+                    _repository.Update(army);
                 }
 
-                var battleResult = _StartBattle(_ToModel(attacker), _ToModel(defender));
-
-                log.AppendLine($"Провинция {attacker.Province.Name}: {attacker.Name} vs {defender.Name}");
-                log.AppendLine(battleResult.BattleLog.ToString());
-
-                armiesInProvince = _repository.GetAllInProvince(attacker.ProvinceId);
-                activeArmies = armiesInProvince.Where(a => a.Units.Any(u => u.Health > 0)).ToList();
-                if (activeArmies.Count < 2)
-                {
-                    foreach (var army in activeArmies)
-                    {
-                        army.Status = "Waiting";
-                        _repository.Update(army);
-                    }
-
-                    break;
-                }
+                break;
             }
         }
 

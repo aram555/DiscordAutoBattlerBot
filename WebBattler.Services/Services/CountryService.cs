@@ -211,12 +211,71 @@ public class CountryService : ICountryService
         foreach (var country in countries)
         {
             var income = incomeByCountryId.GetValueOrDefault(country.Id, 0);
-            country.Money += income;
+            var upkeepBreakdown = CalculateUpkeep(country);
+            var totalUpkeep = upkeepBreakdown.ArmyUpKeep + upkeepBreakdown.BuildingUpkeep + upkeepBreakdown.CityUpkeep + upkeepBreakdown.ProvinceUpkeep;
+            var net = income - totalUpkeep;
+
+            country.Money += net;
             _repository.Update(country);
 
-            sb.AppendLine($"{country.Name}: +{income} монет (всего: {country.Money})");
+            sb.AppendLine($"{country.Name}: +{income} доход, -{totalUpkeep} расходы, итог {net:+#;-#;0} (всего: {country.Money})");
+            sb.AppendLine($"   Армия: {upkeepBreakdown.ArmyUpKeep}, строения: {upkeepBreakdown.BuildingUpkeep}, города: {upkeepBreakdown.CityUpkeep}, провинции: {upkeepBreakdown.ProvinceUpkeep}");
         }
 
         return sb.ToString();
     }
+
+    private static UpkeepBreakDown CalculateUpkeep(CountryEntity country)
+    {
+        const decimal upkeepRate = 0.01m;
+        const int baseCityUpkeep = 2;
+        const decimal cityPopulationRate = 0.002m;
+        const int cityLevelUpkeepRate = 3;
+        const int capitalUpkeep = 5;
+        const int baseProvinceUpkeep = 5;
+        const int cityPerProvinceUpkeep = 2;
+
+        var armyUpkeep = 0;
+        foreach(var army in country.Armies)
+        {
+            foreach(var unit in army.Units)
+            {
+                var sample = country.UnitSamples.FirstOrDefault(s => s.Name == unit.Name);
+                if(sample == null)
+                {
+                    continue;
+                }
+
+                armyUpkeep += (int)Math.Ceiling(sample.Cost * upkeepRate);
+            }
+        }
+
+        var buildingUpkeep = country.Provinces
+            .SelectMany(p => p.Cities)
+            .SelectMany(c => c.Buildings)
+            .Sum(b => (int)Math.Ceiling(b.Cost * upkeepRate));
+
+        var cityUpkeep = country.Provinces
+            .SelectMany(province => province.Cities)
+            .Sum(city =>
+            {
+                var upkeep = baseCityUpkeep
+                    + (int)Math.Ceiling(city.Population * cityPopulationRate)
+                    + city.Level * cityLevelUpkeepRate;
+
+                if (city.IsCapital)
+                {
+                    upkeep += capitalUpkeep;
+                }
+
+                return upkeep;
+            });
+
+        var provinceUpkeep = country.Provinces
+            .Sum(province => baseProvinceUpkeep + province.Cities.Count * cityPerProvinceUpkeep);
+
+        return new UpkeepBreakDown(armyUpkeep, buildingUpkeep, cityUpkeep, provinceUpkeep);
+    }
+
+    private readonly record struct UpkeepBreakDown(int ArmyUpKeep, int BuildingUpkeep, int CityUpkeep, int ProvinceUpkeep);
 }
