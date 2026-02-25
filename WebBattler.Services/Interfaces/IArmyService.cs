@@ -16,4 +16,5 @@ public interface IArmyService
     public List<ArmyModel> GetAll();
     public void ResetMovementPointsForAllArmies();
     public string ResolveAutomaticBattlesForAllProvinces();
+    public string HealSoldiersInAllarmiers(int sessionId);
 }

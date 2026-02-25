@@ -1,6 +1,7 @@
 ﻿using WebBattler.DAL.Entities;
 using WebBattler.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace WebBattler.DAL.Repositories;
 
@@ -122,5 +123,29 @@ public class ArmyRepository : IArmyRepository
         }
 
         _context.SaveChanges();
+    }
+
+    public string HealSoldiersInAllarmiers(int sessionId)
+    {
+        var armies = _context.Armies
+            .Include(a => a.Country)
+            .Where(a => a.Country.GameSessionId == sessionId)
+            .Include(a => a.Units)
+            .ToList();
+
+        var sb = new StringBuilder();
+
+        foreach (var army in armies)
+        {
+            foreach (var unit in army.Units)
+            {
+                unit.Health = unit.MaxHealth;
+                sb.Append($"{unit.Name} восполнил своё здоровье до максимума");
+            }
+        
+        }
+
+        _context.SaveChanges();
+        return sb.ToString();
     }
 }

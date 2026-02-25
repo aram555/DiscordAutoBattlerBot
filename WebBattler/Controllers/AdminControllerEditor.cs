@@ -153,7 +153,7 @@ public partial class AdminController : Controller
 
     [HttpPost("Session/{sessionId:int}/Edit/Unit")]
     [ValidateAntiForgeryToken]
-    public IActionResult UpdateUnit(int sessionId, string originalName, string name, ulong ownerId, float health, float damage, float armor, string weapon, string armyName)
+    public IActionResult UpdateUnit(int sessionId, string originalName, string name, ulong ownerId, float health, float maxHealth, float damage, float armor, string weapon, string armyName)
     {
         if (!IsSessionOwnedByCurrentUser(sessionId))
         {
@@ -166,6 +166,7 @@ public partial class AdminController : Controller
             Name = name.Trim(),
             OwnerId = ownerId,
             Health = health,
+            MaxHealth = maxHealth,
             Damage = damage,
             Armor = armor,
             Weapon = weapon.Trim(),

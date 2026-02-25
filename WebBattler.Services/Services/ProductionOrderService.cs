@@ -1,8 +1,9 @@
-﻿using WebBattler.Services.Interfaces;
-using WebBattler.DAL.Interfaces;
-using WebBattler.DAL.Entities;
+﻿using System.Text;
+using Discord;
 using WebBattler.DAL.DTO;
-using System.Text;
+using WebBattler.DAL.Entities;
+using WebBattler.DAL.Interfaces;
+using WebBattler.Services.Interfaces;
 
 namespace WebBattler.Services.Services;
 
@@ -130,6 +131,7 @@ public class ProductionOrderService : IProductionOrderService
                         {
                             Name = sample.Name,
                             Health = sample.Health,
+                            MaxHealth = sample.Health,
                             Weapon = sample.Weapon,
                             Damage = sample.Damage,
                             Armor = sample.Armor,

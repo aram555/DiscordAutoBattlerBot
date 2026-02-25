@@ -16,17 +16,18 @@ public class UnitService : IUnitService
         _armyRepository = armyRepository;
     }
 
-    public void Create(UnitDTO unitDBO)
+    public void Create(UnitDTO unitDТO)
     {
         UnitEntity entity = new()
         {
-            Name = _GetUniqueName(unitDBO.OwnerId, unitDBO.Name),
-            Health = unitDBO.Health,
-            Weapon = unitDBO.Weapon,
-            Damage = unitDBO.Damage,
-            Armor = unitDBO.Armor,
-            ArmyId = _armyRepository.GetIdByName(unitDBO.ArmyName) ?? 0,
-            OwnerId = unitDBO.OwnerId
+            Name = _GetUniqueName(unitDТO.OwnerId, unitDТO.Name),
+            Health = unitDТO.Health,
+            MaxHealth = unitDТO.Health,
+            Weapon = unitDТO.Weapon,
+            Damage = unitDТO.Damage,
+            Armor = unitDТO.Armor,
+            ArmyId = _armyRepository.GetIdByName(unitDТO.ArmyName) ?? 0,
+            OwnerId = unitDТO.OwnerId
         };
 
         _unitRepository.Create(entity);
@@ -51,9 +52,14 @@ public class UnitService : IUnitService
             return;
         }
 
-        if (unit.Health > 0)
+        if (unit.Health >= 0)
         {
             entity.Health = unit.Health;
+        }
+
+        if(unit.MaxHealth >= 0)
+        {
+            entity.MaxHealth = unit.MaxHealth;
         }
 
         if (!string.IsNullOrWhiteSpace(unit.Weapon))
@@ -61,12 +67,12 @@ public class UnitService : IUnitService
             entity.Weapon = unit.Weapon;
         }
 
-        if(unit.Damage > 0)
+        if(unit.Damage >= 0)
         {
             entity.Damage = unit.Damage;
         }
 
-        if (unit.Armor > 0)
+        if (unit.Armor >= 0)
         {
             entity.Armor = unit.Armor;
         }
@@ -97,6 +103,7 @@ public class UnitService : IUnitService
         {
             Name = entity.Name,
             Health = entity.Health,
+            MaxHealth = entity.MaxHealth,
             Weapon = entity.Weapon,
             Damage = entity.Damage,
             Armor = entity.Armor,
@@ -115,6 +122,7 @@ public class UnitService : IUnitService
                 {
                     Name = entity.Name,
                     Health = entity.Health,
+                    MaxHealth = entity.MaxHealth,
                     Weapon = entity.Weapon,
                     Damage = entity.Damage,
                     Armor = entity.Armor,

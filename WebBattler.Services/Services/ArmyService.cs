@@ -44,6 +44,7 @@ public class ArmyService : IArmyService
             {
                 Name = u.Name,
                 Health = u.Health,
+                MaxHealth = u.MaxHealth,
                 Weapon = u.Weapon,
                 Damage = u.Damage,
                 Armor = u.Armor,
@@ -145,6 +146,7 @@ public class ArmyService : IArmyService
                 Name = u.Name,
                 OwnerId = u.OwnerId,
                 Health = u.Health,
+                MaxHealth = u.MaxHealth,
                 Weapon = u.Weapon,
                 Damage = u.Damage,
                 Armor = u.Armor
@@ -244,6 +246,10 @@ public class ArmyService : IArmyService
 
         return log.ToString();
     }
+    public string HealSoldiersInAllarmiers(int sessionId)
+    {
+        return _repository.HealSoldiersInAllarmiers(sessionId);
+    }
 
     private ArmyModel _ToModel(ArmyEntity entity)
     {
@@ -275,6 +281,7 @@ public class ArmyService : IArmyService
                 Name = u.Name,
                 OwnerId = u.OwnerId,
                 Health = u.Health,
+                MaxHealth = u.MaxHealth,
                 Weapon = u.Weapon,
                 Damage = u.Damage,
                 Armor = u.Armor
@@ -342,6 +349,7 @@ public class ArmyService : IArmyService
                     Name = u.Name,
                     OwnerId = u.OwnerId,
                     Weapon = u.Weapon,
+                    MaxHealth = u.MaxHealth,
                     Health = u.Health,
                     Damage = u.Damage,
                     Armor = u.Armor

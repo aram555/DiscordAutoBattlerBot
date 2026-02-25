@@ -14,4 +14,5 @@ public interface IArmyRepository
     public List<ArmyEntity> GetAllInProvince(int provinceId);
     public List<ArmyEntity> GetAll();
     public void ResetMovementPointsForAllArmies();
+    public string HealSoldiersInAllarmiers(int sessionId);
 }
