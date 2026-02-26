@@ -33,7 +33,7 @@ public class ProvinceModule : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("add_neighbour", "Добавление соседней провинции")]
-    [DefaultMemberPermissions(GuildPermission.Administrator)]
+    //[DefaultMemberPermissions(GuildPermission.Administrator)]
     public async Task AddNeighbourAsync(string provinceName, string neighbourName)
     {
         await DeferAsync();
