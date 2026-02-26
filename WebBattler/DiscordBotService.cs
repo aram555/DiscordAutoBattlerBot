@@ -32,7 +32,7 @@ public class DiscordBotService : BackgroundService
 
         await _client.LoginAsync(
             TokenType.Bot,
-            _config["Discord:Token"]);
+            Environment.GetEnvironmentVariable("DISCORD_TOKEN"));
 
         await _client.StartAsync();
 
