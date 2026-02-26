@@ -240,6 +240,7 @@ public class ArmyService : IArmyService
                     _repository.Update(army);
                 }
 
+                TryCaptureProvinceByArmyPresence(attacker.Province.Name);
                 break;
             }
         }
@@ -249,6 +250,63 @@ public class ArmyService : IArmyService
     public string HealSoldiersInAllarmiers(int sessionId)
     {
         return _repository.HealSoldiersInAllarmiers(sessionId);
+    }
+
+    public bool TryCaptureProvinceByArmyPresence(string provinceName)
+    {
+        if (string.IsNullOrWhiteSpace(provinceName))
+        {
+            return false;
+        }
+
+        var provinceId = _provinceRepository.GetIdByName(provinceName);
+        var armies = _repository.GetAllInProvince(provinceId);
+        var aliveArmies = armies.Where(a => a.Units.Any(u => u.Health > 0)).ToList();
+
+        if (!aliveArmies.Any())
+        {
+            return false;
+        }
+
+        var winnerCountryId = aliveArmies.First().CountryId;
+
+        if (aliveArmies.Any(a => a.CountryId != winnerCountryId))
+        {
+            return false;
+        }
+
+        var province = _provinceRepository.GetById(provinceId);
+
+        if (province == null || province.CountryId == winnerCountryId)
+        {
+            return false;
+        }
+
+        var winnerArmy = aliveArmies.First();
+
+        province.CountryId = winnerCountryId;
+        province.OwnerId = winnerArmy.OwnerId;
+
+        if (province.Cities != null)
+        {
+            foreach (var city in province.Cities)
+            {
+                city.OwnerId = winnerArmy.OwnerId;
+
+                if (city.Buildings == null)
+                {
+                    continue;
+                }
+
+                foreach (var building in city.Buildings)
+                {
+                    building.OwnerId = winnerArmy.OwnerId;
+                }
+            }
+        }
+
+        _provinceRepository.Update(province);
+        return true;
     }
 
     private ArmyModel _ToModel(ArmyEntity entity)

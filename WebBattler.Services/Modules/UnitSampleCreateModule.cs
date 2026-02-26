@@ -16,7 +16,7 @@ public class UnitSampleCreateModule : InteractionModuleBase<SocketInteractionCon
     }
 
     [SlashCommand("unit_sample_create", "Создание шаблона юнита для дальнешйего найма.")]
-    [DefaultMemberPermissions(GuildPermission.Administrator)]
+    //[DefaultMemberPermissions(GuildPermission.Administrator)]
     public async Task UnitSampleCreateAsync(string unitName, string weapon, float health, float damage, float armor, int buildTurns, int cost, string countryName)
     {
         UnitSampleDTO dto = new UnitSampleDTO()

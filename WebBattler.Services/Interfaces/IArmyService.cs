@@ -17,4 +17,5 @@ public interface IArmyService
     public void ResetMovementPointsForAllArmies();
     public string ResolveAutomaticBattlesForAllProvinces();
     public string HealSoldiersInAllarmiers(int sessionId);
+    public bool TryCaptureProvinceByArmyPresence(string provinceName);
 }

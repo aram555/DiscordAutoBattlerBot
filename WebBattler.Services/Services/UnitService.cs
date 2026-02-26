@@ -22,7 +22,7 @@ public class UnitService : IUnitService
         {
             Name = _GetUniqueName(unitDТO.OwnerId, unitDТO.Name),
             Health = unitDТO.Health,
-            MaxHealth = unitDТO.Health,
+            MaxHealth = unitDТO.MaxHealth > 0 ? unitDТO.MaxHealth : unitDТO.Health,
             Weapon = unitDТO.Weapon,
             Damage = unitDТO.Damage,
             Armor = unitDТO.Armor,
@@ -57,9 +57,9 @@ public class UnitService : IUnitService
             entity.Health = unit.Health;
         }
 
-        if(unit.MaxHealth >= 0)
+        if (entity.MaxHealth >= 0)
         {
-            entity.MaxHealth = unit.MaxHealth;
+            entity.Health = Math.Clamp(entity.Health, 0, entity.MaxHealth);
         }
 
         if (!string.IsNullOrWhiteSpace(unit.Weapon))

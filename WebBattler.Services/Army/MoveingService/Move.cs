@@ -76,6 +76,7 @@ public class Move
                 battleResults.Append(result.BattleLog.ToString());
             }
 
+            _service.TryCaptureProvinceByArmyPresence(provinceName);
             return new MoveResult(true, "Армия успешно перемещена и вступила в бой", battleResults);
         }
 

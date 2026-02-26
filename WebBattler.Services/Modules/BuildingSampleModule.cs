@@ -15,7 +15,7 @@ public class BuildingSampleModule : InteractionModuleBase<SocketInteractionConte
     }
 
     [SlashCommand("building_sample_create", "Создание шаблона строения")]
-    [DefaultMemberPermissions(GuildPermission.Administrator)]
+    //[DefaultMemberPermissions(GuildPermission.Administrator)]
     public async Task BuildingSampleCreateAsync(string name, string desc, int level, int cost, int income, int buildTurns, string countryName)
     {
         _service.Create(new BuildingSampleDTO
