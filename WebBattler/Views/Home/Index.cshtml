@@ -2,8 +2,19 @@
     ViewData["Title"] = "Главная страница";
 }
 
-<div class="text-center py-5">
-    <h1 class="display-5 mb-3">WebBattler Admin</h1>
-    <p class="lead text-muted">Панель для администраторов Discord-серверов: управление игровыми сессиями и ходами.</p>
-    <a asp-controller="Admin" asp-action="Index" class="btn btn-primary btn-lg mt-2">Открыть админ-панель</a>
+<div class="home-hero text-center card shadow-sm p-4">
+    <h1 class="h2 mb-3">WebBattler Admin</h1>
+    <p class="text-muted mb-3">Панель управления игровыми сессиями Discord в минималистичном интерфейсе.</p>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">Открыть админ-панель</a>
+    }
+    else
+    {
+        <div class="d-flex justify-content-center gap-2">
+            <a asp-controller="Auth" asp-action="Login" class="btn btn-primary">Войти</a>
+            <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary">Регистрация</a>
+        </div>
+    }
 </div>

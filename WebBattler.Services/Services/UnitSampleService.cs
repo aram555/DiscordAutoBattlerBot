@@ -129,6 +129,8 @@ public class UnitSampleService : IUnitSampleService
                 Name = entity.Name,
                 Health = entity.Health,
                 Weapon = entity.Weapon,
+                Damage= entity.Damage,
+                Armor= entity.Armor,
                 BuildTurns = entity.BuildTurns,
                 Cost = entity.Cost,
                 OwnerId = entity.OwnerId

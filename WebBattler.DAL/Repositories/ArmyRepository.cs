@@ -129,7 +129,7 @@ public class ArmyRepository : IArmyRepository
     {
         var armies = _context.Armies
             .Include(a => a.Country)
-            .Where(a => a.Country.GameSessionId == sessionId)
+            .Where(a => a.Country.GameSessionId == sessionId && a.Status == "Waiting")
             .Include(a => a.Units)
             .ToList();
 

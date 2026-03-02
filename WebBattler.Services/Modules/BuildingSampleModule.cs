@@ -38,9 +38,15 @@ public class BuildingSampleModule : InteractionModuleBase<SocketInteractionConte
     {
         await DeferAsync();
 
+        EmbedBuilder embedBuilder = new EmbedBuilder()
+            .WithTitle("Шаблоны строений")
+            .WithColor(Color.Blue);
+
         foreach (var item in _service.GetAll(Context.User.Id))
         {
-            await FollowupAsync($"{item.Name} | {item.BuildTurns} ходов");
+            embedBuilder.AddField(item.Name, $"{item.Description}\nУровень: {item.Level}\nСтоимость: {item.Cost}\nДоход: {item.Profit}\nХоды на строительство: {item.BuildTurns}");
         }
+
+        await FollowupAsync(embed: embedBuilder.Build());
     }
 }

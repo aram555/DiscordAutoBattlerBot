@@ -28,9 +28,9 @@ public class Program
                 options.AccessDeniedPath = "/Auth/Login";
             });
 
-        builder.Services.AddDbContext<AutobattlerDbContext>(options =>
-            options.UseNpgsql(
-                builder.Configuration.GetConnectionString("Default")));
+        builder.Services.AddDbContext<AutobattlerDbContext>();
+
+
         builder.Services.AddTransient<IArmyRepository, ArmyRepository>();
         builder.Services.AddTransient<IUnitRepository, UnitRepository>();
         builder.Services.AddTransient<IBuildingRepository, BuildingRepository>();
@@ -81,16 +81,9 @@ public class Program
 
         builder.Services.AddHostedService<DiscordBotService>();
 
-        var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-        builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
-
         var app = builder.Build();
 
-        using (var scope = app.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<AutobattlerDbContext>();
-            db.Database.Migrate();
-        }
+        app.UseDeveloperExceptionPage();
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
@@ -99,10 +92,8 @@ public class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-        else
-        {
-            app.UseHttpsRedirection();
-        }
+
+        app.UseHttpsRedirection();
         app.UseStaticFiles();
 
         app.UseRouting();

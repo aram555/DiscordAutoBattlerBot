@@ -61,7 +61,7 @@ public class Battle
 
     private void _BattleStage(DAL.Basis.Unit attacker, DAL.Basis.Unit enemy, StringBuilder sb)
     {
-        var damage = Math.Max(1f, attacker.Damage - enemy.Armor);
+        var damage = Math.Max(1f, enemy.Damage - attacker.Armor);
 
         enemy.TakeDamage(damage);
         sb.AppendLine($"{attacker.Name} атакавал {enemy.Name} и нанёс {damage} урон.");

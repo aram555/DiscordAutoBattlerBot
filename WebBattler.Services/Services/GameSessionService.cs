@@ -102,23 +102,23 @@ public class GameSessionService : IGameSessionService
 
         _armyService.ResetMovementPointsForAllArmies();
 
-        var healLog = _armyService.HealSoldiersInAllarmiers(gameSessionId);
         var battleLog = _armyService.ResolveAutomaticBattlesForAllProvinces();
+        var healLog = _armyService.HealSoldiersInAllarmiers(gameSessionId);
         var productionLog = _productionOrderService.ProcessTurn(gameSessionId, updated.CurrentTurn);
         var incomeLog = _countryService.ApplyIncomeForTurn(gameSessionId);
 
         var response = new StringBuilder();
         response.AppendLine($"Новый ход: {updated.CurrentTurn}");
 
-        if(!string.IsNullOrWhiteSpace(healLog))
-        {
-            response.AppendLine("Исцеление солдат:");
-            response.AppendLine(healLog);
-        }
         if (!string.IsNullOrWhiteSpace(battleLog))
         {
             response.AppendLine("Битвы:");
             response.AppendLine(battleLog);
+        }
+        if (!string.IsNullOrWhiteSpace(healLog))
+        {
+            response.AppendLine("Исцеление солдат:");
+            response.AppendLine(healLog);
         }
         if (!string.IsNullOrWhiteSpace(productionLog))
         {
