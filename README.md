@@ -52,19 +52,6 @@ git clone <repo-url>
 cd WebBattler
 ```
 
-### 3) Восстановить пакеты и собрать решение
-
-```bash
-dotnet restore
-dotnet build WebBattler.sln
-```
-
-### 4) Применить миграции базы
-
-```bash
-dotnet ef database update --project WebBattler.DAL --startup-project WebBattler
-```
-
 Если команда `dotnet ef` не установлена:
 
 ```bash
@@ -73,13 +60,7 @@ dotnet tool install --global dotnet-ef
 
 ### 5) Указать токен Discord-бота
 
-В репозитории токен хранить не нужно и небезопасно.
-Для запуска укажи свой токен через user-secrets:
-
-```bash
-dotnet user-secrets init --project WebBattler
-dotnet user-secrets set "Discord:Token" "<your-token>" --project WebBattler
-```
+В appsettings.json указать токен вашего бота
 
 > В текущей реализации сервис Discord-бота подключается при старте приложения,
 > поэтому без значения `Discord:Token` запуск может завершиться ошибкой авторизации.
