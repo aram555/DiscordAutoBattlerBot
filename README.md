@@ -58,14 +58,14 @@ cd WebBattler
 dotnet tool install --global dotnet-ef
 ```
 
-### 5) Указать токен Discord-бота
+### 3) Указать токен Discord-бота
 
 В appsettings.json указать токен вашего бота
 
 > В текущей реализации сервис Discord-бота подключается при старте приложения,
 > поэтому без значения `Discord:Token` запуск может завершиться ошибкой авторизации.
 
-### 6) Запустить приложение
+### 4) Запустить приложение
 
 ```bash
 dotnet run --project WebBattler
