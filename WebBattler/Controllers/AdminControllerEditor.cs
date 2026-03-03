@@ -23,7 +23,10 @@ public partial class AdminController : Controller
         var armies = _armyService.GetAll()
             .Where(a => a.Country != null && countryNames.Contains(a.Country.Name))
             .ToList();
-        var units = armies.SelectMany(a => a.Units ?? new List<WebBattler.DAL.Models.UnitModel>()).ToList();
+        var armyNames = armies.Select(a => a.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var units = _unitService.GetAllBySessionId(id)
+            .Where(u => u.Army != null && armyNames.Contains(u.Army.Name))
+            .ToList();
         var unitSamples = _unitSampleService.GetAllBySessionId(id).ToList();
         var buildingSamples = _buildingSampleService.GetAllBySessionId(id).ToList();
         var buildings = cities.SelectMany(c => c.Buildings ?? new List<WebBattler.DAL.Models.BuildingModel>()).ToList();

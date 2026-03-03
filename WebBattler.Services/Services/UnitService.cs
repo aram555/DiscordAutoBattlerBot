@@ -107,7 +107,12 @@ public class UnitService : IUnitService
             Weapon = entity.Weapon,
             Damage = entity.Damage,
             Armor = entity.Armor,
-            OwnerId = entity.OwnerId
+            OwnerId = entity.OwnerId,
+            Army = entity.Army == null ? null : new ArmyModel
+            {
+                Name = entity.Army.Name,
+                OwnerId = entity.Army.OwnerId
+            }
         };
     }
 
@@ -126,7 +131,39 @@ public class UnitService : IUnitService
                     Weapon = entity.Weapon,
                     Damage = entity.Damage,
                     Armor = entity.Armor,
-                    OwnerId = entity.OwnerId
+                    OwnerId = entity.OwnerId,
+                    Army = entity.Army == null ? null : new ArmyModel
+                    {
+                        Name = entity.Army.Name,
+                        OwnerId = entity.Army.OwnerId
+                    }
+                });
+        }
+
+        return list;
+    }
+
+    public List<UnitModel> GetAllBySessionId(int sessionId)
+    {
+        var list = new List<UnitModel>();
+
+        foreach (var entity in _unitRepository.GetAllBySessionId(sessionId))
+        {
+            list.Add(
+                new UnitModel
+                {
+                    Name = entity.Name,
+                    Health = entity.Health,
+                    MaxHealth = entity.MaxHealth,
+                    Weapon = entity.Weapon,
+                    Damage = entity.Damage,
+                    Armor = entity.Armor,
+                    OwnerId = entity.OwnerId,
+                    Army = entity.Army == null ? null : new ArmyModel
+                    {
+                        Name = entity.Army.Name,
+                        OwnerId = entity.Army.OwnerId
+                    }
                 });
         }
 

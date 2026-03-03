@@ -11,4 +11,5 @@ public interface IUnitService
     public int GetIdByName(string name);
     public UnitModel GetById(int id);
     public List<UnitModel> GetAll(ulong ownerId);
+    public List<UnitModel> GetAllBySessionId(int sessionId);
 }

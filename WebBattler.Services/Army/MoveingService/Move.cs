@@ -109,6 +109,8 @@ public class Move
                 Name = unit.Name,
                 Health = unit.Health,
                 Weapon = unit.Weapon,
+                Damage = unit.Damage,
+                Armor = unit.Armor,
                 ArmyName = armyName
             });
         }

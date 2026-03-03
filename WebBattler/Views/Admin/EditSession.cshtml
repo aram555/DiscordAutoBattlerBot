@@ -29,7 +29,7 @@
             var provinces = country.Provinces?.ToList() ?? new List<WebBattler.DAL.Models.ProvinceModel>();
             var cities = provinces.SelectMany(p => p.Cities ?? new List<WebBattler.DAL.Models.CityModel>()).ToList();
             var armies = Model.Armies.Where(a => string.Equals(a.Country?.Name, country.Name, StringComparison.OrdinalIgnoreCase)).ToList();
-            var units = Model.Units.Where(u => u.Army != null && armies.Any(a => string.Equals(a.Name, u.Army.Name, StringComparison.OrdinalIgnoreCase))).ToList();
+            var units = armies.SelectMany(a => a.Units ?? new List<WebBattler.DAL.Models.UnitModel>()).ToList();
             var unitSamples = Model.UnitSamples.Where(s => string.Equals(s.Country?.Name, country.Name, StringComparison.OrdinalIgnoreCase)).ToList();
             var buildings = Model.Buildings.Where(b => b.Province != null && cities.Any(c => string.Equals(c.Name, b.Province.Name, StringComparison.OrdinalIgnoreCase))).ToList();
             var buildingSamples = Model.BuildingSamples.Where(s => string.Equals(s.Country?.Name, country.Name, StringComparison.OrdinalIgnoreCase)).ToList();
@@ -37,7 +37,7 @@
             <div class="accordion-item mb-3">
                 <h2 class="accordion-header" id="heading-@countryKey">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#country-@countryKey" aria-expanded="false">
-                        @country.Name — провинций: @provinces.Count, городов: @cities.Count, армий: @armies.Count
+                        @country.Name (OwnerId: @country.OwnerId) — провинций: @provinces.Count, городов: @cities.Count, армий: @armies.Count
                     </button>
                 </h2>
                 <div id="country-@countryKey" class="accordion-collapse collapse" data-bs-parent="#countryEditorAccordion">
@@ -60,30 +60,25 @@
 
                         @if (provinces.Any())
                         {
-                            <div class="card border mb-3">
-                                <div class="card-body">
-                                    <h3 class="h6 mb-3">Провинции</h3>
-                                    @foreach (var item in provinces)
-                                    {
-                                        <form asp-action="UpdateProvince" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-2 mb-2">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="originalName" value="@item.Name" />
-                                            <div class="row g-2 align-items-end">
-                                                <div class="col-md-4"><label class="form-label">Название</label><input class="form-control form-control-sm" name="name" value="@item.Name" required /></div>
-                                                <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control form-control-sm" name="ownerId" type="number" value="@item.OwnerId" required /></div>
-                                                <div class="col-md-3"><label class="form-label">Страна</label><select class="form-select form-select-sm" name="countryName" required><option value="@country.Name" selected>@country.Name</option></select></div>
-                                                <div class="col-md-12"><label class="form-label">Описание</label><textarea class="form-control form-control-sm" name="description" rows="2">@item.Description</textarea></div>
-                                                <div class="col-md-12"><label class="form-label">Соседние провинции</label><select class="form-select form-select-sm" name="neighbourNames" multiple size="5">@foreach (var p in provinces.Where(p => p.Name != item.Name)){
-                                                    <option value="@p.Name" selected="@(item.Neighbours.Any(n => n.Name == p.Name))">@p.Name</option>
-                                                }
-                                            </select></div>
+                            <div class="card border mb-3"><div class="card-body">
+                                <h3 class="h6 mb-3">Провинции</h3>
+                                @foreach (var item in provinces)
+                                {
+                                    <form asp-action="UpdateProvince" asp-route-sessionId="@Model.SessionId" method="post" class="border rounded p-2 mb-2">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="originalName" value="@item.Name" />
+                                        <div class="row g-2 align-items-end">
+                                            <div class="col-md-4"><label class="form-label">Название</label><input class="form-control form-control-sm" name="name" value="@item.Name" required /></div>
+                                            <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control form-control-sm" name="ownerId" type="number" value="@item.OwnerId" required /></div>
+                                            <div class="col-md-3"><label class="form-label">Страна</label><select class="form-select form-select-sm" name="countryName" required>@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
+                                            <div class="col-md-12"><label class="form-label">Описание</label><textarea class="form-control form-control-sm" name="description" rows="2">@item.Description</textarea></div>
+                                            <div class="col-md-12"><label class="form-label">Соседние провинции</label><select class="form-select form-select-sm" name="neighbourNames" multiple size="5">@foreach (var p in provinces.Where(p => p.Name != item.Name)){<option value="@p.Name" selected="@(item.Neighbours.Any(n => n.Name == p.Name))">@p.Name</option>}</select></div>
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-sm mt-2">Сохранить провинцию</button>
                                     </form>
                                 }
-                            </div>
-                        </div>
-                    }
+                            </div></div>
+                        }
 
                     @if (cities.Any())
                     {
@@ -128,10 +123,10 @@
                                             <div class="col-md-2"><label class="form-label">OwnerId</label><input class="form-control form-control-sm" name="ownerId" type="number" value="@item.OwnerId" required /></div>
                                             <div class="col-md-2"><label class="form-label">Статус</label><input class="form-control form-control-sm" name="status" value="@item.Status" required /></div>
                                             <div class="col-md-2"><label class="form-label">Ход</label><input class="form-control form-control-sm" name="currentTurnCount" type="number" value="@item.CurrentTurnCount" required /></div>
-                                            <div class="col-md-3"><label class="form-label">Провинция</label><select class="form-select form-select-sm" name="provinceName" required>@foreach (var p in provinces){<option value="@p.Name" selected="@(p.Name==item.Province?.Name)">@p.Name</option>}</select></div>
-                                            <div class="col-md-3"><label class="form-label">Город</label><select class="form-select form-select-sm" name="cityName"><option value="">(нет)</option>@foreach (var c in cities){<option value="@c.Name" selected="@(c.Name==item.Province?.Name)">@c.Name</option>}</select></div>
+                                            <div class="col-md-3"><label class="form-label">Провинция</label><select class="form-select form-select-sm" name="provinceName" required>@foreach (var p in Model.Provinces){<option value="@p.Name" selected="@(p.Name==item.Province?.Name)">@p.Name</option>}</select></div>
+                                            <div class="col-md-3"><label class="form-label">Город</label><select class="form-select form-select-sm" name="cityName"><option value="">(нет)</option>@foreach (var c in Model.Cities){<option value="@c.Name" selected="@(c.Name==item.City?.Name)">@c.Name</option>}</select></div>
                                             <div class="col-md-3"><label class="form-label">Родитель</label><select class="form-select form-select-sm" name="parentName"><option value="">(нет)</option>@foreach (var a in armies.Where(a=>a.Name!=item.Name)){<option value="@a.Name" selected="@(a.Name=="")">@a.Name</option>}</select></div>
-                                            <div class="col-md-3"><label class="form-label">Страна</label><select class="form-select form-select-sm" name="countryName"><option value="@country.Name" selected>@country.Name</option></select></div>
+                                            <div class="col-md-3"><label class="form-label">Страна</label><select class="form-select form-select-sm" name="countryName">@foreach (var c in Model.Countries){<option value="@c.Name" selected="@(c.Name==item.Country?.Name)">@c.Name</option>}</select></div>
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-sm mt-2">Сохранить армию</button>
                                     </form>

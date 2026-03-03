@@ -51,13 +51,25 @@ public class UnitRepository : IUnitRepository
 
     public UnitEntity GetById(int id)
     {
-        return _context.Units.FirstOrDefault(b => b.Id == id);
+        return _context.Units
+            .Include(u => u.Army)
+            .FirstOrDefault(b => b.Id == id);
     }
 
     public List<UnitEntity> GetAll(ulong ownerId)
     {
         return _context.Units
+            .Include(u => u.Army)
             .Where(a => a.OwnerId == ownerId)
+            .ToList();
+    }
+
+    public List<UnitEntity> GetAllBySessionId(int sessionId)
+    {
+        return _context.Units
+            .Include(u => u.Army)
+                .ThenInclude(a => a.Country)
+            .Where(u => u.Army != null && u.Army.Country.GameSessionId == sessionId)
             .ToList();
     }
 }
